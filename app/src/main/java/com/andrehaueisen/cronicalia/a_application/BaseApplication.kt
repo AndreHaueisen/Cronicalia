@@ -5,8 +5,10 @@ import android.app.Application
 import com.andrehaueisen.cronicalia.a_application.dagger.ApplicationComponent
 import com.andrehaueisen.cronicalia.a_application.dagger.ApplicationModule
 import com.andrehaueisen.cronicalia.a_application.dagger.ContextModule
+import com.andrehaueisen.cronicalia.a_application.dagger.DaggerApplicationComponent
 import com.andrehaueisen.cronicalia.models.User
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
 /**
@@ -14,7 +16,7 @@ import com.google.firebase.storage.FirebaseStorage
  */
 class BaseApplication : Application() {
 
-    lateinit private var mComponent : ApplicationComponent
+    private lateinit var mComponent : ApplicationComponent
 
     companion object{
         fun get(activity: Activity): BaseApplication = activity.application as BaseApplication
@@ -25,10 +27,11 @@ class BaseApplication : Application() {
 
         FirebaseApp.initializeApp(this)
         val storageReference = FirebaseStorage.getInstance().reference
+        val databaseReference = FirebaseFirestore.getInstance()
         val user = User()
 
         mComponent = DaggerApplicationComponent.builder()
-            .applicationModule(ApplicationModule(storageReference, user))
+            .applicationModule(ApplicationModule(storageReference, databaseReference, user))
             .contextModule(ContextModule(this))
             .build()
     }

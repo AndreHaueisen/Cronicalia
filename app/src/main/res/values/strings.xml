@@ -1,3 +1,37 @@
 <resources>
     <string name="app_name">Cronicalia</string>
+
+    <!--c_my_creations strings-->
+    <string name="simple_number_integer">%1$d</string>
+    <string name="simple_number_float">%1$2f</string>
+    <string name="income_amount">\$%1$2f</string>
+
+    <!--d_create_book strings -->
+    <string name="create_new_book">Create new book</string>
+    <string name="book_is_complete">Book is complete</string>
+    <string name="title">Title</string>
+    <string name="launch_full_book">Launch full book</string>
+    <string name="launch_chapters_periodically">Launch periodically</string>
+
+    <plurals name="chapter_number">
+        <item quantity="zero">0 chapters</item>
+        <item quantity="one">%1$d chapter</item>
+        <item quantity="other">%1$d chapters</item>
+    </plurals>
+
+    <string-array name="periodicity_array">
+        <item>Every day</item>
+        <item>Every 3 days</item>
+        <item>Every week</item>
+        <item>Every two weeks</item>
+        <item>Every month</item>
+        <item>Every six weeks</item>
+    </string-array>
+
+    <string-array name="launch_description_array">
+        <item>I\'m gonna launch the full book</item>
+        <item>I\'m gonna launch a new chapter every day</item>
+        <item>I\'m gonna launch a new chapter every %1$d days</item>
+    </string-array>
+
 </resources>
