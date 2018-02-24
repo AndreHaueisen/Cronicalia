@@ -13,46 +13,81 @@
         android:id="@+id/create_book_app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:background="@null"
+        app:elevation="8dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="@color/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
-            <ImageView
-                android:id="@+id/book_poster_image_view"
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="172dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cover_placeholder"
-                app:layout_collapseMode="parallax"/>
-
-            <ImageView
-                android:id="@+id/book_cover_image_view"
-                android:layout_width="96dp"
-                android:layout_height="148dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cover_placeholder"
-                app:layout_collapseMode="pin"
-                app:layout_constraintBottom_toBottomOf="@+id/book_poster_image_view"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <TextView
-                android:layout_gravity="bottom|end"
-                android:layout_margin="8dp"
-                android:background="@null"
-                android:text="@string/create_new_book"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_collapseMode="pin"
-                style="@android:style/TextAppearance.Material.Title"/>
+                app:layout_collapseMode="parallax">
+
+                <ImageView
+                    android:id="@+id/book_poster_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="172dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cover_placeholder"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/book_cover_image_view"
+                    android:layout_width="96dp"
+                    android:layout_height="148dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cover_placeholder"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/guideline"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/title_input_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@null"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/text_tertiary"
+                    app:counterMaxLength="30"
+                    app:hintEnabled="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/book_cover_image_view"
+                    app:layout_constraintTop_toBottomOf="@+id/book_poster_image_view"
+                    tools:visibility="visible">
+
+                    <android.support.design.widget.TextInputEditText
+                        style="@style/EditTextDark"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:hint="@string/title"
+                        android:imeOptions="actionDone"
+                        android:inputType="textCapWords"
+                        android:maxLength="30"
+                        android:padding="8dp"
+                        android:textStyle="bold"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_begin="87dp"/>
+
+            </android.support.constraint.ConstraintLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -63,96 +98,93 @@
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.constraint.ConstraintLayout
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:animateLayoutChanges="true"
+            app:cardBackgroundColor="@color/colorPrimaryLight"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/title_input_layout"
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@null"
-                android:textAlignment="center"
-                app:counterMaxLength="50"
-                app:hintEnabled="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                android:layout_height="match_parent">
 
-                <android.support.design.widget.TextInputEditText
-                    style="@style/EditTextDark"
+                <RadioGroup
+                    android:id="@+id/book_launch_status_radio_group"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:hint="@string/title"
-                    android:imeOptions="actionDone"
-                    android:inputType="textCapSentences"
-                    android:maxLength="50"
-                    android:padding="8dp"/>
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </android.support.design.widget.TextInputLayout>
+                    <RadioButton
+                        android:id="@+id/launch_full_book_radio_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:text="@string/launch_full_book"
+                        android:textColor="@color/white_android"
+                        android:theme="@style/RadioButtonWhite"/>
 
-            <RadioGroup
-                android:id="@+id/book_launch_status_radio_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title_input_layout">
+                    <RadioButton
+                        android:id="@+id/launch_chapters_periodically_radio_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/launch_chapters_periodically"
+                        android:textColor="@color/white_android"
+                        android:theme="@style/RadioButtonWhite"/>
+                </RadioGroup>
 
-                <RadioButton
-                    android:id="@+id/launch_full_book_radio_button"
+                <Spinner
+                    android:id="@+id/periodicity_spinner"
+                    style="@android:style/Widget.Material.Spinner"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/launch_full_book"
-                    android:textColor="@color/white_android"
-                    android:theme="@style/RadioButtonWhite"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:spinnerMode="dropdown"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/book_launch_status_radio_group"/>
 
-                <RadioButton
-                    android:id="@+id/launch_chapters_periodically_radio_button"
+                <TextView
+                    android:id="@+id/launch_description_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_secondary"
+                    app:layout_constraintBottom_toTopOf="@+id/select_files_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/periodicity_spinner"
+                    tools:text="I will post a new chapter every week"/>
+
+                <Button
+                    android:id="@+id/select_files_button"
+                    style="@android:style/Widget.Material.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/launch_chapters_periodically"
-                    android:textColor="@color/white_android"
-                    android:theme="@style/RadioButtonWhite"/>
-            </RadioGroup>
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:text="Select book file"/>
 
-            <Spinner
-                android:id="@+id/periodicity_spinner"
-                style="@android:style/Widget.Material.Spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:spinnerMode="dropdown"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_launch_status_radio_group"/>
+            </android.support.constraint.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/launch_description_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/white_android"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/periodicity_spinner"
-                tools:text="I will post a new chapter every week"/>
-
-        </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
 
     </android.support.v4.widget.NestedScrollView>
 

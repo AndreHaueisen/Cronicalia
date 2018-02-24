@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryLight">#484848</color>
-    <color name="colorPrimarySmooth">#666666</color>
-    <color name="colorPrimary">#303030</color>
-    <color name="colorPrimaryDark">#121212</color>
+    <color name="colorPrimarySmooth">#484848</color>
+    <color name="colorPrimaryLight">#363636</color>
+    <color name="colorPrimary">#222222</color>
+    <color name="colorPrimaryDark">#101010</color>
     <color name="colorAccent">#FFC107</color>
 
     <color name="white_android">#FAFAFA</color>
+
+    <!--Text color on dark backgrounds-->
+    <color name="text_primary">#FAFAFA</color>
+    <color name="text_secondary">#C2C2C2</color>
+    <color name="text_tertiary">#B5B5B5</color>
 </resources>

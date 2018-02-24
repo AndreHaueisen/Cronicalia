@@ -16,7 +16,10 @@ data class Book(
     var language: BookLanguage = BookLanguage.UNDEFINED,
     var chaptersTitles: ArrayList<String> = ArrayList(5),
     var chaptersUris: ArrayList<String> = ArrayList(5),
-    var coverUri: String? = null,
+    var localCoverUri: String? = null,
+    var localPosterUri: String? = null,
+    var remoteCoverUri: String? = null,
+    var remotePosterUri: String? = null,
     var isComplete: Boolean = false,
     var periodicity: ChapterPeriodicity = ChapterPeriodicity.NONE
 
@@ -51,7 +54,7 @@ data class Book(
         EVERY_30_DAYS(30),
         EVERY_42_DAYS(42);
 
-        public fun getPeriodicity() = this.periodicity
+        fun getPeriodicity() = this.periodicity
     }
 
     constructor(source: Parcel) : this(
@@ -64,6 +67,9 @@ data class Book(
         BookLanguage.values()[source.readInt()],
         source.createStringArrayList(),
         source.createStringArrayList(),
+        source.readString(),
+        source.readString(),
+        source.readString(),
         source.readString(),
         1 == source.readInt(),
         ChapterPeriodicity.values()[source.readInt()]
@@ -81,7 +87,10 @@ data class Book(
         writeInt(language.ordinal)
         writeStringList(chaptersTitles)
         writeStringList(chaptersUris)
-        writeString(coverUri)
+        writeString(localCoverUri)
+        writeString(localPosterUri)
+        writeString(remoteCoverUri)
+        writeString(remotePosterUri)
         writeInt((if (isComplete) 1 else 0))
         writeInt(periodicity.ordinal)
     }

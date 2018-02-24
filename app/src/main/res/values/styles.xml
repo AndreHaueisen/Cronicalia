@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@color/colorPrimaryLight</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -11,10 +11,9 @@
 
     <style name="EditTextDark" parent="@android:style/Widget.Material.EditText">
         <!--<item name="android:fontFamily">@font/lato</item>-->
-        <item name="android:dropDownSelector">@color/colorAccent</item>
-        <item name="android:textColorHint">@color/colorPrimaryLight</item>
-        <item name="android:textColor">@color/white_android</item>
-        <item name="android:completionThreshold">2</item>
+        <item name="android:dropDownSelector">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_tertiary</item>
+        <item name="android:textColor">@color/text_primary</item>
         <!--<item name="android:textCursorDrawable">@drawable/shape_cursor</item>-->
     </style>
 

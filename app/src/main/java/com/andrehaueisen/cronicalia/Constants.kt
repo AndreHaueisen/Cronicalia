@@ -14,3 +14,9 @@ const val DOCUMENT_EMAIL_UID = "UID"
 
 const val COLLECTION_USERS = "Users"
 const val COLLECTION_BOOKS = "Books_list"
+
+const val FILE_NAME_BOOK_POSTER = "poster.jpg"
+const val FILE_NAME_BOOK_COVER = "cover.jpg"
+const val FILE_NAME_USER_PICTURE = "user_profile.jpg"
+
+const val PDF_REQUEST_CODE = 500

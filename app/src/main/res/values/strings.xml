@@ -12,6 +12,13 @@
     <string name="title">Title</string>
     <string name="launch_full_book">Launch full book</string>
     <string name="launch_chapters_periodically">Launch periodically</string>
+    <string name="resource_error">An error occurred. Try again</string>
+    <string name="cover">Cover</string>
+    <string name="poster">Poster</string>
+    <string name="profile">Profile</string>
+    <string name="select_book_file">Select book file</string>
+    <string name="select_chapters_files">Select chapters files</string>
+    <string name="chapter_number_hint">Chapter %1$d</string>
 
     <plurals name="chapter_number">
         <item quantity="zero">0 chapters</item>

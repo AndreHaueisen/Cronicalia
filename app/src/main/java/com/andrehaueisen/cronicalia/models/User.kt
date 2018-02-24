@@ -14,6 +14,8 @@ data class User(
     var fans: Int = 0,
     var books: ArrayList<Book> = arrayListOf()) : Parcelable {
 
+    fun getUserBookNumber() = books.size
+
     fun toSimpleMap(): Map<String, Any> {
 
         val simpleUserMap = HashMap<String, Any>()
