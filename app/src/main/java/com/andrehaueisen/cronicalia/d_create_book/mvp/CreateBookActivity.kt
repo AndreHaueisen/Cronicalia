@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import com.andrehaueisen.cronicalia.PDF_REQUEST_CODE
 import com.andrehaueisen.cronicalia.R
+import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.User
 import com.theartofdev.edmodo.cropper.CropImage
 
@@ -17,12 +18,29 @@ class CreateBookActivity : AppCompatActivity() {
     //inject User
     private val mUser = User()
 
+    val fakeBooks = arrayListOf<Book>(Book(
+        "The good fella",
+        Book.BookGenre.COMEDY,
+        5.5F,
+        10,
+        250F,
+        10000,
+        Book.BookLanguage.ENGLISH), Book(
+        "When the sun hit the flor",
+        Book.BookGenre.FICTION,
+        9.5F,
+        1500,
+        500.50F,
+        5700000,
+        Book.BookLanguage.ENGLISH))
+
+
     private lateinit var mBookView: CreateBookView
 
     interface BookResources {
         fun onImageReady(pictureUri: Uri)
-        fun onFullBookPDFFileReady(filesUri: Uri)
-        fun onChaptersPDFsFilesReady(filesUris: ArrayList<Uri>)
+        fun onFullBookPDFFileReady(fileUri: Uri)
+        fun onSeriesChaptersPDFsFilesReady(filesUris: ArrayList<Uri>)
         fun onError(exception: Exception)
     }
 
@@ -36,7 +54,7 @@ class CreateBookActivity : AppCompatActivity() {
 
         setContentView(R.layout.d_activity_create_book)
 
-        mBookView = CreateBookView(this, /*mUser.getUserBookNumber()*/2)
+        mBookView = CreateBookView(this, /*mUser.getUserBookNumber()*/2, fakeBooks[0])
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -56,13 +74,15 @@ class CreateBookActivity : AppCompatActivity() {
             PDF_REQUEST_CODE -> {
                 val filesUris = arrayListOf<Uri>()
 
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK && data != null) {
 
-                    if (data!!.hasExtra(Intent.EXTRA_ALLOW_MULTIPLE)) {
-                        for (i in 0..data.clipData.itemCount) {
-                            filesUris[i] = data.clipData.getItemAt(i).uri
+                    if (data.clipData != null) {
+
+                        (0 until(data.clipData.itemCount)).mapTo(filesUris) { index ->
+                            data.clipData.getItemAt(index).uri
                         }
-                        mBookView.onChaptersPDFsFilesReady(filesUris)
+
+                        mBookView.onSeriesChaptersPDFsFilesReady(filesUris)
 
                     } else {
                         mBookView.onFullBookPDFFileReady(data.data)

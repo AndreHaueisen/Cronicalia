@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide
  */
 class MyCreationsAdapter(private val mContext: Context, private val mMyBooks: ArrayList<Book>): RecyclerView.Adapter<MyCreationsAdapter.CreationHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): CreationHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CreationHolder {
         val creationView = LayoutInflater.from(mContext).inflate(R.layout.item_book, parent, false)
         return CreationHolder(creationView)
     }
@@ -46,7 +46,7 @@ class MyCreationsAdapter(private val mContext: Context, private val mMyBooks: Ar
             if(book.isComplete){
                 mBookStatusTextView.text = mContext.getString(R.string.book_is_complete)
             } else {
-                mBookStatusTextView.text = mContext.resources.getQuantityString(R.plurals.chapter_number, book.chaptersTitles.size, book.chaptersTitles.size)
+                mBookStatusTextView.text = mContext.resources.getQuantityString(R.plurals.chapter_number, book.mapChapterUriTitle.size, book.mapChapterUriTitle.size)
             }
 
             mRatingTextView.text = mContext.getString(R.string.simple_number_float, book.rating)

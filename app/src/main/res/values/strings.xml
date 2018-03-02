@@ -9,16 +9,18 @@
     <!--d_create_book strings -->
     <string name="create_new_book">Create new book</string>
     <string name="book_is_complete">Book is complete</string>
-    <string name="title">Title</string>
-    <string name="launch_full_book">Launch full book</string>
-    <string name="launch_chapters_periodically">Launch periodically</string>
+    <string name="book_title">Book Title</string>
+    <string name="launch_a_book">Launch full book</string>
+    <string name="launch_by_chapter">Launch by chapter</string>
     <string name="resource_error">An error occurred. Try again</string>
     <string name="cover">Cover</string>
     <string name="poster">Poster</string>
     <string name="profile">Profile</string>
     <string name="select_book_file">Select book file</string>
     <string name="select_chapters_files">Select chapters files</string>
-    <string name="chapter_number_hint">Chapter %1$d</string>
+    <string name="cancel">Cancel</string>
+    <string name="chapter_number_hint">Chapter #%1$d title</string>
+    <string name="error_title_blank">Title can not be blank</string>
 
     <plurals name="chapter_number">
         <item quantity="zero">0 chapters</item>

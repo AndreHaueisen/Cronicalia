@@ -25,10 +25,7 @@ class MyCreationsModel {
             10,
             250F,
             10000,
-            Book.BookLanguage.ENGLISH,
-            mFakeChaptersTitles,
-            ArrayList<String>()
-        )
+            Book.BookLanguage.ENGLISH)
 
         val book2 = Book(
             "When the sun hit the flor",
@@ -37,9 +34,7 @@ class MyCreationsModel {
             1500,
             500.50F,
             5700000,
-            Book.BookLanguage.ENGLISH,
-            mFakeChaptersTitles,
-            ArrayList<String>())
+            Book.BookLanguage.ENGLISH)
 
         val book3 = Book(
             "The dead dad",
@@ -48,9 +43,7 @@ class MyCreationsModel {
             2500,
             0.75F,
             2010000,
-            Book.BookLanguage.ENGLISH,
-            mFakeChaptersTitles,
-            ArrayList<String>())
+            Book.BookLanguage.ENGLISH)
 
         fakeBooks.add(book1)
         fakeBooks.add(book2)

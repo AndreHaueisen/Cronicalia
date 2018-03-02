@@ -23,6 +23,7 @@ class MyCreationsView(val mContext: Context, val mRootView: View) {
 
     private fun initiateCreationsRecyclerView(){
         val myCreationsRecyclerView = mRootView.findViewById<RecyclerView>(R.id.my_creations_recycler_view)
+        myCreationsRecyclerView.setHasFixedSize(true)
         myCreationsRecyclerView.adapter = MyCreationsAdapter(mContext, MyCreationsModel().createFakeBooks())
         myCreationsRecyclerView.layoutManager = LinearLayoutManager(mContext)
     }
