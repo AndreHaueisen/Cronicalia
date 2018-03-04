@@ -18,21 +18,25 @@ class CreateBookActivity : AppCompatActivity() {
     //inject User
     private val mUser = User()
 
-    val fakeBooks = arrayListOf<Book>(Book(
-        "The good fella",
-        Book.BookGenre.COMEDY,
-        5.5F,
-        10,
-        250F,
-        10000,
-        Book.BookLanguage.ENGLISH), Book(
-        "When the sun hit the flor",
-        Book.BookGenre.FICTION,
-        9.5F,
-        1500,
-        500.50F,
-        5700000,
-        Book.BookLanguage.ENGLISH))
+    val fakeBooks = arrayListOf<Book>(
+        Book(
+            "The good fella",
+            Book.BookGenre.COMEDY,
+            5.5F,
+            10,
+            250F,
+            10000,
+            Book.BookLanguage.ENGLISH
+        ), Book(
+            "When the sun hit the flor",
+            Book.BookGenre.FICTION,
+            9.5F,
+            1500,
+            500.50F,
+            5700000,
+            Book.BookLanguage.ENGLISH
+        )
+    )
 
 
     private lateinit var mBookView: CreateBookView
@@ -57,6 +61,8 @@ class CreateBookActivity : AppCompatActivity() {
         mBookView = CreateBookView(this, /*mUser.getUserBookNumber()*/2, fakeBooks[0])
     }
 
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         when (requestCode) {
@@ -76,16 +82,20 @@ class CreateBookActivity : AppCompatActivity() {
 
                 if (resultCode == Activity.RESULT_OK && data != null) {
 
-                    if (data.clipData != null) {
-
-                        (0 until(data.clipData.itemCount)).mapTo(filesUris) { index ->
-                            data.clipData.getItemAt(index).uri
-                        }
-
-                        mBookView.onSeriesChaptersPDFsFilesReady(filesUris)
-
-                    } else {
+                    if (mBookView.isLaunchingBook()) {
                         mBookView.onFullBookPDFFileReady(data.data)
+                    } else {
+                        //Has selected several chapters
+                        if (data.clipData != null) {
+
+                            (0 until (data.clipData.itemCount)).mapTo(filesUris) { index ->
+                                data.clipData.getItemAt(index).uri
+                            }
+                            mBookView.onSeriesChaptersPDFsFilesReady(filesUris)
+                        //Has selected one chapter
+                        } else {
+                            mBookView.onSeriesChaptersPDFsFilesReady(arrayListOf(data.data))
+                        }
                     }
 
                 } else {

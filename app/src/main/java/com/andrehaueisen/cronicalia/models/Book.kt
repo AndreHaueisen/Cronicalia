@@ -14,6 +14,7 @@ data class Book(
     var income: Float = 0F,
     var readingNumber: Int = 0,
     var language: BookLanguage = BookLanguage.UNDEFINED,
+    var localFullBookUri: String? = null,
     var remoteFullBookUri: String? = null,
     val mapChapterUriTitle: HashMap<String, String> = hashMapOf(),
     var localCoverUri: String? = null,
@@ -66,6 +67,7 @@ data class Book(
         source.readInt(),
         BookLanguage.values()[source.readInt()],
         source.readString(),
+        source.readString(),
         source.readSerializable() as HashMap<String, String>,
         source.readString(),
         source.readString(),
@@ -85,6 +87,7 @@ data class Book(
         writeFloat(income)
         writeInt(readingNumber)
         writeInt(language.ordinal)
+        writeString(localFullBookUri)
         writeString(remoteFullBookUri)
         writeSerializable(mapChapterUriTitle)
         writeString(localCoverUri)

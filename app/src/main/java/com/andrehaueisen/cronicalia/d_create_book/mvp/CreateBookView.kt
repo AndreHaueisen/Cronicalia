@@ -7,12 +7,14 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.TextView
 import com.andrehaueisen.cronicalia.FILE_NAME_BOOK_COVER
 import com.andrehaueisen.cronicalia.FILE_NAME_BOOK_POSTER
 import com.andrehaueisen.cronicalia.PDF_REQUEST_CODE
@@ -24,8 +26,9 @@ import com.andrehaueisen.cronicalia.utils.extensions.showSnackbar
 import com.bumptech.glide.Glide
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
+import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.d_activity_create_book.*
 import kotlinx.android.synthetic.main.d_activity_create_book.view.*
-import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
 import java.io.File
 
 
@@ -43,19 +46,11 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
 
     private lateinit var mImageDestination: ImageDestination
 
-    private val mTitleTextInput = mActivity.findViewById<TextFieldBoxes>(R.id.title_text_box)
-    private val mBookLaunchRadioGroup = mActivity.findViewById<RadioGroup>(R.id.book_launch_status_radio_group)
-    private val mPeriodicitySpinner = mActivity.findViewById<Spinner>(R.id.periodicity_spinner)
-    private val mCoverImageView = mActivity.findViewById<ImageView>(R.id.artwork_cover_image_view)
-    private val mPosterImageView = mActivity.findViewById<ImageView>(R.id.book_poster_image_view)
-    private val mFileSelectorButton = mActivity.findViewById<Button>(R.id.select_files_button)
-    private val mFilesRecyclerView = mActivity.findViewById<RecyclerView>(R.id.chapters_recycler_view)
-
     init {
         initiateBookImages()
         initiateTitleTextInput()
         initiateBookStatusRadioGroup()
-        initiateSpinner()
+        initiateSpinners()
         initiateFileSelectorButton()
         initiateCancelButton()
         initiateChapterRecyclerView()
@@ -64,7 +59,7 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
 
     private fun initiateBookImages() {
 
-        mCoverImageView.setOnClickListener {
+        mActivity.book_cover_image_view.setOnClickListener {
             val file = mActivity
                 .cacheDir
                 .createBookPictureDirectory("book_0$mUserBookCount", FILE_NAME_BOOK_COVER)
@@ -78,7 +73,7 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
             mImageDestination = ImageDestination.COVER
         }
 
-        mPosterImageView.setOnClickListener {
+        mActivity.book_poster_image_view.setOnClickListener {
             val file = mActivity
                 .cacheDir
                 .createBookPictureDirectory("/book_0$mUserBookCount", FILE_NAME_BOOK_POSTER)
@@ -94,7 +89,7 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
     }
 
     private fun initiateTitleTextInput() {
-        mTitleTextInput.title_extended_edit_text.addTextChangedListener(object : TextWatcher {
+        mActivity.book_title_text_box.book_title_extended_edit_text.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(title: Editable?) {
                 mBook.title = title.toString()
             }
@@ -108,132 +103,248 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
 
     private fun initiateBookStatusRadioGroup() {
 
-        mBookLaunchRadioGroup.check(R.id.launch_full_book_radio_button)
-        mFileSelectorButton.text = mActivity.getString(R.string.select_book_file)
-        mBook.isComplete = true
+        with(mActivity) {
+            book_launch_status_radio_group.check(R.id.launch_full_book_radio_button)
+            select_files_button.text = getString(R.string.select_book_file)
+            mBook.isComplete = true
 
-        mBookLaunchRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.launch_full_book_radio_button -> {
-                    mBook.isComplete = true
-                    mPeriodicitySpinner.visibility = View.GONE
-                    mFileSelectorButton.text = mActivity.getString(R.string.select_book_file)
+            book_launch_status_radio_group.setOnCheckedChangeListener { _, checkedId ->
+                when (checkedId) {
+                    R.id.launch_full_book_radio_button -> {
+                        mBook.isComplete = true
+                        periodicity_spinner.visibility = View.GONE
+                        select_files_button.text =
+                                mActivity.getString(R.string.select_book_file)
+                    }
+                    R.id.launch_chapters_periodically_radio_button -> {
+                        mBook.isComplete = false
+                        periodicity_spinner.visibility = View.VISIBLE
+                        select_files_button.text =
+                                mActivity.getString(R.string.select_chapters_files)
+                    }
                 }
-                R.id.launch_chapters_periodically_radio_button -> {
-                    mBook.isComplete = false
-                    mPeriodicitySpinner.visibility = View.VISIBLE
-                    mFileSelectorButton.text = mActivity.getString(R.string.select_chapters_files)
+                if (chapters_recycler_view.adapter != null) {
+                    (chapters_recycler_view.adapter as SelectedFilesAdapter).clearData()
+                    chapters_recycler_view.adapter = null
                 }
+                changeLaunchDescriptionText()
             }
-            if(mFilesRecyclerView.adapter != null){
-                (mFilesRecyclerView.adapter as SelectedFilesAdapter).clearData()
-                mFilesRecyclerView.adapter = null
-            }
-            changeLaunchDescriptionText()
         }
     }
 
-    private fun initiateSpinner() {
+    fun isLaunchingBook(): Boolean{
+        return mActivity.book_launch_status_radio_group.checkedRadioButtonId == R.id.launch_full_book_radio_button
+    }
 
-        val adapter = ArrayAdapter.createFromResource(
-            mActivity,
-            R.array.periodicity_array,
-            R.layout.item_spinner
-        )
-        adapter.setDropDownViewResource(R.layout.item_dropdown_spinner)
-        mPeriodicitySpinner.adapter = adapter
+    private fun initiateSpinners() {
 
-        mPeriodicitySpinner.onItemSelectedListener =
-                object : AdapterView.OnItemSelectedListener {
-                    override fun onNothingSelected(adapter: AdapterView<*>?) {
-                        mBook.periodicity = Book.ChapterPeriodicity.NONE
-                    }
+        with(mActivity) {
 
-                    override fun onItemSelected(
-                        adapter: AdapterView<*>?,
-                        clickedView: View?,
-                        itemPosition: Int,
-                        id: Long
-                    ) {
-                        when (itemPosition) {
-                            0 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_DAY
-                            1 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_3_DAYS
-                            2 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_7_DAYS
-                            3 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_14_DAYS
-                            4 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_30_DAYS
-                            5 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_42_DAYS
+            fun setGenreSpinner() {
+                val adapter = ArrayAdapter.createFromResource(
+                    this,
+                    R.array.genre_array,
+                    R.layout.item_spinner
+                )
+                adapter.setDropDownViewResource(R.layout.item_dropdown_spinner)
+                genre_spinner.adapter = adapter
+                genre_spinner.onItemSelectedListener =
+                        object: AdapterView.OnItemSelectedListener{
+                            override fun onNothingSelected(p0: AdapterView<*>?) {
+                                mBook.genre =  Book.BookGenre.UNDEFINED
+                            }
+
+                            override fun onItemSelected(adapter: AdapterView<*>?, clickedView: View?, itemPosition: Int, id: Long) {
+
+                                when(itemPosition){
+                                    0 -> mBook.genre = Book.BookGenre.ACTION
+                                    1 -> mBook.genre = Book.BookGenre.FICTION
+                                    2 -> mBook.genre = Book.BookGenre.ROMANCE
+                                    3 -> mBook.genre = Book.BookGenre.COMEDY
+                                    4 -> mBook.genre = Book.BookGenre.DRAMA
+                                    5 -> mBook.genre = Book.BookGenre.HORROR
+                                    6 -> mBook.genre = Book.BookGenre.SATIRE
+                                    7 -> mBook.genre = Book.BookGenre.FANTASY
+                                    8 -> mBook.genre = Book.BookGenre.MYTHOLOGY
+                                    9 -> mBook.genre = Book.BookGenre.ADVENTURE
+                                }
+                                changeLaunchDescriptionText()
+                            }
                         }
-                        changeLaunchDescriptionText()
-                    }
-                }
+            }
+
+            fun setLanguageSpinner() {
+                val adapter = ArrayAdapter.createFromResource(
+                    this,
+                    R.array.language_array,
+                    R.layout.item_spinner
+                )
+                adapter.setDropDownViewResource(R.layout.item_dropdown_spinner)
+                language_spinner.adapter = adapter
+                language_spinner.onItemSelectedListener =
+                        object: AdapterView.OnItemSelectedListener{
+                            override fun onNothingSelected(p0: AdapterView<*>?) {
+                                mBook.language =  Book.BookLanguage.UNDEFINED
+                            }
+
+                            override fun onItemSelected(adapter: AdapterView<*>?, clickedView: View?, itemPosition: Int, id: Long) {
+
+                                when(itemPosition){
+                                    0 -> mBook.language = Book.BookLanguage.ENGLISH
+                                    1 -> mBook.language = Book.BookLanguage.PORTUGUESE
+                                    2 -> mBook.language = Book.BookLanguage.DEUTCH
+                                }
+                                changeLaunchDescriptionText()
+                            }
+                        }
+            }
+
+            fun setPeriodicitySpinner() {
+
+                val adapter = ArrayAdapter.createFromResource(
+                    this,
+                    R.array.periodicity_array,
+                    R.layout.item_spinner
+                )
+                adapter.setDropDownViewResource(R.layout.item_dropdown_spinner)
+                periodicity_spinner.adapter = adapter
+
+                periodicity_spinner.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onNothingSelected(adapter: AdapterView<*>?) {
+                                mBook.periodicity = Book.ChapterPeriodicity.NONE
+                            }
+
+                            override fun onItemSelected(adapter: AdapterView<*>?, clickedView: View?, itemPosition: Int, id: Long) {
+                                when (itemPosition) {
+                                    0 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_DAY
+                                    1 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_3_DAYS
+                                    2 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_7_DAYS
+                                    3 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_14_DAYS
+                                    4 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_30_DAYS
+                                    5 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_42_DAYS
+                                }
+                                changeLaunchDescriptionText()
+                            }
+                        }
+            }
+
+            setGenreSpinner()
+            setLanguageSpinner()
+            setPeriodicitySpinner()
+        }
     }
 
     private fun changeLaunchDescriptionText() {
-        val launchDescriptionTextView =
-            mActivity.findViewById<TextView>(R.id.launch_description_text_view)
-        val launchDescriptionArray =
-            mActivity.resources.getStringArray(R.array.launch_description_array)
 
-        if (mBook.isComplete) {
-            launchDescriptionTextView.text = launchDescriptionArray[0]
-        } else {
-            when (mBook.periodicity) {
-                Book.ChapterPeriodicity.EVERY_DAY -> launchDescriptionTextView.text =
-                        launchDescriptionArray[1]
-                else -> {
-                    launchDescriptionTextView.text = String.format(
-                        launchDescriptionArray[2],
-                        mBook.periodicity.getPeriodicity()
-                    )
+        with(mActivity) {
+            val launchDescriptionArray =
+                resources.getStringArray(R.array.launch_description_array)
+
+            val selectedGenreView = genre_spinner.selectedView?.findViewById<TextView>(android.R.id.text1)
+            val selectedLanguageView = language_spinner.selectedView?.findViewById<TextView>(android.R.id.text1)
+            val genreText = selectedGenreView?.text?.toString()?.toLowerCase() ?: getString(R.string.action)
+            val languageText = selectedLanguageView?.text?.toString()?.toLowerCase() ?: getString(R.string.language)
+
+            if (mBook.isComplete) {
+                launch_description_text_view.text = String.format(launchDescriptionArray[0], genreText, languageText)
+            } else {
+                when (mBook.periodicity) {
+                    Book.ChapterPeriodicity.EVERY_DAY -> launch_description_text_view.text = String.format(
+                        launchDescriptionArray[1],
+                        genreText,
+                        languageText)
+
+                    else -> {
+                        launch_description_text_view.text = String.format(
+                            launchDescriptionArray[2],
+                            genreText,
+                            languageText,
+                            mBook.periodicity.getPeriodicity()
+                        )
+                    }
                 }
             }
         }
     }
 
     private fun initiateFileSelectorButton(){
-        mFileSelectorButton.setOnClickListener {
-            val allowMultipleFiles = mBookLaunchRadioGroup.checkedRadioButtonId == R.id.launch_chapters_periodically_radio_button
 
-            val intent = Intent()
-            intent.type = "application/pdf"
-            intent.action = Intent.ACTION_GET_CONTENT
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, allowMultipleFiles)
+        with(mActivity) {
+            select_files_button.setOnClickListener {
+                val adapter = chapters_recycler_view.adapter as? SelectedFilesAdapter
+                if (adapter != null) {
 
-            startActivityForResult(mActivity, Intent.createChooser(intent, "Select Pdf"), PDF_REQUEST_CODE, null)
+                    if (adapter.areChapterTitlesValid() && isBookTitleValid())
+                        adapter.onFilesReady()
+
+                    else
+                        Toasty.error(this, getString(R.string.invalid_title_detected)).show()
+
+                } else {
+
+                    val allowMultipleFiles =
+                        book_launch_status_radio_group.checkedRadioButtonId == R.id.launch_chapters_periodically_radio_button
+
+                    val intent = Intent()
+                    intent.type = "application/pdf"
+                    intent.action = Intent.ACTION_GET_CONTENT
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, allowMultipleFiles)
+
+                    startActivityForResult(
+                        this,
+                        Intent.createChooser(intent, "Select Pdf"),
+                        PDF_REQUEST_CODE,
+                        null
+                    )
+                }
+            }
         }
     }
 
+    private fun isBookTitleValid(): Boolean{
+        val title = mActivity.book_title_text_box.book_title_extended_edit_text.text.toString()
+        return title.isNotBlank() && title.replace(" ", "").length <= mActivity.resources.getInteger(R.integer.text_box_max_length)
+    }
+
     private fun initiateCancelButton(){
-        val cancelButton = mActivity.findViewById<Button>(R.id.cancel_button)
-        cancelButton.setOnClickListener {
-            if(mFilesRecyclerView.adapter != null){
-                (mFilesRecyclerView.adapter as SelectedFilesAdapter).clearData()
-                mFilesRecyclerView.adapter = null
+        with(mActivity) {
+            val cancelButton = findViewById<Button>(R.id.cancel_button)
+            cancelButton.setOnClickListener {
+                if (chapters_recycler_view.adapter != null) {
+                    (chapters_recycler_view.adapter as SelectedFilesAdapter).clearData()
+                    chapters_recycler_view.adapter = null
+                }
+                if (book_launch_status_radio_group.checkedRadioButtonId == R.id.launch_full_book_radio_button)
+                    select_files_button.text = getString(R.string.select_book_file)
+                else
+                    select_files_button.text = getString(R.string.select_chapters_files)
             }
         }
     }
 
     private fun initiateChapterRecyclerView(){
-        mFilesRecyclerView.layoutManager = LinearLayoutManager(mActivity)
-        mFilesRecyclerView.setHasFixedSize(true)
+        mActivity.chapters_recycler_view.layoutManager = LinearLayoutManager(mActivity)
+        mActivity.chapters_recycler_view.setHasFixedSize(true)
     }
 
     override fun onImageReady(pictureUri: Uri) {
         when (mImageDestination) {
             ImageDestination.COVER -> {
-                Glide.with(mActivity).load(pictureUri).into(mCoverImageView)
+                Glide.with(mActivity).load(pictureUri).into(mActivity.book_cover_image_view)
                 mBook.localCoverUri = pictureUri.toString()
             }
             ImageDestination.POSTER -> {
-                Glide.with(mActivity).load(pictureUri).into(mPosterImageView)
+                Glide.with(mActivity).load(pictureUri).into(mActivity.book_poster_image_view)
                 mBook.localPosterUri = pictureUri.toString()
             }
         }
     }
 
     override fun onFullBookPDFFileReady(fileUri: Uri) {
-        mBook.remoteFullBookUri = fileUri.toString()
-        mFilesRecyclerView.adapter = SelectedFilesAdapter(mActivity, mBookFileTitle = getFileTitle(fileUri))
+        mBook.localFullBookUri = fileUri.toString()
+        mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(mActivity, mActivity.chapters_recycler_view, mBookFileTitle = getFileTitle(fileUri))
+        mActivity.select_files_button.text = mActivity.getString(R.string.confirm)
     }
 
     override fun onSeriesChaptersPDFsFilesReady(filesUris: ArrayList<Uri>) {
@@ -247,7 +358,8 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
             }
         }
 
-        mFilesRecyclerView.adapter = SelectedFilesAdapter(mActivity, mBook.mapChapterUriTitle)
+        mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(mActivity, mActivity.chapters_recycler_view, mBook.mapChapterUriTitle)
+        mActivity.select_files_button.text = mActivity.getString(R.string.confirm)
     }
 
     override fun onError(exception: Exception) {

@@ -13,8 +13,7 @@
         android:id="@+id/create_book_app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@null"
-        app:elevation="8dp">
+        android:background="@null">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
@@ -38,7 +37,7 @@
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <ImageView
-                    android:id="@+id/artwork_cover_image_view"
+                    android:id="@+id/book_cover_image_view"
                     android:layout_width="96dp"
                     android:layout_height="148dp"
                     android:layout_marginEnd="8dp"
@@ -69,6 +68,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <FrameLayout
+            android:id="@+id/frame_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -86,10 +86,11 @@
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:animateLayoutChanges="true">
 
                     <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-                        android:id="@+id/title_text_box"
+                        android:id="@+id/book_title_text_box"
                         android:layout_width="0dp"
                         android:layout_height="86dp"
                         android:layout_marginBottom="8dp"
@@ -102,19 +103,18 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:maxCharacters="50"
+                        app:maxCharacters="@integer/text_box_max_length"
                         app:minCharacters="1"
                         app:panelBackgroundColor="@color/colorPrimarySmooth"
                         app:primaryColor="@color/text_primary">
 
                         <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                            android:id="@+id/title_extended_edit_text"
+                            android:id="@+id/book_title_extended_edit_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:enabled="true"
                             android:imeOptions="actionDone"
                             android:inputType="textCapWords"
-                            android:maxLength="50"
                             android:textColor="@color/text_primary"
                             android:textStyle="bold"/>
 
@@ -126,11 +126,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="16dp"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/title_text_box">
+                        app:layout_constraintTop_toBottomOf="@+id/book_title_text_box">
 
                         <RadioButton
                             android:id="@+id/launch_full_book_radio_button"
@@ -150,25 +151,86 @@
                             android:theme="@style/RadioButtonWhite"/>
                     </RadioGroup>
 
+                    <TextView
+                        android:id="@+id/launch_frequency_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/launch_frequency"
+                        android:textColor="@color/text_tertiary"
+                        app:layout_constraintBottom_toBottomOf="@+id/periodicity_spinner"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/periodicity_spinner"/>
+
+                    <TextView
+                        android:id="@+id/genre_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/genre"
+                        android:textColor="@color/text_tertiary"
+                        app:layout_constraintBottom_toBottomOf="@+id/genre_spinner"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/genre_spinner"/>
+
+                    <TextView
+                        android:id="@+id/language_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/language"
+                        android:textColor="@color/text_tertiary"
+                        app:layout_constraintBottom_toBottomOf="@+id/language_spinner"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/language_spinner"/>
+
+
                     <Spinner
                         android:id="@+id/periodicity_spinner"
-                        style="@android:style/Widget.Material.Spinner"
-                        android:layout_width="wrap_content"
+                        style="@android:style/Widget.Material.Spinner.Underlined"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="16dp"
+                        android:backgroundTint="@color/colorPrimaryBright"
                         android:spinnerMode="dropdown"
                         android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/book_launch_status_radio_group"/>
+                        app:layout_constraintStart_toStartOf="@+id/guideline2"
+                        app:layout_constraintTop_toBottomOf="@+id/book_launch_status_radio_group"
+                        tools:visibility="visible"/>
+
+                    <Spinner
+                        android:id="@+id/genre_spinner"
+                        style="@android:style/Widget.Material.Light.Spinner.Underlined"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginTop="16dp"
+                        android:backgroundTint="@color/colorPrimaryBright"
+                        android:spinnerMode="dropdown"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/guideline2"
+                        app:layout_constraintTop_toBottomOf="@+id/periodicity_spinner"/>
+
+                    <Spinner
+                        android:id="@+id/language_spinner"
+                        style="@android:style/Widget.Material.Spinner.Underlined"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginTop="16dp"
+                        android:backgroundTint="@color/colorPrimaryBright"
+                        android:spinnerMode="dropdown"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/genre_spinner"
+                        app:layout_constraintTop_toBottomOf="@+id/genre_spinner"/>
 
                     <TextView
                         android:id="@+id/launch_description_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="16dp"
                         android:textAlignment="center"
@@ -176,7 +238,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/periodicity_spinner"
+                        app:layout_constraintTop_toBottomOf="@+id/language_spinner"
                         tools:text="I will post a new chapter every week"/>
 
                     <android.support.v7.widget.RecyclerView
@@ -214,6 +276,13 @@
                         android:textColor="@color/text_tertiary"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/select_files_button"/>
+
+                    <android.support.constraint.Guideline
+                        android:id="@+id/guideline2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_begin="128dp"/>
 
                 </android.support.constraint.ConstraintLayout>
 

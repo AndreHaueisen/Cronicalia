@@ -18,8 +18,10 @@ import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
  */
 class SelectedFilesAdapter(
     private val mContext: Context,
+    private val mRecyclerView: RecyclerView,
     private val mMapChapterUriTitle: HashMap<String, String>? = null,
-    private var mBookFileTitle: String? = null) : RecyclerView.Adapter<SelectedFilesAdapter.SelectedFileHolder>() {
+    private var mBookFileTitle: String? = null
+) : RecyclerView.Adapter<SelectedFilesAdapter.SelectedFileHolder>() {
 
     private val mUris: ArrayList<String>?
     private val mTitles: ArrayList<String>?
@@ -38,6 +40,7 @@ class SelectedFilesAdapter(
         return mMapChapterUriTitle?.size ?: 1
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectedFileHolder {
 
         val view = if (mMapChapterUriTitle != null) {
@@ -52,14 +55,14 @@ class SelectedFilesAdapter(
     }
 
     override fun onBindViewHolder(holder: SelectedFileHolder, position: Int) {
-        if(mMapChapterUriTitle != null) {
+        if (mMapChapterUriTitle != null) {
             holder.bindChaptersToView(position)
         } else {
             holder.bindBookToView()
         }
     }
 
-    fun clearData(){
+    fun clearData() {
         mMapChapterUriTitle?.clear()
         mUris?.clear()
         mTitles?.clear()
@@ -67,20 +70,42 @@ class SelectedFilesAdapter(
         notifyDataSetChanged()
     }
 
-    fun onReagementReady() {
-        if(mMapChapterUriTitle != null) {
+    fun onFilesReady() {
+        if (mMapChapterUriTitle != null) {
             mMapChapterUriTitle.clear()
             mUris!!.forEachIndexed { index, uri -> mMapChapterUriTitle[uri] = mTitles!![index] }
         }
+
+    }
+
+    fun areChapterTitlesValid(): Boolean {
+
+        var areValid = true
+
+        if(mBookFileTitle != null) return areValid
+
+        if(mTitles == null) return false
+
+        loop@ for(i in 0 until mTitles.size){
+            val title = mTitles[i]
+            if (title.replace(" ", "").length > mContext.resources.getInteger(R.integer.text_box_max_length) || title.isBlank()) {
+                areValid = false
+                break@loop
+            }
+        }
+
+        return areValid
     }
 
     inner class SelectedFileHolder(fileView: View) : RecyclerView.ViewHolder(fileView) {
 
         private val mPushFileUpButton = fileView.findViewById<ImageButton>(R.id.push_file_up_button)
-        private val mChapterTitleTextInput = fileView.findViewById<TextFieldBoxes>(R.id.chapter_title_text_box)
-        private val mFullBookFileNameTextView = fileView.findViewById<TextView>(R.id.full_book_file_name_text_view)
+        private val mChapterTitleTextInput =
+            fileView.findViewById<TextFieldBoxes>(R.id.chapter_title_text_box)
+        private val mFullBookFileNameTextView =
+            fileView.findViewById<TextView>(R.id.full_book_file_name_text_view)
 
-        fun bindBookToView(){
+        fun bindBookToView() {
             mFullBookFileNameTextView.text = mBookFileTitle
         }
 
@@ -93,14 +118,15 @@ class SelectedFilesAdapter(
             }
 
             mPushFileUpButton.setOnClickListener {
-                if (position != 0) {
-                    swapItems(position)
-                }
+                swapItems()
             }
 
-            mChapterTitleTextInput.extended_edit_text.addTextChangedListener(object: TextWatcher{
-                override fun afterTextChanged(title: Editable?) {
-                    verifyTitleValidity(title!!.toString(), position)
+            mChapterTitleTextInput.extended_edit_text.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(editable: Editable) {
+                    val title = editable.toString()
+                    if (title.isNotBlank()) {
+                        mTitles!![position] = title
+                    }
                 }
 
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -109,34 +135,44 @@ class SelectedFilesAdapter(
             })
 
             mChapterTitleTextInput.extended_edit_text!!.setText(mTitles!![position])
-            mChapterTitleTextInput.labelText = mContext.getString(R.string.chapter_number_hint, position)
+            mChapterTitleTextInput.labelText =
+                    mContext.getString(R.string.chapter_number_hint, position + 1)
         }
 
         /**
-         * Swap uri and title position with position -1
+         * Swap uri and title layoutPosition with layoutPosition -1
          * **/
-        private fun swapItems(position: Int) {
+        private fun swapItems() {
 
-            val ascendingUri = mUris!![position]
-            val ascendingTitle = mTitles!![position]
+            val clickedViewHolder =
+                mRecyclerView.findViewHolderForLayoutPosition(layoutPosition) as SelectedFileHolder
+            val aboveClickedViewHolder =
+                mRecyclerView.findViewHolderForLayoutPosition(layoutPosition - 1) as SelectedFileHolder
 
-            mUris[position] = mUris[position - 1]
-            mUris[position - 1] = ascendingUri
+            clickedViewHolder.mChapterTitleTextInput.labelText =
+                    mContext.getString(R.string.chapter_number_hint, layoutPosition)
+            aboveClickedViewHolder.mChapterTitleTextInput.labelText =
+                    mContext.getString(R.string.chapter_number_hint, layoutPosition + 1)
 
-            mTitles[position] = mTitles[position - 1]
-            mTitles[position - 1] = ascendingTitle
-
-            notifyItemChanged(position)
-            notifyItemChanged(position - 1)
-            notifyItemMoved(position, position - 1)
-        }
-
-        private fun verifyTitleValidity(title: String, position: Int) {
-
-            if (title.isNotBlank()) {
-                mTitles!![position] = title
+            if (layoutPosition == 1) {
+                clickedViewHolder.mPushFileUpButton.visibility = View.INVISIBLE
+                aboveClickedViewHolder.mPushFileUpButton.visibility = View.VISIBLE
             }
+
+            notifyItemMoved(layoutPosition, layoutPosition - 1)
+
+            val ascendingUri = mUris!![layoutPosition]
+            val ascendingTitle = mTitles!![layoutPosition]
+
+            mUris[layoutPosition] = mUris[layoutPosition - 1]
+            mUris[layoutPosition - 1] = ascendingUri
+
+            mTitles[layoutPosition] = mTitles[layoutPosition - 1]
+            mTitles[layoutPosition - 1] = ascendingTitle
+
         }
+
     }
+
 
 }
