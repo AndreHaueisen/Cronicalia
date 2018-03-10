@@ -3,6 +3,7 @@ package com.andrehaueisen.cronicalia.models
 import android.os.Parcel
 import android.os.Parcelable
 import com.andrehaueisen.cronicalia.*
+import com.google.firebase.firestore.Exclude
 
 /**
  * Created by andre on 2/18/2018.
@@ -63,6 +64,7 @@ data class Book(
         fun getPeriodicity() = this.periodicity
     }
 
+    @Exclude
     fun getDatabaseCollectionLocation() = when(language){
         BookLanguage.ENGLISH -> COLLECTION_BOOKS_ENGLISH
         BookLanguage.PORTUGUESE -> COLLECTION_BOOKS_PORTUGUESE
@@ -70,6 +72,7 @@ data class Book(
         else -> COLLECTION_BOOKS_ENGLISH
     }
 
+    @Exclude
     fun getStorageRootLocation() = when(language) {
         BookLanguage.ENGLISH -> STORAGE_ENGLISH_BOOKS
         BookLanguage.PORTUGUESE -> STORAGE_PORTUGUESE_BOOKS

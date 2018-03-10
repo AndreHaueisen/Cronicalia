@@ -21,6 +21,9 @@ import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.createBookPictureDirectory
 import com.andrehaueisen.cronicalia.utils.extensions.showSnackbar
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import es.dmoral.toasty.Toasty
@@ -380,13 +383,28 @@ class CreateBookView(
     }
 
     override fun onImageReady(pictureUri: Uri) {
+
+        val requestOptions = RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE).skipMemoryCache(true)
+        val transitionOptions = DrawableTransitionOptions.withCrossFade()
+
         when (mImageDestination) {
             ImageDestination.COVER -> {
-                Glide.with(mActivity).load(pictureUri).into(mActivity.book_cover_image_view)
+
+                Glide.with(mActivity)
+                    .load(pictureUri)
+                    .apply(requestOptions)
+                    .transition(transitionOptions)
+                    .into(mActivity.book_cover_image_view)
+
                 mBook.localCoverUri = pictureUri.toString()
             }
             ImageDestination.POSTER -> {
-                Glide.with(mActivity).load(pictureUri).into(mActivity.book_poster_image_view)
+                Glide.with(mActivity)
+                    .load(pictureUri)
+                    .apply(requestOptions)
+                    .transition(transitionOptions)
+                    .into(mActivity.book_poster_image_view)
+
                 mBook.localPosterUri = pictureUri.toString()
             }
         }
