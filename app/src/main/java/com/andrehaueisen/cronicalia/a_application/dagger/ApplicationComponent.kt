@@ -1,5 +1,6 @@
 package com.andrehaueisen.cronicalia.a_application.dagger
 
+import com.andrehaueisen.cronicalia.b_firebase.DataRepository
 import com.andrehaueisen.cronicalia.b_firebase.FileRepository
 import dagger.Component
 
@@ -11,4 +12,5 @@ import dagger.Component
 interface ApplicationComponent {
 
     fun loadFileRepository() : FileRepository
+    fun loadDataRepository() : DataRepository
 }

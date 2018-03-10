@@ -15,10 +15,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
-import com.andrehaueisen.cronicalia.FILE_NAME_BOOK_COVER
-import com.andrehaueisen.cronicalia.FILE_NAME_BOOK_POSTER
-import com.andrehaueisen.cronicalia.PDF_REQUEST_CODE
-import com.andrehaueisen.cronicalia.R
+import com.andrehaueisen.cronicalia.*
 import com.andrehaueisen.cronicalia.d_create_book.SelectedFilesAdapter
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.createBookPictureDirectory
@@ -29,13 +26,21 @@ import com.theartofdev.edmodo.cropper.CropImageView
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.d_activity_create_book.*
 import kotlinx.android.synthetic.main.d_activity_create_book.view.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.channels.consumeEach
+import kotlinx.coroutines.experimental.launch
 import java.io.File
 
 
 /**
  * Created by andre on 2/22/2018.
  */
-class CreateBookView(private val mActivity: Activity, private val mUserBookCount: Int, private val mBook: Book) :
+class CreateBookView(
+    private val mActivity: Activity,
+    private val mUserBookCount: Int,
+    authorName: String,
+    emailId: String
+) :
     CreateBookActivity.BookResources {
 
     private val LOG_TAG = CreateBookActivity::class.java.simpleName
@@ -45,13 +50,14 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
     }
 
     private lateinit var mImageDestination: ImageDestination
+    private val mBook = Book(authorName = authorName, authorEmailId = emailId)
 
     init {
         initiateBookImages()
         initiateTitleTextInput()
         initiateBookStatusRadioGroup()
         initiateSpinners()
-        initiateFileSelectorButton()
+        initiateFileSelectorAndUploadButton()
         initiateCancelButton()
         initiateChapterRecyclerView()
         changeLaunchDescriptionText()
@@ -89,7 +95,8 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
     }
 
     private fun initiateTitleTextInput() {
-        mActivity.book_title_text_box.book_title_extended_edit_text.addTextChangedListener(object : TextWatcher {
+        mActivity.book_title_text_box.book_title_extended_edit_text.addTextChangedListener(object :
+            TextWatcher {
             override fun afterTextChanged(title: Editable?) {
                 mBook.title = title.toString()
             }
@@ -105,21 +112,24 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
 
         with(mActivity) {
             book_launch_status_radio_group.check(R.id.launch_full_book_radio_button)
-            select_files_button.text = getString(R.string.select_book_file)
+            select_files_and_upload_button.text = getString(R.string.select_book_file)
             mBook.isComplete = true
 
             book_launch_status_radio_group.setOnCheckedChangeListener { _, checkedId ->
                 when (checkedId) {
                     R.id.launch_full_book_radio_button -> {
                         mBook.isComplete = true
+                        mBook.periodicity = Book.ChapterPeriodicity.NONE
                         periodicity_spinner.visibility = View.GONE
-                        select_files_button.text =
+                        select_files_and_upload_button.text =
                                 mActivity.getString(R.string.select_book_file)
                     }
                     R.id.launch_chapters_periodically_radio_button -> {
                         mBook.isComplete = false
+                        mBook.periodicity = Book.ChapterPeriodicity.EVERY_DAY
+                        periodicity_spinner.setSelection(0)
                         periodicity_spinner.visibility = View.VISIBLE
-                        select_files_button.text =
+                        select_files_and_upload_button.text =
                                 mActivity.getString(R.string.select_chapters_files)
                     }
                 }
@@ -132,7 +142,7 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
         }
     }
 
-    fun isLaunchingBook(): Boolean{
+    fun isLaunchingFullBook(): Boolean {
         return mActivity.book_launch_status_radio_group.checkedRadioButtonId == R.id.launch_full_book_radio_button
     }
 
@@ -149,14 +159,19 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
                 adapter.setDropDownViewResource(R.layout.item_dropdown_spinner)
                 genre_spinner.adapter = adapter
                 genre_spinner.onItemSelectedListener =
-                        object: AdapterView.OnItemSelectedListener{
+                        object : AdapterView.OnItemSelectedListener {
                             override fun onNothingSelected(p0: AdapterView<*>?) {
-                                mBook.genre =  Book.BookGenre.UNDEFINED
+                                mBook.genre = Book.BookGenre.UNDEFINED
                             }
 
-                            override fun onItemSelected(adapter: AdapterView<*>?, clickedView: View?, itemPosition: Int, id: Long) {
+                            override fun onItemSelected(
+                                adapter: AdapterView<*>?,
+                                clickedView: View?,
+                                itemPosition: Int,
+                                id: Long
+                            ) {
 
-                                when(itemPosition){
+                                when (itemPosition) {
                                     0 -> mBook.genre = Book.BookGenre.ACTION
                                     1 -> mBook.genre = Book.BookGenre.FICTION
                                     2 -> mBook.genre = Book.BookGenre.ROMANCE
@@ -182,17 +197,22 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
                 adapter.setDropDownViewResource(R.layout.item_dropdown_spinner)
                 language_spinner.adapter = adapter
                 language_spinner.onItemSelectedListener =
-                        object: AdapterView.OnItemSelectedListener{
+                        object : AdapterView.OnItemSelectedListener {
                             override fun onNothingSelected(p0: AdapterView<*>?) {
-                                mBook.language =  Book.BookLanguage.UNDEFINED
+                                mBook.language = Book.BookLanguage.UNDEFINED
                             }
 
-                            override fun onItemSelected(adapter: AdapterView<*>?, clickedView: View?, itemPosition: Int, id: Long) {
+                            override fun onItemSelected(
+                                adapter: AdapterView<*>?,
+                                clickedView: View?,
+                                itemPosition: Int,
+                                id: Long
+                            ) {
 
-                                when(itemPosition){
+                                when (itemPosition) {
                                     0 -> mBook.language = Book.BookLanguage.ENGLISH
                                     1 -> mBook.language = Book.BookLanguage.PORTUGUESE
-                                    2 -> mBook.language = Book.BookLanguage.DEUTCH
+                                    2 -> mBook.language = Book.BookLanguage.DEUTSCH
                                 }
                                 changeLaunchDescriptionText()
                             }
@@ -215,7 +235,12 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
                                 mBook.periodicity = Book.ChapterPeriodicity.NONE
                             }
 
-                            override fun onItemSelected(adapter: AdapterView<*>?, clickedView: View?, itemPosition: Int, id: Long) {
+                            override fun onItemSelected(
+                                adapter: AdapterView<*>?,
+                                clickedView: View?,
+                                itemPosition: Int,
+                                id: Long
+                            ) {
                                 when (itemPosition) {
                                     0 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_DAY
                                     1 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_3_DAYS
@@ -241,19 +266,26 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
             val launchDescriptionArray =
                 resources.getStringArray(R.array.launch_description_array)
 
-            val selectedGenreView = genre_spinner.selectedView?.findViewById<TextView>(android.R.id.text1)
-            val selectedLanguageView = language_spinner.selectedView?.findViewById<TextView>(android.R.id.text1)
-            val genreText = selectedGenreView?.text?.toString()?.toLowerCase() ?: getString(R.string.action)
-            val languageText = selectedLanguageView?.text?.toString()?.toLowerCase() ?: getString(R.string.language)
+            val selectedGenreView =
+                genre_spinner.selectedView?.findViewById<TextView>(android.R.id.text1)
+            val selectedLanguageView =
+                language_spinner.selectedView?.findViewById<TextView>(android.R.id.text1)
+            val genreText =
+                selectedGenreView?.text?.toString()?.toLowerCase() ?: getString(R.string.action)
+            val languageText = selectedLanguageView?.text?.toString()?.toLowerCase()
+                    ?: getString(R.string.language)
 
             if (mBook.isComplete) {
-                launch_description_text_view.text = String.format(launchDescriptionArray[0], genreText, languageText)
+                launch_description_text_view.text =
+                        String.format(launchDescriptionArray[0], genreText, languageText)
             } else {
                 when (mBook.periodicity) {
-                    Book.ChapterPeriodicity.EVERY_DAY -> launch_description_text_view.text = String.format(
-                        launchDescriptionArray[1],
-                        genreText,
-                        languageText)
+                    Book.ChapterPeriodicity.EVERY_DAY -> launch_description_text_view.text =
+                            String.format(
+                                launchDescriptionArray[1],
+                                genreText,
+                                languageText
+                            )
 
                     else -> {
                         launch_description_text_view.text = String.format(
@@ -268,17 +300,33 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
         }
     }
 
-    private fun initiateFileSelectorButton(){
+    private fun initiateFileSelectorAndUploadButton() {
+
+        fun uploadBookData() {
+            launch(UI) {
+
+                (mActivity as CreateBookActivity).uploadBookFiles(mBook).consumeEach { progress ->
+                    //TODO show progress dialog and finish activity
+                    when (progress) {
+                        UPLOAD_STATUS_OK -> Log.d(LOG_TAG, "File creation successful")
+                        UPLOAD_STATUS_FAIL -> Log.d(LOG_TAG, "File creation failed")
+                        else -> Log.d(LOG_TAG, "File Progress: $progress %")
+                    }
+                }
+            }
+        }
 
         with(mActivity) {
-            select_files_button.setOnClickListener {
+            select_files_and_upload_button.setOnClickListener {
                 val adapter = chapters_recycler_view.adapter as? SelectedFilesAdapter
+
+                //upload else select file
                 if (adapter != null) {
 
-                    if (adapter.areChapterTitlesValid() && isBookTitleValid())
-                        adapter.onFilesReady()
-
-                    else
+                    if (adapter.areChapterTitlesValid() && isBookTitleValid()) {
+                        adapter.saveFilesInformation()
+                        uploadBookData()
+                    } else
                         Toasty.error(this, getString(R.string.invalid_title_detected)).show()
 
                 } else {
@@ -302,12 +350,15 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
         }
     }
 
-    private fun isBookTitleValid(): Boolean{
+    private fun isBookTitleValid(): Boolean {
         val title = mActivity.book_title_text_box.book_title_extended_edit_text.text.toString()
-        return title.isNotBlank() && title.replace(" ", "").length <= mActivity.resources.getInteger(R.integer.text_box_max_length)
+        return title.isNotBlank() && title.replace(
+            " ",
+            ""
+        ).length <= mActivity.resources.getInteger(R.integer.text_box_max_length)
     }
 
-    private fun initiateCancelButton(){
+    private fun initiateCancelButton() {
         with(mActivity) {
             val cancelButton = findViewById<Button>(R.id.cancel_button)
             cancelButton.setOnClickListener {
@@ -316,14 +367,14 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
                     chapters_recycler_view.adapter = null
                 }
                 if (book_launch_status_radio_group.checkedRadioButtonId == R.id.launch_full_book_radio_button)
-                    select_files_button.text = getString(R.string.select_book_file)
+                    select_files_and_upload_button.text = getString(R.string.select_book_file)
                 else
-                    select_files_button.text = getString(R.string.select_chapters_files)
+                    select_files_and_upload_button.text = getString(R.string.select_chapters_files)
             }
         }
     }
 
-    private fun initiateChapterRecyclerView(){
+    private fun initiateChapterRecyclerView() {
         mActivity.chapters_recycler_view.layoutManager = LinearLayoutManager(mActivity)
         mActivity.chapters_recycler_view.setHasFixedSize(true)
     }
@@ -343,23 +394,32 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
 
     override fun onFullBookPDFFileReady(fileUri: Uri) {
         mBook.localFullBookUri = fileUri.toString()
-        mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(mActivity, mActivity.chapters_recycler_view, mBookFileTitle = getFileTitle(fileUri))
-        mActivity.select_files_button.text = mActivity.getString(R.string.confirm)
+        mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(
+            mActivity,
+            mActivity.chapters_recycler_view,
+            mBookFileTitle = getFileTitle(fileUri)
+        )
+        mActivity.select_files_and_upload_button.text = mActivity.getString(R.string.confirm)
     }
 
     override fun onSeriesChaptersPDFsFilesReady(filesUris: ArrayList<Uri>) {
 
         filesUris.forEach { fileUri ->
             val initialTitle = getFileTitle(fileUri)
-            if(initialTitle != null){
-                mBook.mapChapterUriTitle[fileUri.toString()] = initialTitle.substringBefore('.')
-            }else {
-                mBook.mapChapterUriTitle[fileUri.toString()] = ""
+            if (initialTitle != null) {
+                mBook.localMapChapterUriTitle[fileUri.toString()] =
+                        initialTitle.substringBefore('.')
+            } else {
+                mBook.localMapChapterUriTitle[fileUri.toString()] = ""
             }
         }
 
-        mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(mActivity, mActivity.chapters_recycler_view, mBook.mapChapterUriTitle)
-        mActivity.select_files_button.text = mActivity.getString(R.string.confirm)
+        mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(
+            mActivity,
+            mActivity.chapters_recycler_view,
+            mBook.localMapChapterUriTitle
+        )
+        mActivity.select_files_and_upload_button.text = mActivity.getString(R.string.confirm)
     }
 
     override fun onError(exception: Exception) {
@@ -369,7 +429,7 @@ class CreateBookView(private val mActivity: Activity, private val mUserBookCount
         }
     }
 
-    private fun getFileTitle(uri: Uri): String?{
+    private fun getFileTitle(uri: Uri): String? {
         val uriString = uri.toString()
         val myFile = File(uriString)
 

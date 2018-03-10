@@ -2,12 +2,15 @@ package com.andrehaueisen.cronicalia.models
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.andrehaueisen.cronicalia.*
 
 /**
  * Created by andre on 2/18/2018.
  */
 data class Book(
-    var title: String,
+    var title: String? = null,
+    var authorName: String,
+    var authorEmailId: String,
     var genre: BookGenre = BookGenre.UNDEFINED,
     var rating: Float = 0F,
     var vote: Int = 0,
@@ -16,13 +19,15 @@ data class Book(
     var language: BookLanguage = BookLanguage.UNDEFINED,
     var localFullBookUri: String? = null,
     var remoteFullBookUri: String? = null,
-    val mapChapterUriTitle: HashMap<String, String> = hashMapOf(),
+    val localMapChapterUriTitle: LinkedHashMap<String, String> = linkedMapOf(),
+    val remoteMapChapterUriTitle: LinkedHashMap<String, String> = linkedMapOf(),
     var localCoverUri: String? = null,
     var localPosterUri: String? = null,
     var remoteCoverUri: String? = null,
     var remotePosterUri: String? = null,
     var isComplete: Boolean = false,
     var periodicity: ChapterPeriodicity = ChapterPeriodicity.NONE
+
 
 ) : Parcelable {
     enum class BookGenre {
@@ -43,7 +48,7 @@ data class Book(
         UNDEFINED,
         ENGLISH,
         PORTUGUESE,
-        DEUTCH
+        DEUTSCH
     }
 
     enum class ChapterPeriodicity(private var periodicity: Int) {
@@ -58,7 +63,39 @@ data class Book(
         fun getPeriodicity() = this.periodicity
     }
 
+    fun getDatabaseCollectionLocation() = when(language){
+        BookLanguage.ENGLISH -> COLLECTION_BOOKS_ENGLISH
+        BookLanguage.PORTUGUESE -> COLLECTION_BOOKS_PORTUGUESE
+        BookLanguage.DEUTSCH -> COLLECTION_BOOKS_DEUTSCH
+        else -> COLLECTION_BOOKS_ENGLISH
+    }
+
+    fun getStorageRootLocation() = when(language) {
+        BookLanguage.ENGLISH -> STORAGE_ENGLISH_BOOKS
+        BookLanguage.PORTUGUESE -> STORAGE_PORTUGUESE_BOOKS
+        BookLanguage.DEUTSCH -> STORAGE_DEUTSCH_BOOKS
+        else -> STORAGE_ENGLISH_BOOKS
+    }
+
+    fun generateDocumentId(): String?{
+        return if (title != null){
+            "${authorEmailId}_${title?.replace(" ", "")?.toLowerCase()}_$language"
+        } else {
+            null
+        }
+    }
+
+    fun generateFileRepositoryTitle(chapterNumber: Int, key: String): String{
+        return "chapter_${chapterNumber}_${localMapChapterUriTitle[key]}"
+    }
+
+    fun getChapterOriginalTitle(chapterNumber: Int, key: String): String{
+        return localMapChapterUriTitle[key]!!.removePrefix("chapter_$chapterNumber")
+    }
+
     constructor(source: Parcel) : this(
+        source.readString(),
+        source.readString(),
         source.readString(),
         BookGenre.values()[source.readInt()],
         source.readFloat(),
@@ -68,7 +105,8 @@ data class Book(
         BookLanguage.values()[source.readInt()],
         source.readString(),
         source.readString(),
-        source.readSerializable() as HashMap<String, String>,
+        source.readSerializable() as LinkedHashMap<String, String>,
+        source.readSerializable() as LinkedHashMap<String, String>,
         source.readString(),
         source.readString(),
         source.readString(),
@@ -81,6 +119,8 @@ data class Book(
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(title)
+        writeString(authorName)
+        writeString(authorEmailId)
         writeInt(genre.ordinal)
         writeFloat(rating)
         writeInt(vote)
@@ -89,7 +129,8 @@ data class Book(
         writeInt(language.ordinal)
         writeString(localFullBookUri)
         writeString(remoteFullBookUri)
-        writeSerializable(mapChapterUriTitle)
+        writeSerializable(localMapChapterUriTitle)
+        writeSerializable(remoteMapChapterUriTitle)
         writeString(localCoverUri)
         writeString(localPosterUri)
         writeString(remoteCoverUri)

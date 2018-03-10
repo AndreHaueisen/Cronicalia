@@ -19,7 +19,7 @@ import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
 class SelectedFilesAdapter(
     private val mContext: Context,
     private val mRecyclerView: RecyclerView,
-    private val mMapChapterUriTitle: HashMap<String, String>? = null,
+    private val mMapChapterUriTitle: LinkedHashMap<String, String>? = null,
     private var mBookFileTitle: String? = null
 ) : RecyclerView.Adapter<SelectedFilesAdapter.SelectedFileHolder>() {
 
@@ -70,7 +70,7 @@ class SelectedFilesAdapter(
         notifyDataSetChanged()
     }
 
-    fun onFilesReady() {
+    fun saveFilesInformation() {
         if (mMapChapterUriTitle != null) {
             mMapChapterUriTitle.clear()
             mUris!!.forEachIndexed { index, uri -> mMapChapterUriTitle[uri] = mTitles!![index] }

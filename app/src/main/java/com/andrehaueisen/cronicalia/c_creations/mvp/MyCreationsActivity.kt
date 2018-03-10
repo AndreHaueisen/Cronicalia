@@ -10,7 +10,7 @@ import com.google.firebase.storage.FirebaseStorage
 class MyCreationsActivity : AppCompatActivity() {
 
     private val LOG_TAG = MyCreationsActivity::class.java.simpleName
-    private val mStorageRef = FirebaseStorage.getInstance().getReference()
+    private val mStorageRef = FirebaseStorage.getInstance().reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

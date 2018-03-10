@@ -46,7 +46,7 @@ class MyCreationsAdapter(private val mContext: Context, private val mMyBooks: Ar
             if(book.isComplete){
                 mBookStatusTextView.text = mContext.getString(R.string.book_is_complete)
             } else {
-                mBookStatusTextView.text = mContext.resources.getQuantityString(R.plurals.chapter_number, book.mapChapterUriTitle.size, book.mapChapterUriTitle.size)
+                mBookStatusTextView.text = mContext.resources.getQuantityString(R.plurals.chapter_number, book.localMapChapterUriTitle.size, book.localMapChapterUriTitle.size)
             }
 
             mRatingTextView.text = mContext.getString(R.string.simple_number_float, book.rating)

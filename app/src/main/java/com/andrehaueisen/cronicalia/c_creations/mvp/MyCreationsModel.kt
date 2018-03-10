@@ -1,5 +1,7 @@
 package com.andrehaueisen.cronicalia.c_creations.mvp
 
+import com.andrehaueisen.cronicalia.AUTHOR_NAME_PLACE_HOLDER
+import com.andrehaueisen.cronicalia.ENCODED_EMAIL_PLACE_HOLDER
 import com.andrehaueisen.cronicalia.models.Book
 
 /**
@@ -20,6 +22,8 @@ class MyCreationsModel {
         val fakeBooks = ArrayList<Book>(3)
         val book1 = Book(
             "The good fella",
+            AUTHOR_NAME_PLACE_HOLDER,
+            ENCODED_EMAIL_PLACE_HOLDER,
             Book.BookGenre.COMEDY,
             5.5F,
             10,
@@ -29,6 +33,8 @@ class MyCreationsModel {
 
         val book2 = Book(
             "When the sun hit the flor",
+            AUTHOR_NAME_PLACE_HOLDER,
+            ENCODED_EMAIL_PLACE_HOLDER,
             Book.BookGenre.FICTION,
             9.5F,
             1500,
@@ -38,6 +44,8 @@ class MyCreationsModel {
 
         val book3 = Book(
             "The dead dad",
+            AUTHOR_NAME_PLACE_HOLDER,
+            ENCODED_EMAIL_PLACE_HOLDER,
             Book.BookGenre.HORROR,
             7.5F,
             2500,

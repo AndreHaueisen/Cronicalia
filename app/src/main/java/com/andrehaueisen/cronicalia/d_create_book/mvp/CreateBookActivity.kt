@@ -8,38 +8,21 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import com.andrehaueisen.cronicalia.PDF_REQUEST_CODE
 import com.andrehaueisen.cronicalia.R
+import com.andrehaueisen.cronicalia.a_application.BaseApplication
+import com.andrehaueisen.cronicalia.d_create_book.dagger.CreateBookModule
+import com.andrehaueisen.cronicalia.d_create_book.dagger.DaggerCreateBookComponent
 import com.andrehaueisen.cronicalia.models.Book
-import com.andrehaueisen.cronicalia.models.User
 import com.theartofdev.edmodo.cropper.CropImage
+import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
+import javax.inject.Inject
 
 
 class CreateBookActivity : AppCompatActivity() {
 
-    //inject User
-    private val mUser = User()
-
-    val fakeBooks = arrayListOf<Book>(
-        Book(
-            "The good fella",
-            Book.BookGenre.COMEDY,
-            5.5F,
-            10,
-            250F,
-            10000,
-            Book.BookLanguage.ENGLISH
-        ), Book(
-            "When the sun hit the flor",
-            Book.BookGenre.FICTION,
-            9.5F,
-            1500,
-            500.50F,
-            5700000,
-            Book.BookLanguage.ENGLISH
-        )
-    )
-
-
     private lateinit var mBookView: CreateBookView
+
+    @Inject
+    lateinit var mModel : CreateBookModel
 
     interface BookResources {
         fun onImageReady(pictureUri: Uri)
@@ -51,6 +34,12 @@ class CreateBookActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        DaggerCreateBookComponent.builder()
+            .applicationComponent(BaseApplication.get(this).getAppComponent())
+            .createBookModule(CreateBookModule())
+            .build()
+            .inject(this)
+
         setSupportActionBar(findViewById<Toolbar>(R.id.create_book_app_bar))
         actionBar?.let {
             title = getString(R.string.create_new_book)
@@ -58,10 +47,8 @@ class CreateBookActivity : AppCompatActivity() {
 
         setContentView(R.layout.d_activity_create_book)
 
-        mBookView = CreateBookView(this, /*mUser.getUserBookNumber()*/2, fakeBooks[0])
+        mBookView = CreateBookView(this, mModel.getUser().getUserBookNumber(),  mModel.getUser().name,  mModel.getUser().encodedEmail)
     }
-
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
@@ -82,7 +69,7 @@ class CreateBookActivity : AppCompatActivity() {
 
                 if (resultCode == Activity.RESULT_OK && data != null) {
 
-                    if (mBookView.isLaunchingBook()) {
+                    if (mBookView.isLaunchingFullBook()) {
                         mBookView.onFullBookPDFFileReady(data.data)
                     } else {
                         //Has selected several chapters
@@ -103,5 +90,9 @@ class CreateBookActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    suspend fun uploadBookFiles(book: Book): SubscriptionReceiveChannel<Double?>{
+        return mModel.uploadBookFiles(book)
     }
 }
