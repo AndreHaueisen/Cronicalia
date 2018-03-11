@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
+import android.os.Bundle
+import android.os.Parcelable
 import android.provider.OpenableColumns
 import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v7.widget.LinearLayoutManager
@@ -42,7 +44,8 @@ class CreateBookView(
     private val mActivity: Activity,
     private val mUserBookCount: Int,
     authorName: String,
-    emailId: String
+    emailId: String,
+    savedState: Bundle?
 ) :
     CreateBookActivity.BookResources {
 
@@ -53,20 +56,31 @@ class CreateBookView(
     }
 
     private lateinit var mImageDestination: ImageDestination
-    private val mBook = Book(authorName = authorName, authorEmailId = emailId)
+    private val mBook: Book
 
     init {
-        initiateBookImages()
+        if (savedState != null) {
+            mBook = savedState.getParcelable(PARCELABLE_BOOK)
+            initiateChapterRecyclerView(savedState.getParcelable(PARCELABLE_LAYOUT_MANAGER))
+            initiateAdapter()
+            placeCoverImage()
+            placePosterImage()
+
+        } else {
+            mBook = Book(authorName = authorName, authorEmailId = emailId)
+            initiateChapterRecyclerView()
+        }
+
+        initiateBookImageViews()
         initiateTitleTextInput()
         initiateBookStatusRadioGroup()
         initiateSpinners()
         initiateFileSelectorAndUploadButton()
         initiateCancelButton()
-        initiateChapterRecyclerView()
         changeLaunchDescriptionText()
     }
 
-    private fun initiateBookImages() {
+    private fun initiateBookImageViews() {
 
         mActivity.book_cover_image_view.setOnClickListener {
             val file = mActivity
@@ -114,32 +128,44 @@ class CreateBookView(
     private fun initiateBookStatusRadioGroup() {
 
         with(mActivity) {
-            book_launch_status_radio_group.check(R.id.launch_full_book_radio_button)
-            select_files_and_upload_button.text = getString(R.string.select_book_file)
-            mBook.isComplete = true
+            launch_full_book_radio_button.setChecked(true)
 
-            book_launch_status_radio_group.setOnCheckedChangeListener { _, checkedId ->
-                when (checkedId) {
-                    R.id.launch_full_book_radio_button -> {
+            book_launch_status_radio_group.setOnCheckedChangeListener { _, _ ->
+
+                if (launch_full_book_radio_button.isChecked) {
+                    if (!mBook.isComplete) {
                         mBook.isComplete = true
                         mBook.periodicity = Book.ChapterPeriodicity.NONE
                         periodicity_spinner.visibility = View.GONE
                         select_files_and_upload_button.text =
                                 mActivity.getString(R.string.select_book_file)
+
+                        if (chapters_recycler_view.adapter != null) {
+                            (chapters_recycler_view.adapter as SelectedFilesAdapter).clearData()
+                            chapters_recycler_view.adapter = null
+                        }
                     }
-                    R.id.launch_chapters_periodically_radio_button -> {
+
+                } else {
+
+                    if (mBook.isComplete) {
                         mBook.isComplete = false
+                        mBook.localFullBookUri = null
                         mBook.periodicity = Book.ChapterPeriodicity.EVERY_DAY
                         periodicity_spinner.setSelection(0)
                         periodicity_spinner.visibility = View.VISIBLE
                         select_files_and_upload_button.text =
                                 mActivity.getString(R.string.select_chapters_files)
+
+                        if (chapters_recycler_view.adapter != null) {
+                            (chapters_recycler_view.adapter as SelectedFilesAdapter).clearData()
+                            chapters_recycler_view.adapter = null
+                        }
                     }
+
                 }
-                if (chapters_recycler_view.adapter != null) {
-                    (chapters_recycler_view.adapter as SelectedFilesAdapter).clearData()
-                    chapters_recycler_view.adapter = null
-                }
+
+
                 changeLaunchDescriptionText()
             }
         }
@@ -377,47 +403,75 @@ class CreateBookView(
         }
     }
 
-    private fun initiateChapterRecyclerView() {
+    private fun initiateChapterRecyclerView(savedLayoutManagerState: Parcelable? = null) {
         mActivity.chapters_recycler_view.layoutManager = LinearLayoutManager(mActivity)
         mActivity.chapters_recycler_view.setHasFixedSize(true)
+        savedLayoutManagerState?.let {
+            mActivity.chapters_recycler_view.layoutManager.onRestoreInstanceState(
+                it
+            )
+        }
+    }
+
+    fun onSaveInstanceState(bundle: Bundle): Bundle {
+
+        if (mActivity.chapters_recycler_view.adapter != null) {
+            (mActivity.chapters_recycler_view.adapter as SelectedFilesAdapter).saveFilesInformation()
+            bundle.putParcelable(
+                PARCELABLE_LAYOUT_MANAGER,
+                mActivity.chapters_recycler_view.layoutManager.onSaveInstanceState()
+            )
+        }
+
+        bundle.putParcelable(PARCELABLE_BOOK, mBook)
+        return bundle
     }
 
     override fun onImageReady(pictureUri: Uri) {
 
-        val requestOptions = RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE).skipMemoryCache(true)
-        val transitionOptions = DrawableTransitionOptions.withCrossFade()
-
         when (mImageDestination) {
             ImageDestination.COVER -> {
-
-                Glide.with(mActivity)
-                    .load(pictureUri)
-                    .apply(requestOptions)
-                    .transition(transitionOptions)
-                    .into(mActivity.book_cover_image_view)
-
                 mBook.localCoverUri = pictureUri.toString()
+                placeCoverImage()
             }
             ImageDestination.POSTER -> {
-                Glide.with(mActivity)
-                    .load(pictureUri)
-                    .apply(requestOptions)
-                    .transition(transitionOptions)
-                    .into(mActivity.book_poster_image_view)
-
                 mBook.localPosterUri = pictureUri.toString()
+                placePosterImage()
             }
+        }
+    }
+
+    private fun placeCoverImage() {
+        mBook.localCoverUri?.let {
+            val requestOptions =
+                RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE).skipMemoryCache(true)
+            val transitionOptions = DrawableTransitionOptions.withCrossFade()
+
+            Glide.with(mActivity)
+                .load(Uri.parse(mBook.localCoverUri))
+                .apply(requestOptions)
+                .transition(transitionOptions)
+                .into(mActivity.book_cover_image_view)
+        }
+    }
+
+    private fun placePosterImage() {
+        mBook.localPosterUri?.let {
+            val requestOptions =
+                RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE).skipMemoryCache(true)
+            val transitionOptions = DrawableTransitionOptions.withCrossFade()
+
+            Glide.with(mActivity)
+                .load(Uri.parse(mBook.localPosterUri))
+                .apply(requestOptions)
+                .transition(transitionOptions)
+                .into(mActivity.book_poster_image_view)
         }
     }
 
     override fun onFullBookPDFFileReady(fileUri: Uri) {
         mBook.localFullBookUri = fileUri.toString()
-        mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(
-            mActivity,
-            mActivity.chapters_recycler_view,
-            mBookFileTitle = getFileTitle(fileUri)
-        )
-        mActivity.select_files_and_upload_button.text = mActivity.getString(R.string.confirm)
+        initiateAdapter()
     }
 
     override fun onSeriesChaptersPDFsFilesReady(filesUris: ArrayList<Uri>) {
@@ -431,13 +485,27 @@ class CreateBookView(
                 mBook.localMapChapterUriTitle[fileUri.toString()] = ""
             }
         }
+        initiateAdapter()
+    }
 
-        mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(
-            mActivity,
-            mActivity.chapters_recycler_view,
-            mBook.localMapChapterUriTitle
-        )
-        mActivity.select_files_and_upload_button.text = mActivity.getString(R.string.confirm)
+    private fun initiateAdapter() {
+        if (mBook.localFullBookUri != null) {
+            mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(
+                mActivity,
+                mActivity.chapters_recycler_view,
+                mBookFileTitle = getFileTitle(Uri.parse(mBook.localFullBookUri))
+            )
+            mActivity.select_files_and_upload_button.text = mActivity.getString(R.string.confirm)
+
+        } else if (mBook.localMapChapterUriTitle.isNotEmpty()) {
+            mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(
+                mActivity,
+                mActivity.chapters_recycler_view,
+                mBook.localMapChapterUriTitle
+            )
+
+            mActivity.select_files_and_upload_button.text = mActivity.getString(R.string.confirm)
+        }
     }
 
     override fun onError(exception: Exception) {
@@ -452,7 +520,6 @@ class CreateBookView(
         val myFile = File(uriString)
 
         if (uriString.startsWith("content://")) {
-            Log.i(LOG_TAG, "File started with CONTENT")
             var cursor: Cursor? = null
 
             try {
@@ -465,7 +532,6 @@ class CreateBookView(
             }
 
         } else if (uriString.startsWith("file://")) {
-            Log.i(LOG_TAG, "File started with FILE")
             return myFile.name
         }
 

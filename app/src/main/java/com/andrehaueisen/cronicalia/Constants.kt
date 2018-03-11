@@ -36,6 +36,9 @@ const val PDF_REQUEST_CODE = 500
 const val UPLOAD_STATUS_OK = 100.0
 const val UPLOAD_STATUS_FAIL = -1.0
 
+const val PARCELABLE_BOOK = "parcelable_book"
+const val PARCELABLE_LAYOUT_MANAGER = "parcelable_layout_manager"
+
 //coroutines test code
 
 /* val uiThread: CoroutineContext = UI

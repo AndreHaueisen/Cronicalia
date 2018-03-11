@@ -47,7 +47,7 @@ class CreateBookActivity : AppCompatActivity() {
 
         setContentView(R.layout.d_activity_create_book)
 
-        mBookView = CreateBookView(this, mModel.getUser().getUserBookNumber(),  mModel.getUser().name,  mModel.getUser().encodedEmail)
+        mBookView = CreateBookView(this, mModel.getUser().getUserBookNumber(),  mModel.getUser().name,  mModel.getUser().encodedEmail, savedInstanceState)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -90,6 +90,11 @@ class CreateBookActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+
+        super.onSaveInstanceState(mBookView.onSaveInstanceState(outState))
     }
 
     suspend fun uploadBookFiles(book: Book): SubscriptionReceiveChannel<Double?>{

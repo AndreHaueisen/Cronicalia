@@ -26,7 +26,7 @@ data class Book(
     var localPosterUri: String? = null,
     var remoteCoverUri: String? = null,
     var remotePosterUri: String? = null,
-    var isComplete: Boolean = false,
+    var isComplete: Boolean = true,
     var periodicity: ChapterPeriodicity = ChapterPeriodicity.NONE
 
 
