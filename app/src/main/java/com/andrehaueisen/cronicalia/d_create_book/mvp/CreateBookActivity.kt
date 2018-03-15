@@ -12,6 +12,7 @@ import com.andrehaueisen.cronicalia.a_application.BaseApplication
 import com.andrehaueisen.cronicalia.d_create_book.dagger.CreateBookModule
 import com.andrehaueisen.cronicalia.d_create_book.dagger.DaggerCreateBookComponent
 import com.andrehaueisen.cronicalia.models.Book
+import com.andrehaueisen.cronicalia.models.User
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import javax.inject.Inject
@@ -23,6 +24,9 @@ class CreateBookActivity : AppCompatActivity() {
 
     @Inject
     lateinit var mModel : CreateBookModel
+
+    @Inject
+    lateinit var mUser : User
 
     interface BookResources {
         fun onImageReady(pictureUri: Uri)
@@ -47,7 +51,7 @@ class CreateBookActivity : AppCompatActivity() {
 
         setContentView(R.layout.d_activity_create_book)
 
-        mBookView = CreateBookView(this, mModel.getUser().getUserBookNumber(),  mModel.getUser().name,  mModel.getUser().encodedEmail, savedInstanceState)
+        mBookView = CreateBookView(this, mModel.getUser().getUserBookNumber(),  mUser.name!!,  mUser.encodedEmail!!, savedInstanceState)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -97,7 +101,7 @@ class CreateBookActivity : AppCompatActivity() {
         super.onSaveInstanceState(mBookView.onSaveInstanceState(outState))
     }
 
-    suspend fun uploadBookFiles(book: Book): SubscriptionReceiveChannel<Double?>{
+    suspend fun uploadBookFiles(book: Book): SubscriptionReceiveChannel<Int?>{
         return mModel.uploadBookFiles(book)
     }
 }

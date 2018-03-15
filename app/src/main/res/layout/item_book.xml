@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="wrap_content"
     android:layout_margin="16dp"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
@@ -16,37 +16,48 @@
         android:background="@color/white_android">
 
         <ImageView
-            android:id="@+id/book_cover_image_view"
+            android:id="@+id/book_poster_image_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="8dp"
+            android:layout_height="172dp"
             android:scaleType="centerCrop"
             android:src="@drawable/cover_placeholder"
-            app:layout_constraintBottom_toTopOf="@+id/title_text_view"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/book_cover_image_view"
+            android:layout_width="96dp"
+            android:layout_height="148dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/book_poster_image_view"/>
 
         <TextView
             android:id="@+id/title_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/book_status_text_view"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/book_cover_image_view"
+            app:layout_constraintTop_toBottomOf="@+id/book_poster_image_view"
             tools:text="Makr"/>
 
         <TextView
             android:id="@+id/book_status_text_view"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/rating_image_view"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/book_cover_image_view"
+            app:layout_constraintTop_toBottomOf="@+id/title_text_view"
             tools:text="Book is complete"/>
 
         <ImageView
@@ -59,9 +70,9 @@
             android:src="@drawable/ic_eye_24dp"
             app:layout_constraintBottom_toTopOf="@+id/readings_text_view"
             app:layout_constraintEnd_toStartOf="@+id/rating_image_view"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toEndOf="@+id/book_cover_image_view"
+            />
 
         <TextView
             android:id="@+id/readings_text_view"

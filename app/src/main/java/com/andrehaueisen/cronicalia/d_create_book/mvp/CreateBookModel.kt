@@ -8,13 +8,12 @@ import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 /**
  * Created by andre on 3/5/2018.
  */
-class CreateBookModel(val fileRepository: FileRepository, val dataRepository: DataRepository) {
+class CreateBookModel(private val fileRepository: FileRepository, private val dataRepository: DataRepository) {
 
 
-    suspend fun uploadBookFiles(book: Book): SubscriptionReceiveChannel<Double?> {
+    suspend fun uploadBookFiles(book: Book): SubscriptionReceiveChannel<Int?> {
 
         return fileRepository.createBook(book, dataRepository)
-
     }
 
     fun getUser() = dataRepository.getUser()

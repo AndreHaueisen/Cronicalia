@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "872347975270-96s2l41f0b88kl84k9kjrgicdhso4c4p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.andrehaueisen.cronicalia",
+            "certificate_hash": "f93bcf87ffab8fc3ca1b3a3dc855f5d6090c5bc9"
+          }
+        },
+        {
           "client_id": "872347975270-qtlgrgg8piormck187uilpvs2df0gi3b.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

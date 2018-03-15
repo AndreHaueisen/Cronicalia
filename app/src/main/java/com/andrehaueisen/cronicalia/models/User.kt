@@ -8,8 +8,8 @@ import com.andrehaueisen.cronicalia.utils.extensions.decodeEmail
  * Created by andre on 2/18/2018.
  */
 data class User(
-    var name: String,
-    var encodedEmail: String,
+    var name: String? = null,
+    var encodedEmail: String? = null,
     var artisticName: String? = null,
     var aboutSelf: String? = null,
     var profilePictureUri: String? = null,
@@ -26,7 +26,18 @@ data class User(
         return simpleUserMap
     }
 
-    fun getDecodedEmail() = encodedEmail.decodeEmail()
+    fun generateDecodedEmail() = encodedEmail?.decodeEmail()
+
+    fun refreshUser(user: User){
+        this.name = user.name
+        this.encodedEmail = user.encodedEmail
+        this.artisticName = user.artisticName
+        this.aboutSelf = user.aboutSelf
+        this.profilePictureUri = user.profilePictureUri
+        this.fans = user.fans
+        books.clear()
+        books.putAll(user.books)
+    }
 
     constructor(source: Parcel) : this(
         source.readString(),

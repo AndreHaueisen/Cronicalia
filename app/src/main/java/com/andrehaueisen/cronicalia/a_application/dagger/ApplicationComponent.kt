@@ -1,7 +1,9 @@
 package com.andrehaueisen.cronicalia.a_application.dagger
 
+import com.andrehaueisen.cronicalia.b_firebase.Authenticator
 import com.andrehaueisen.cronicalia.b_firebase.DataRepository
 import com.andrehaueisen.cronicalia.b_firebase.FileRepository
+import com.andrehaueisen.cronicalia.models.User
 import dagger.Component
 
 /**
@@ -13,4 +15,6 @@ interface ApplicationComponent {
 
     fun loadFileRepository() : FileRepository
     fun loadDataRepository() : DataRepository
+    fun loadAuthenticator() : Authenticator
+    fun loadUser() : User
 }

@@ -27,7 +27,8 @@ data class Book(
     var remoteCoverUri: String? = null,
     var remotePosterUri: String? = null,
     var isComplete: Boolean = true,
-    var periodicity: ChapterPeriodicity = ChapterPeriodicity.NONE
+    var periodicity: ChapterPeriodicity = ChapterPeriodicity.NONE,
+    var synopsis: String? = null
 
 
 ) : Parcelable {
@@ -80,15 +81,12 @@ data class Book(
         else -> STORAGE_ENGLISH_BOOKS
     }
 
-    fun generateDocumentId(): String?{
-        return if (title != null){
-            "${authorEmailId}_${title?.replace(" ", "")?.toLowerCase()}_$language"
-        } else {
-            null
-        }
+    fun generateDocumentId(): String{
+        return "${authorEmailId}_${title?.replace(" ", "")?.toLowerCase()}_$language"
+
     }
 
-    fun generateFileRepositoryTitle(chapterNumber: Int, key: String): String{
+    fun generateChapterRepositoryTitle(chapterNumber: Int, key: String): String{
         return "chapter_${chapterNumber}_${localMapChapterUriTitle[key]}"
     }
 
@@ -115,7 +113,8 @@ data class Book(
         source.readString(),
         source.readString(),
         1 == source.readInt(),
-        ChapterPeriodicity.values()[source.readInt()]
+        ChapterPeriodicity.values()[source.readInt()],
+        source.readString()
     )
 
     override fun describeContents() = 0
@@ -140,6 +139,7 @@ data class Book(
         writeString(remotePosterUri)
         writeInt((if (isComplete) 1 else 0))
         writeInt(periodicity.ordinal)
+        writeString(synopsis)
     }
 
     companion object {

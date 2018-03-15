@@ -11,7 +11,6 @@ import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -31,6 +30,7 @@ import com.theartofdev.edmodo.cropper.CropImageView
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.d_activity_create_book.*
 import kotlinx.android.synthetic.main.d_activity_create_book.view.*
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
@@ -46,8 +46,7 @@ class CreateBookView(
     authorName: String,
     emailId: String,
     savedState: Bundle?
-) :
-    CreateBookActivity.BookResources {
+) : CreateBookActivity.BookResources {
 
     private val LOG_TAG = CreateBookActivity::class.java.simpleName
 
@@ -57,6 +56,11 @@ class CreateBookView(
 
     private lateinit var mImageDestination: ImageDestination
     private val mBook: Book
+    private val mUploadDialog = UploadProgressDialog(mActivity)
+
+    interface UploadState {
+        fun onUploadStateChanged(progress: Int)
+    }
 
     init {
         if (savedState != null) {
@@ -332,15 +336,11 @@ class CreateBookView(
     private fun initiateFileSelectorAndUploadButton() {
 
         fun uploadBookData() {
-            launch(UI) {
+            mUploadDialog.show()
 
+            launch(CommonPool) {
                 (mActivity as CreateBookActivity).uploadBookFiles(mBook).consumeEach { progress ->
-                    //TODO show progress dialog and finish activity
-                    when (progress) {
-                        UPLOAD_STATUS_OK -> Log.d(LOG_TAG, "File creation successful")
-                        UPLOAD_STATUS_FAIL -> Log.d(LOG_TAG, "File creation failed")
-                        else -> Log.d(LOG_TAG, "File Progress: $progress %")
-                    }
+                    progress?.let { launch(UI) { mUploadDialog.onUploadStateChanged(it) } }
                 }
             }
         }

@@ -10,11 +10,12 @@ import android.widget.TextView
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.models.Book
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 
 /**
  * Created by andre on 2/21/2018.
  */
-class MyCreationsAdapter(private val mContext: Context, private val mMyBooks: ArrayList<Book>): RecyclerView.Adapter<MyCreationsAdapter.CreationHolder>() {
+class MyCreationsAdapter(private val mContext: Context, private val mMyBooks: List<Book>): RecyclerView.Adapter<MyCreationsAdapter.CreationHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CreationHolder {
         val creationView = LayoutInflater.from(mContext).inflate(R.layout.item_book, parent, false)
@@ -32,6 +33,7 @@ class MyCreationsAdapter(private val mContext: Context, private val mMyBooks: Ar
     inner class CreationHolder(creationView: View): RecyclerView.ViewHolder(creationView){
 
         private val mBookCoverImageView = creationView.findViewById<ImageView>(R.id.book_cover_image_view)
+        private val mBookPosterImageView = creationView.findViewById<ImageView>(R.id.book_poster_image_view)
         private val mBookTitleTextView = creationView.findViewById<TextView>(R.id.title_text_view)
         private val mBookStatusTextView = creationView.findViewById<TextView>(R.id.book_status_text_view)
         private val mReadingsTextView = creationView.findViewById<TextView>(R.id.readings_text_view)
@@ -40,7 +42,28 @@ class MyCreationsAdapter(private val mContext: Context, private val mMyBooks: Ar
 
         fun bindBooksToViews(book: Book){
 
-            Glide.with(mContext).load(R.drawable.cover_placeholder).into(mBookCoverImageView)
+            if(book.remoteCoverUri != null) {
+                val errorRequestOptions = RequestOptions.errorOf(R.drawable.cover_placeholder)
+                val placeHolderRequestOptions = RequestOptions.placeholderOf(R.drawable.cover_placeholder)
+
+                Glide.with(mContext)
+                    .load(book.remoteCoverUri)
+                    .apply(errorRequestOptions)
+                    .apply(placeHolderRequestOptions)
+                    .into(mBookCoverImageView)
+            }
+
+            if(book.remotePosterUri != null) {
+                val errorRequestOptions = RequestOptions.errorOf(R.drawable.cover_placeholder)
+                val placeHolderRequestOptions = RequestOptions.placeholderOf(R.drawable.cover_placeholder)
+
+                Glide.with(mContext)
+                    .load(book.remotePosterUri)
+                    .apply(errorRequestOptions)
+                    .apply(placeHolderRequestOptions)
+                    .into(mBookPosterImageView)
+            }
+
             mReadingsTextView.text = mContext.getString(R.string.simple_number_integer, book.readingNumber)
             mBookTitleTextView.text = book.title
             if(book.isComplete){

@@ -2,21 +2,40 @@ package com.andrehaueisen.cronicalia.c_creations.mvp
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.andrehaueisen.cronicalia.PARCELABLE_USER
 import com.andrehaueisen.cronicalia.R
+import com.andrehaueisen.cronicalia.a_application.BaseApplication
+import com.andrehaueisen.cronicalia.c_creations.dagger.DaggerMyCreationsComponent
+import com.andrehaueisen.cronicalia.c_creations.dagger.MyCreationsModule
+import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.addFragment
 import com.google.firebase.storage.FirebaseStorage
+import javax.inject.Inject
 
 
 class MyCreationsActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var mUser: User
 
     private val LOG_TAG = MyCreationsActivity::class.java.simpleName
     private val mStorageRef = FirebaseStorage.getInstance().reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        DaggerMyCreationsComponent.builder()
+            .applicationComponent(BaseApplication.get(this).getAppComponent())
+            .myCreationsModule(MyCreationsModule())
+            .build()
+            .inject(this)
+
         setContentView(R.layout.c_activity_my_creactions)
 
-        val myCreationsViewFragment = MyCreationsPresenterFragment.newInstance()
+        val bundle = Bundle()
+        bundle.putParcelable(PARCELABLE_USER, mUser)
+
+        val myCreationsViewFragment = MyCreationsPresenterFragment.newInstance(bundle)
         addFragment(R.id.fragment_container, myCreationsViewFragment)
 
         /*upload_button.setOnClickListener {

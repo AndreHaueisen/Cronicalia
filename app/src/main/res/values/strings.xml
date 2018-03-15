@@ -28,6 +28,13 @@
     <string name="language">Language</string>
     <string name="action">action</string>
     <string name="english">english</string>
+    <string name="progress_dialog_title">Creating book</string>
+    <string name="progress_dialog_success">Book created</string>
+    <string name="progress_dialog_fail">Error detected. Try again</string>
+    <string name="check_internet_connection">Upload failed. No internet connection</string>
+    <string name="background">Background</string>
+    <string name="book_created">Book created</string>
+    <string name="sign_in_cancelled">Sign in cancelled</string>
 
     <plurals name="chapter_number">
         <item quantity="zero">0 chapters</item>
@@ -68,5 +75,13 @@
         <item>I\'m gonna launch an incomplete %1$s book written in %2$s. I intend to post a new chapter every day</item>
         <item>I\'m gonna launch an incomplete %1$s book written in %2$s. I intend to post a new chapter every %3$d days</item>
     </string-array>
+
+    <!-- Login Strings -->
+    <string name="facebook_application_id" translatable="false">284060812125351</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb284060812125351</string>
+    <string name="twitter_consumer_key" translatable="false">fpDn5XBXVUFB70OrjyTd18dGH</string>
+    <string name="twitter_consumer_secret" translatable="false">B7Fm3xNb9vvEXBq751kAirESQyOVLapdHpsEH6Jeo7zBWAm0gr</string>
+    <string name="no_network">You are not connected to the internet. Changes won\'t be saved</string>
+    <string name="unknown_error">Something went wrong. Try again</string>
 
 </resources>
