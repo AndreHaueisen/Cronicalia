@@ -42,6 +42,8 @@ const val UPLOAD_STATUS_FAIL = -1
 
 const val PARCELABLE_USER = "parcelable_user"
 const val PARCELABLE_BOOK = "parcelable_book"
+const val PARCELABLE_URI_KEYS = "parcelable_uri_keys"
+const val PARCELABLE_TITLE_VALUES = "parcelable_title_values"
 const val PARCELABLE_LAYOUT_MANAGER = "parcelable_layout_manager"
 
 const val SHARED_PREFERENCES = "com_andre_haueisen_shared_pref"

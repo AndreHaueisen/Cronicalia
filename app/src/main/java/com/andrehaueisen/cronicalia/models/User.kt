@@ -3,6 +3,7 @@ package com.andrehaueisen.cronicalia.models
 import android.os.Parcel
 import android.os.Parcelable
 import com.andrehaueisen.cronicalia.utils.extensions.decodeEmail
+import com.google.firebase.firestore.Exclude
 
 /**
  * Created by andre on 2/18/2018.
@@ -14,8 +15,9 @@ data class User(
     var aboutSelf: String? = null,
     var profilePictureUri: String? = null,
     var fans: Int = 0,
-    var books: HashMap<String, Book> = hashMapOf()
-) : Parcelable {
+    var books: HashMap<String, Book> = hashMapOf()) : Parcelable {
+
+    @Exclude
     fun getUserBookNumber() = books.size
 
     fun toSimpleMap(): Map<String, Any> {

@@ -1,8 +1,6 @@
 package com.andrehaueisen.cronicalia.a_application.dagger
 
 import android.content.Context
-import android.net.Uri
-import com.andrehaueisen.cronicalia.a_application.BaseApplication
 import com.andrehaueisen.cronicalia.b_firebase.Authenticator
 import com.andrehaueisen.cronicalia.b_firebase.DataRepository
 import com.andrehaueisen.cronicalia.b_firebase.FileRepository
@@ -25,8 +23,6 @@ class ApplicationModule(
     private val mFirebaseAuth: FirebaseAuth,
     private val mGlobalProgressBroadcastChannel: ArrayBroadcastChannel<Int?>,
     private val mGlobalProgressReceiver: SubscriptionReceiveChannel<Int?>,
-    private val mGlobalFileIdUrlBroadcastChannel: ArrayBroadcastChannel<Pair<BaseApplication.FileUrlId, Uri>>,
-    private val mGlobalFileIdUrlReceiver: SubscriptionReceiveChannel<Pair<BaseApplication.FileUrlId, Uri>>,
     private val mUser: User
 ) {
 
@@ -37,8 +33,6 @@ class ApplicationModule(
             mStorageReference,
             mGlobalProgressBroadcastChannel,
             mGlobalProgressReceiver,
-            mGlobalFileIdUrlBroadcastChannel,
-            mGlobalFileIdUrlReceiver,
             mUser
         )
 

@@ -3,8 +3,8 @@
 
     <!--c_my_creations strings-->
     <string name="simple_number_integer">%1$d</string>
-    <string name="simple_number_float">%1$2f</string>
-    <string name="income_amount">\$%1$2f</string>
+    <string name="simple_number_float">%1$.2f</string>
+    <string name="income_amount">\$%1$.2f</string>
 
     <!--d_create_book strings -->
     <string name="create_new_book">Create new book</string>

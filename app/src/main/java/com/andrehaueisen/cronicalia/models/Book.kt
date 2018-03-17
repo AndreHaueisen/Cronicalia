@@ -10,8 +10,8 @@ import com.google.firebase.firestore.Exclude
  */
 data class Book(
     var title: String? = null,
-    var authorName: String,
-    var authorEmailId: String,
+    var authorName: String? = null,
+    var authorEmailId: String? = null,
     var genre: BookGenre = BookGenre.UNDEFINED,
     var rating: Float = 0F,
     var vote: Int = 0,
@@ -20,18 +20,16 @@ data class Book(
     var language: BookLanguage = BookLanguage.UNDEFINED,
     var localFullBookUri: String? = null,
     var remoteFullBookUri: String? = null,
-    val localMapChapterUriTitle: LinkedHashMap<String, String> = linkedMapOf(),
-    val remoteMapChapterUriTitle: LinkedHashMap<String, String> = linkedMapOf(),
+    val localMapChapterUriTitle: HashMap<String, String> = hashMapOf(),
+    val remoteMapChapterUriTitle: HashMap<String, String> = hashMapOf(),
     var localCoverUri: String? = null,
     var localPosterUri: String? = null,
     var remoteCoverUri: String? = null,
     var remotePosterUri: String? = null,
     var isComplete: Boolean = true,
     var periodicity: ChapterPeriodicity = ChapterPeriodicity.NONE,
-    var synopsis: String? = null
+    var synopsis: String? = null) : Parcelable {
 
-
-) : Parcelable {
     enum class BookGenre {
         UNDEFINED,
         ACTION,
@@ -66,7 +64,7 @@ data class Book(
     }
 
     @Exclude
-    fun getDatabaseCollectionLocation() = when(language){
+    fun getDatabaseCollectionLocation() = when (language) {
         BookLanguage.ENGLISH -> COLLECTION_BOOKS_ENGLISH
         BookLanguage.PORTUGUESE -> COLLECTION_BOOKS_PORTUGUESE
         BookLanguage.DEUTSCH -> COLLECTION_BOOKS_DEUTSCH
@@ -74,23 +72,23 @@ data class Book(
     }
 
     @Exclude
-    fun getStorageRootLocation() = when(language) {
+    fun getStorageRootLocation() = when (language) {
         BookLanguage.ENGLISH -> STORAGE_ENGLISH_BOOKS
         BookLanguage.PORTUGUESE -> STORAGE_PORTUGUESE_BOOKS
         BookLanguage.DEUTSCH -> STORAGE_DEUTSCH_BOOKS
         else -> STORAGE_ENGLISH_BOOKS
     }
 
-    fun generateDocumentId(): String{
+    fun generateDocumentId(): String {
         return "${authorEmailId}_${title?.replace(" ", "")?.toLowerCase()}_$language"
 
     }
 
-    fun generateChapterRepositoryTitle(chapterNumber: Int, key: String): String{
-        return "chapter_${chapterNumber}_${localMapChapterUriTitle[key]}"
+    fun generateChapterRepositoryTitle(chapterNumber: Int, value: String): String {
+        return "chapter_${chapterNumber}_$value"
     }
 
-    fun getChapterOriginalTitle(chapterNumber: Int, key: String): String{
+    fun getChapterOriginalTitle(chapterNumber: Int, key: String): String {
         return localMapChapterUriTitle[key]!!.removePrefix("chapter_$chapterNumber")
     }
 
@@ -106,8 +104,8 @@ data class Book(
         BookLanguage.values()[source.readInt()],
         source.readString(),
         source.readString(),
-        source.readSerializable() as LinkedHashMap<String, String>,
-        source.readSerializable() as LinkedHashMap<String, String>,
+        source.readSerializable() as HashMap<String, String>,
+        source.readSerializable() as HashMap<String, String>,
         source.readString(),
         source.readString(),
         source.readString(),

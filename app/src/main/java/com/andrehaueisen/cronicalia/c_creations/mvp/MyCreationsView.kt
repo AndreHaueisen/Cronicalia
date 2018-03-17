@@ -9,6 +9,7 @@ import android.view.View
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.c_creations.MyCreationsAdapter
 import com.andrehaueisen.cronicalia.d_create_book.mvp.CreateBookActivity
+import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.User
 
 /**
@@ -16,16 +17,18 @@ import com.andrehaueisen.cronicalia.models.User
  */
 class MyCreationsView(private val mContext: Context, private val mRootView: View, private val user: User) {
 
+    private val mMyCreationsRecyclerView = mRootView.findViewById<RecyclerView>(R.id.my_creations_recycler_view)
+
     init {
         initiateCreationsRecyclerView()
         initiateNewBookFAB()
     }
 
     private fun initiateCreationsRecyclerView(){
-        val myCreationsRecyclerView = mRootView.findViewById<RecyclerView>(R.id.my_creations_recycler_view)
-        myCreationsRecyclerView.setHasFixedSize(true)
-        myCreationsRecyclerView.adapter = MyCreationsAdapter(mContext, user.books.values.toList())
-        myCreationsRecyclerView.layoutManager = LinearLayoutManager(mContext)
+
+        mMyCreationsRecyclerView.setHasFixedSize(true)
+        mMyCreationsRecyclerView.adapter = MyCreationsAdapter(mContext, getListOfBooks())
+        mMyCreationsRecyclerView.layoutManager = LinearLayoutManager(mContext)
     }
 
     private fun initiateNewBookFAB(){
@@ -34,5 +37,15 @@ class MyCreationsView(private val mContext: Context, private val mRootView: View
             val intent = Intent(mContext, CreateBookActivity::class.java)
             mContext.startActivity(intent)
         }
+    }
+
+    fun onResume(){
+        (mMyCreationsRecyclerView.adapter as MyCreationsAdapter).updateData(getListOfBooks())
+    }
+
+    private fun getListOfBooks(): ArrayList<Book>{
+        val listOfBooks = arrayListOf<Book>()
+        user.books.values.forEach { book -> listOfBooks.add(book)}
+        return listOfBooks
     }
 }

@@ -1,12 +1,17 @@
 package com.andrehaueisen.cronicalia.b_firebase
 
+import android.app.Activity
 import android.util.Log
 import com.andrehaueisen.cronicalia.COLLECTION_USERS
+import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.UPLOAD_STATUS_FAIL
 import com.andrehaueisen.cronicalia.UPLOAD_STATUS_OK
+import com.andrehaueisen.cronicalia.i_login.LoginActivity
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.User
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.ArrayBroadcastChannel
 import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
@@ -19,10 +24,6 @@ class DataRepository(private val mDatabaseInstance: FirebaseFirestore,
                      private val mGlobalProgressBroadcastChannel: ArrayBroadcastChannel<Int?>,
                      private val mGlobalProgressReceiver: SubscriptionReceiveChannel<Int?>,
                      private val mUser: User) {
-
-    enum class DataUploadStatus{
-        UPLOAD_OK, UPLOAD_FAILED
-    }
 
     /*fun createUser(user: User, uid: String){
         val batch = mDatabaseInstance.batch()
@@ -54,8 +55,18 @@ class DataRepository(private val mDatabaseInstance: FirebaseFirestore,
 
     }
 
-    fun listenToUser(userListener: EventListener<DocumentSnapshot>, userEncodedEmail: String): ListenerRegistration {
-        return mDatabaseInstance.collection(COLLECTION_USERS).document(userEncodedEmail).addSnapshotListener(userListener)
+    fun loadLoggingInUser(userEncodedEmail: String, activity: Activity) {
+        mDatabaseInstance.collection(COLLECTION_USERS).document(userEncodedEmail).get()
+            .addOnSuccessListener { taskSnapshot ->
+                val newUser = taskSnapshot.toObject(User::class.java)
+                mUser.refreshUser(newUser)
+
+                if(activity is LoginActivity){
+                    activity.startCallingActivity()
+                }
+            }.addOnFailureListener { _ ->
+                Toasty.error(activity, activity.getString(R.string.check_internet_connection)).show()
+            }
     }
 
     fun createUserOnServer(userName: String, userEncodedEmail: String){

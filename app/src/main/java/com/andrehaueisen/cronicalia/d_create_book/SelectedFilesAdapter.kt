@@ -19,7 +19,7 @@ import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
 class SelectedFilesAdapter(
     private val mContext: Context,
     private val mRecyclerView: RecyclerView,
-    private val mMapChapterUriTitle: LinkedHashMap<String, String>? = null,
+    private val mMapChapterUriTitle: LinkedHashMap<String, String> = linkedMapOf(),
     private var mBookFileTitle: String? = null
 ) : RecyclerView.Adapter<SelectedFilesAdapter.SelectedFileHolder>() {
 
@@ -27,7 +27,7 @@ class SelectedFilesAdapter(
     private val mTitles: ArrayList<String>?
 
     init {
-        if (mMapChapterUriTitle != null) {
+        if (mBookFileTitle == null) {
             mUris = ArrayList(mMapChapterUriTitle.keys)
             mTitles = ArrayList(mMapChapterUriTitle.values)
         } else {
@@ -37,13 +37,13 @@ class SelectedFilesAdapter(
     }
 
     override fun getItemCount(): Int {
-        return mMapChapterUriTitle?.size ?: 1
+        return if(mBookFileTitle == null) mMapChapterUriTitle.size else 1
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectedFileHolder {
 
-        val view = if (mMapChapterUriTitle != null) {
+        val view = if (mBookFileTitle == null) {
             LayoutInflater.from(mContext)
                 .inflate(R.layout.item_chapter_representation, parent, false)
         } else {
@@ -55,7 +55,7 @@ class SelectedFilesAdapter(
     }
 
     override fun onBindViewHolder(holder: SelectedFileHolder, position: Int) {
-        if (mMapChapterUriTitle != null) {
+        if (mBookFileTitle == null) {
             holder.bindChaptersToView(position)
         } else {
             holder.bindBookToView()
@@ -63,19 +63,18 @@ class SelectedFilesAdapter(
     }
 
     fun clearData() {
-        mMapChapterUriTitle?.clear()
+        mMapChapterUriTitle.clear()
         mUris?.clear()
         mTitles?.clear()
         mBookFileTitle = null
         notifyDataSetChanged()
     }
 
-    fun saveFilesInformation() {
-        if (mMapChapterUriTitle != null) {
+    fun organizeLinkedMap(){
+        if (mBookFileTitle == null) {
             mMapChapterUriTitle.clear()
             mUris!!.forEachIndexed { index, uri -> mMapChapterUriTitle[uri] = mTitles!![index] }
         }
-
     }
 
     fun areChapterTitlesValid(): Boolean {

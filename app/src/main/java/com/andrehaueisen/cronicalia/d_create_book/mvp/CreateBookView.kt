@@ -57,6 +57,7 @@ class CreateBookView(
     private lateinit var mImageDestination: ImageDestination
     private val mBook: Book
     private val mUploadDialog = UploadProgressDialog(mActivity)
+    private val mUriTitleLinkedMap = linkedMapOf<String, String>()
 
     interface UploadState {
         fun onUploadStateChanged(progress: Int)
@@ -65,6 +66,9 @@ class CreateBookView(
     init {
         if (savedState != null) {
             mBook = savedState.getParcelable(PARCELABLE_BOOK)
+            if (savedState.containsKey(PARCELABLE_URI_KEYS) && savedState.containsKey(PARCELABLE_TITLE_VALUES)) {
+                restoreLinkedMap(savedState.getStringArray(PARCELABLE_URI_KEYS), savedState.getStringArray(PARCELABLE_TITLE_VALUES))
+            }
             initiateChapterRecyclerView(savedState.getParcelable(PARCELABLE_LAYOUT_MANAGER))
             initiateAdapter()
             placeCoverImage()
@@ -95,6 +99,7 @@ class CreateBookView(
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setActivityTitle(mActivity.getString(R.string.cover))
                 .setOutputUri(Uri.fromFile(file))
+                .setAspectRatio(3, 4)
                 .start(mActivity)
 
             mImageDestination = ImageDestination.COVER
@@ -108,6 +113,7 @@ class CreateBookView(
             CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setActivityTitle(mActivity.getString(R.string.poster))
+                .setAspectRatio(16, 9)
                 .setOutputUri(Uri.fromFile(file))
                 .start(mActivity)
 
@@ -339,7 +345,7 @@ class CreateBookView(
             mUploadDialog.show()
 
             launch(CommonPool) {
-                (mActivity as CreateBookActivity).uploadBookFiles(mBook).consumeEach { progress ->
+                (mActivity as CreateBookActivity).uploadBookFiles(mBook, mUriTitleLinkedMap).consumeEach { progress ->
                     progress?.let { launch(UI) { mUploadDialog.onUploadStateChanged(it) } }
                 }
             }
@@ -353,7 +359,6 @@ class CreateBookView(
                 if (adapter != null) {
 
                     if (adapter.areChapterTitlesValid() && isBookTitleValid()) {
-                        adapter.saveFilesInformation()
                         uploadBookData()
                     } else
                         Toasty.error(this, getString(R.string.invalid_title_detected)).show()
@@ -407,20 +412,18 @@ class CreateBookView(
         mActivity.chapters_recycler_view.layoutManager = LinearLayoutManager(mActivity)
         mActivity.chapters_recycler_view.setHasFixedSize(true)
         savedLayoutManagerState?.let {
-            mActivity.chapters_recycler_view.layoutManager.onRestoreInstanceState(
-                it
-            )
+            mActivity.chapters_recycler_view.layoutManager.onRestoreInstanceState(it)
         }
     }
 
     fun onSaveInstanceState(bundle: Bundle): Bundle {
 
         if (mActivity.chapters_recycler_view.adapter != null) {
-            (mActivity.chapters_recycler_view.adapter as SelectedFilesAdapter).saveFilesInformation()
-            bundle.putParcelable(
-                PARCELABLE_LAYOUT_MANAGER,
-                mActivity.chapters_recycler_view.layoutManager.onSaveInstanceState()
-            )
+            (mActivity.chapters_recycler_view.adapter as SelectedFilesAdapter).organizeLinkedMap()
+
+            bundle.putStringArray(PARCELABLE_URI_KEYS, getUrisFromLinkedMap())
+            bundle.putStringArray(PARCELABLE_TITLE_VALUES, getTitlesFromLinkedMap())
+            bundle.putParcelable(PARCELABLE_LAYOUT_MANAGER, mActivity.chapters_recycler_view.layoutManager.onSaveInstanceState())
         }
 
         bundle.putParcelable(PARCELABLE_BOOK, mBook)
@@ -479,10 +482,9 @@ class CreateBookView(
         filesUris.forEach { fileUri ->
             val initialTitle = getFileTitle(fileUri)
             if (initialTitle != null) {
-                mBook.localMapChapterUriTitle[fileUri.toString()] =
-                        initialTitle.substringBefore('.')
+                mUriTitleLinkedMap[fileUri.toString()] = initialTitle.substringBefore('.')
             } else {
-                mBook.localMapChapterUriTitle[fileUri.toString()] = ""
+                mUriTitleLinkedMap[fileUri.toString()] = ""
             }
         }
         initiateAdapter()
@@ -497,11 +499,11 @@ class CreateBookView(
             )
             mActivity.select_files_and_upload_button.text = mActivity.getString(R.string.confirm)
 
-        } else if (mBook.localMapChapterUriTitle.isNotEmpty()) {
+        } else if (mUriTitleLinkedMap.isNotEmpty()) {
             mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(
                 mActivity,
                 mActivity.chapters_recycler_view,
-                mBook.localMapChapterUriTitle
+                mUriTitleLinkedMap
             )
 
             mActivity.select_files_and_upload_button.text = mActivity.getString(R.string.confirm)
@@ -536,6 +538,18 @@ class CreateBookView(
         }
 
         return null
+    }
+
+    private fun getUrisFromLinkedMap(): Array<String>{
+        return mUriTitleLinkedMap.keys.toTypedArray()
+    }
+
+    private fun getTitlesFromLinkedMap(): Array<String>{
+        return mUriTitleLinkedMap.values.toTypedArray()
+    }
+
+    private fun restoreLinkedMap(keys: Array<String>, values: Array<String>){
+        keys.forEachIndexed { index, key ->  mUriTitleLinkedMap[key] = values[index] }
     }
 
 }

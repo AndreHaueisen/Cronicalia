@@ -3,7 +3,6 @@ package com.andrehaueisen.cronicalia.b_firebase
 import android.net.Uri
 import android.util.Log
 import com.andrehaueisen.cronicalia.*
-import com.andrehaueisen.cronicalia.a_application.BaseApplication
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.User
 import com.google.firebase.storage.StorageException
@@ -23,59 +22,16 @@ class FileRepository(
     private val mStorageReference: StorageReference,
     private val mGlobalProgressBroadcastChannel: ArrayBroadcastChannel<Int?>,
     private val mGlobalProgressReceiver: SubscriptionReceiveChannel<Int?>,
-    private val mGlobalFileIdUrlBroadcastChannel: ArrayBroadcastChannel<Pair<BaseApplication.FileUrlId, Uri>>,
-    private val mGlobalFileIdUrlReceiver: SubscriptionReceiveChannel<Pair<BaseApplication.FileUrlId, Uri>>,
-    private val mUser: User) {
+    private val mUser: User
+) {
 
     private var mTasksReadyCounter = 0
 
-    /*suspend fun getBookPdfUris(book: Book){
-        val userFolderReference = getUserFolderReference(book)
+    suspend fun createBook(book: Book, uriTitleLinkedMap: LinkedHashMap<String, String>, dataRepository: DataRepository
+    ): SubscriptionReceiveChannel<Int?> {
 
-        book.remoteFullBookUri?.let { userFolderReference.child(book.generateChapterRepositoryTitle()) }
-
-        for((i, vali) in book.remoteMapChapterUriTitle){
-            userFolderReference.child(book.generateChapterRepositoryTitle(vali, i.value))
-        }
-
-    }
-
-    suspend fun getBookCoverUri(book: Book){
-        val userFolderReference = getUserFolderReference(book)
-
-        book.remoteCoverUri?.let { userFolderReference.child("cover.jpg").downloadUrl.addOnSuccessListener { uri ->
-            launch { mGlobalFileIdUrlBroadcastChannel.send(Pair(BaseApplication.FileUrlId.COVER, uri)) }
-        } }
-    }
-
-    suspend fun getBookPosterUri(book: Book){
-        val userFolderReference = getUserFolderReference(book)
-
-        book.remotePosterUri?.let { userFolderReference.child("poster.jpg").downloadUrl.addOnSuccessListener{ uri ->
-            launch { mGlobalFileIdUrlBroadcastChannel.send(Pair(BaseApplication.FileUrlId.POSTER, uri)) }} }
-    }
-
-    private fun getUserFolderReference(book: Book): StorageReference{
-
-        val languageLocation = when(book.language){
-            Book.BookLanguage.ENGLISH -> Book.BookLanguage.ENGLISH.name
-            Book.BookLanguage.PORTUGUESE -> Book.BookLanguage.PORTUGUESE.name
-            Book.BookLanguage.DEUTSCH -> Book.BookLanguage.DEUTSCH.name
-            Book.BookLanguage.UNDEFINED -> Book.BookLanguage.ENGLISH.name
-        }
-
-        return mStorageReference.child(languageLocation)
-            .child(book.authorEmailId)
-            .child(book.generateDocumentId())
-
-    }*/
-
-    suspend fun createBook(
-        book: Book,
-        dataRepository: DataRepository): SubscriptionReceiveChannel<Int?> {
         var uploadTask: UploadTask
-
-        val progressCap = getProgressCap(book)
+        val progressCap = getProgressCap(book, uriTitleLinkedMap)
         var currentProgress = 0.0
 
         val maxTaskCount = (progressCap).toInt()
@@ -117,10 +73,11 @@ class FileRepository(
                 }
 
             } else {
-                book.localMapChapterUriTitle.keys.forEachIndexed { index, key ->
+                uriTitleLinkedMap.keys.forEachIndexed { index, key ->
                     val filePath = Uri.parse(key)
-                    val chapterNumberMetadata = StorageMetadata.Builder().setCustomMetadata(METADATA_CHAPTER_NUMBER, index.toString()).build()
-                    val chapterTitle = book.generateChapterRepositoryTitle(index, key)
+                    val chapterNumberMetadata =
+                        StorageMetadata.Builder().setCustomMetadata(METADATA_CHAPTER_NUMBER, index.toString()).build()
+                    val chapterTitle = book.generateChapterRepositoryTitle(index, uriTitleLinkedMap[key]!!)
                     uploadTask = locationReference.child("$chapterTitle.pdf").putFile(filePath, chapterNumberMetadata)
                     uploadTask.addOnProgressListener { taskSnapshot ->
                         launch(UI) {
@@ -165,8 +122,8 @@ class FileRepository(
                     .build()
 
                 val filePath = Uri.parse(coverUri)
-                uploadTask = locationReference.child(filePath.lastPathSegment)
-                    .putFile(filePath, metadata)
+                uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
+
                 uploadTask.addOnProgressListener { taskSnapshot ->
                     launch(UI) {
                         currentProgress += (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount) / progressCap
@@ -198,8 +155,8 @@ class FileRepository(
                     .build()
 
                 val filePath = Uri.parse(posterUri)
-                uploadTask = locationReference.child(filePath.lastPathSegment)
-                    .putFile(filePath, metadata)
+                uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
+
                 uploadTask.addOnProgressListener { taskSnapshot ->
                     launch(UI) {
                         currentProgress += (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount) / progressCap
@@ -231,7 +188,7 @@ class FileRepository(
         return mGlobalProgressReceiver
     }
 
-    private fun getProgressCap(book: Book): Double {
+    private fun getProgressCap(book: Book, uriTitleLinkedMap: LinkedHashMap<String, String>): Double {
         var progressCap = 0.0
 
         book.localPosterUri?.let { progressCap += 1 }
@@ -239,16 +196,12 @@ class FileRepository(
         if (book.isComplete)
             progressCap += 1
         else
-            book.localMapChapterUriTitle.keys.forEach { progressCap += 1 }
+            uriTitleLinkedMap.keys.forEach { progressCap += 1 }
 
         return progressCap
     }
 
-    private fun saveBookOnDatabaseIfAllFilesUploaded(
-        maxTasksNumber: Int,
-        book: Book,
-        dataRepository: DataRepository
-    ) {
+    private fun saveBookOnDatabaseIfAllFilesUploaded(maxTasksNumber: Int, book: Book, dataRepository: DataRepository) {
         mTasksReadyCounter++
 
         Log.i("FileRepository", "Tasks counter: $mTasksReadyCounter Max Tasks: $maxTasksNumber")

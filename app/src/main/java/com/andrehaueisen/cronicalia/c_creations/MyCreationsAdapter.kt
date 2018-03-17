@@ -15,7 +15,7 @@ import com.bumptech.glide.request.RequestOptions
 /**
  * Created by andre on 2/21/2018.
  */
-class MyCreationsAdapter(private val mContext: Context, private val mMyBooks: List<Book>): RecyclerView.Adapter<MyCreationsAdapter.CreationHolder>() {
+class MyCreationsAdapter(private val mContext: Context, private val mMyBooks: ArrayList<Book>): RecyclerView.Adapter<MyCreationsAdapter.CreationHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CreationHolder {
         val creationView = LayoutInflater.from(mContext).inflate(R.layout.item_book, parent, false)
@@ -28,6 +28,14 @@ class MyCreationsAdapter(private val mContext: Context, private val mMyBooks: Li
 
     override fun onBindViewHolder(holder: CreationHolder, position: Int) {
         holder.bindBooksToViews(mMyBooks[position])
+    }
+
+    fun updateData(books: ArrayList<Book>){
+        if(mMyBooks != books){
+            mMyBooks.clear()
+            mMyBooks.addAll(books)
+            notifyDataSetChanged()
+        }
     }
 
     inner class CreationHolder(creationView: View): RecyclerView.ViewHolder(creationView){
