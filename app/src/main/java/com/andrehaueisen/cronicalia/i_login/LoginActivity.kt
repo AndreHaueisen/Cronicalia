@@ -9,7 +9,7 @@ import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.a_application.BaseApplication
 import com.andrehaueisen.cronicalia.b_firebase.Authenticator
 import com.andrehaueisen.cronicalia.b_firebase.DataRepository
-import com.andrehaueisen.cronicalia.c_creations.mvp.MyCreationsActivity
+import com.andrehaueisen.cronicalia.c_creations.mvp.MyCreationsPresenterActivity
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.startNewActivity
 import com.andrehaueisen.listadejanot.j_login.dagger.DaggerLoginActivityComponent
@@ -55,6 +55,7 @@ class LoginActivity : AppCompatActivity() {
                 if (resultCode == Activity.RESULT_OK) {
                     mDatabaseInstance.createUserOnServer(mAuthenticator.getUserName()!!, mAuthenticator.getUserEncodedEmail()!!)
                     mDatabaseInstance.loadLoggingInUser(mAuthenticator.getUserEncodedEmail()!!, this)
+                    mAuthenticator.listenToUserChanges()
                     mAuthenticator.saveUserIdOnLogin()
                 } else {
 
@@ -62,13 +63,13 @@ class LoginActivity : AppCompatActivity() {
 
                         ErrorCodes.NO_NETWORK -> {
                             Toasty.error(this, getString(R.string.no_network)).show()
-                            startNewActivity(MyCreationsActivity::class.java)
+                            startNewActivity(MyCreationsPresenterActivity::class.java)
                             finish()
                         }
 
                         ErrorCodes.UNKNOWN_ERROR -> {
                             Toasty.error(this, getString(R.string.unknown_error)).show()
-                            startNewActivity(MyCreationsActivity::class.java)
+                            startNewActivity(MyCreationsPresenterActivity::class.java)
                             finish()
                         }
                     }
@@ -106,7 +107,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
             }*/
-        startNewActivity(MyCreationsActivity::class.java)
+        startNewActivity(MyCreationsPresenterActivity::class.java)
         finish()
 
     }

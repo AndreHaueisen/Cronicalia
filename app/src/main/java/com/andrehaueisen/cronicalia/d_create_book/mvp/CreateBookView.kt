@@ -126,6 +126,7 @@ class CreateBookView(
             TextWatcher {
             override fun afterTextChanged(title: Editable?) {
                 mBook.title = title.toString()
+                mBook.originalImmutableTitle = title.toString()
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -133,6 +134,15 @@ class CreateBookView(
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
 
+        mActivity.synopsis_title_text_box.book_synopsis_extended_edit_text.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(synopsis: Editable?) {
+                mBook.synopsis = synopsis.toString()
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        })
     }
 
     private fun initiateBookStatusRadioGroup() {
@@ -358,10 +368,10 @@ class CreateBookView(
                 //upload else select file
                 if (adapter != null) {
 
-                    if (adapter.areChapterTitlesValid() && isBookTitleValid()) {
+                    if (adapter.areChapterTitlesValid() && isBookTitleValid() && isSynopsisValid()) {
                         uploadBookData()
                     } else
-                        Toasty.error(this, getString(R.string.invalid_title_detected)).show()
+                        Toasty.error(this, getString(R.string.invalid_text_detected)).show()
 
                 } else {
 
@@ -386,10 +396,12 @@ class CreateBookView(
 
     private fun isBookTitleValid(): Boolean {
         val title = mActivity.book_title_text_box.book_title_extended_edit_text.text.toString()
-        return title.isNotBlank() && title.replace(
-            " ",
-            ""
-        ).length <= mActivity.resources.getInteger(R.integer.text_box_max_length)
+        return title.isNotBlank() && title.replace(" ", "" ).length <= mActivity.resources.getInteger(R.integer.title_text_box_max_length)
+    }
+
+    private fun isSynopsisValid(): Boolean {
+        val synopsis = mActivity.synopsis_title_text_box.book_synopsis_extended_edit_text.text.toString()
+        return synopsis.isNotBlank() && synopsis.replace( " ", "").length <= mActivity.resources.getInteger(R.integer.synopsis_text_box_max_length)
     }
 
     private fun initiateCancelButton() {

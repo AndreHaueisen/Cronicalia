@@ -4,6 +4,11 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.andrehaueisen.cronicalia.utils.extensions.decodeEmail
 import com.google.firebase.firestore.Exclude
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.channels.ArrayBroadcastChannel
+import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
+import kotlinx.coroutines.experimental.launch
+import java.util.*
 
 /**
  * Created by andre on 2/18/2018.
@@ -15,7 +20,19 @@ data class User(
     var aboutSelf: String? = null,
     var profilePictureUri: String? = null,
     var fans: Int = 0,
-    var books: HashMap<String, Book> = hashMapOf()) : Parcelable {
+    var books: HashMap<String, Book> = hashMapOf()
+) : Parcelable {
+
+    private val mUserDataUpdateBroadcastChannel = ArrayBroadcastChannel<Boolean>(capacity = 2)
+    private val mUserUpdateSignalReceiver = mUserDataUpdateBroadcastChannel.openSubscription()
+
+    private suspend fun sendUpdateSignal() {
+        mUserDataUpdateBroadcastChannel.send(true)
+    }
+
+    fun subscribeToUserUpdate(): SubscriptionReceiveChannel<Boolean> {
+        return mUserUpdateSignalReceiver
+    }
 
     @Exclude
     fun getUserBookNumber() = books.size
@@ -30,7 +47,7 @@ data class User(
 
     fun generateDecodedEmail() = encodedEmail?.decodeEmail()
 
-    fun refreshUser(user: User){
+    fun refreshUser(user: User) {
         this.name = user.name
         this.encodedEmail = user.encodedEmail
         this.artisticName = user.artisticName
@@ -39,6 +56,32 @@ data class User(
         this.fans = user.fans
         books.clear()
         books.putAll(user.books)
+
+        launch(CommonPool) { sendUpdateSignal() }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as User
+
+        return name == that.name &&
+                encodedEmail == that.encodedEmail &&
+                artisticName == that.artisticName &&
+                aboutSelf == that.aboutSelf &&
+                profilePictureUri == that.profilePictureUri &&
+                fans == that.fans &&
+                books == books
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(name,
+                encodedEmail,
+                artisticName,
+                aboutSelf,
+                profilePictureUri,
+                fans,
+                books)
     }
 
     constructor(source: Parcel) : this(

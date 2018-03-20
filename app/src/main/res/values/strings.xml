@@ -5,11 +5,14 @@
     <string name="simple_number_integer">%1$d</string>
     <string name="simple_number_float">%1$.2f</string>
     <string name="income_amount">\$%1$.2f</string>
+    <string name="mark_book_as_completed">Book is finished</string>
+    <string name="mark_book_as_incomplete">Still have chapter to launch</string>
 
     <!--d_create_book strings -->
     <string name="create_new_book">Create new book</string>
     <string name="book_is_complete">Book is complete</string>
     <string name="book_title">Book Title</string>
+    <string name="book_synopsis">Book Synopsis</string>
     <string name="launch_a_book">Launch full book</string>
     <string name="launch_by_chapter">Launch by chapter</string>
     <string name="resource_error">An error occurred. Try again</string>
@@ -22,7 +25,7 @@
     <string name="chapter_number_hint">Chapter #%1$d title</string>
     <string name="error_title_blank">Title can not be blank</string>
     <string name="confirm">Confirm</string>
-    <string name="invalid_title_detected">Invalid title detected</string>
+    <string name="invalid_text_detected">Invalid text detected</string>
     <string name="launch_frequency">Launch Frequency</string>
     <string name="genre">Genre</string>
     <string name="language">Language</string>
@@ -35,6 +38,9 @@
     <string name="background">Background</string>
     <string name="book_created">Book created</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
+    <string name="chapter_number">%1$d chapter(s)</string>
+    <string name="opinions">Opinions</string>
+    <string name="edit">Edit</string>
 
     <plurals name="chapter_number">
         <item quantity="zero">0 chapters</item>

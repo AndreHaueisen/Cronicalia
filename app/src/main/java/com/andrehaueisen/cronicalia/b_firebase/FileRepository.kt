@@ -45,7 +45,7 @@ class FileRepository(
 
             if (book.isComplete) {
                 val filePath = Uri.parse(book.localFullBookUri!!)
-                uploadTask = locationReference.child("${book.title}.pdf".replace(" ", ""))
+                uploadTask = locationReference.child("${book.originalImmutableTitle}.pdf".replace(" ", ""))
                     .putFile(filePath)
                 uploadTask.addOnProgressListener { taskSnapshot ->
                     launch {

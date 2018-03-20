@@ -7,34 +7,113 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
+    app:cardBackgroundColor="@color/colorPrimaryLight"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white_android">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/book_poster_image_view"
             android:layout_width="match_parent"
             android:layout_height="172dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/cover_placeholder"
+            android:src="@drawable/poster_placeholder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageView
             android:id="@+id/book_cover_image_view"
-            android:layout_width="96dp"
-            android:layout_height="148dp"
-            android:layout_marginBottom="8dp"
+            android:layout_width="136dp"
+            android:layout_height="204dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/book_poster_image_view"/>
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+            tools:src="@drawable/cover_placeholder"/>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_gradient"
+            app:layout_constraintBottom_toBottomOf="@id/book_poster_image_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/book_cover_image_view">
+
+            <ImageView
+                android:id="@+id/readings_image_view"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:src="@drawable/ic_eye_24dp"
+                app:layout_constraintBottom_toTopOf="@+id/readings_text_view"
+                app:layout_constraintEnd_toEndOf="@+id/readings_text_view"
+                app:layout_constraintStart_toStartOf="@+id/readings_text_view"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/readings_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/text_primary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="10k"/>
+
+            <ImageView
+                android:id="@+id/rating_image_view"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:src="@drawable/ic_star_24dp"
+                app:layout_constraintBottom_toTopOf="@+id/rating_text_view"
+                app:layout_constraintEnd_toEndOf="@+id/rating_text_view"
+                app:layout_constraintStart_toStartOf="@+id/rating_text_view"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/rating_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/text_primary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/income_text_view"
+                app:layout_constraintStart_toEndOf="@+id/readings_text_view"
+                tools:text="9.5"/>
+
+            <ImageView
+                android:id="@+id/income_image_view"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:src="@drawable/ic_money_24dp"
+                app:layout_constraintBottom_toTopOf="@+id/income_text_view"
+                app:layout_constraintEnd_toEndOf="@+id/income_text_view"
+                app:layout_constraintStart_toStartOf="@+id/income_text_view"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/income_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/text_primary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="$500"/>
+        </android.support.constraint.ConstraintLayout>
 
         <TextView
             android:id="@+id/title_text_view"
@@ -43,10 +122,25 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/book_cover_image_view"
             app:layout_constraintTop_toBottomOf="@+id/book_poster_image_view"
             tools:text="Makr"/>
+
+        <TextView
+            android:id="@+id/synopsis_text_view"
+            android:layout_width="0dp"
+            android:layout_height="90dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:textColor="@color/text_secondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/book_cover_image_view"
+            app:layout_constraintTop_toBottomOf="@+id/title_text_view"/>
 
         <TextView
             android:id="@+id/book_status_text_view"
@@ -55,80 +149,46 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:textColor="@color/text_tertiary"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/book_cover_image_view"
-            app:layout_constraintTop_toBottomOf="@+id/title_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/synopsis_text_view"
             tools:text="Book is complete"/>
 
-        <ImageView
-            android:id="@+id/readings_image_view"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/ic_eye_24dp"
-            app:layout_constraintBottom_toTopOf="@+id/readings_text_view"
-            app:layout_constraintEnd_toStartOf="@+id/rating_image_view"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toEndOf="@+id/book_cover_image_view"
-            />
-
-        <TextView
-            android:id="@+id/readings_text_view"
-            android:layout_width="wrap_content"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/readings_image_view"
-            app:layout_constraintStart_toStartOf="@+id/readings_image_view"
-            tools:text="10k"/>
-
-        <ImageView
-            android:id="@+id/rating_image_view"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/ic_star_24dp"
-            app:layout_constraintBottom_toTopOf="@+id/rating_text_view"
-            app:layout_constraintEnd_toStartOf="@+id/income_image_view"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/readings_image_view"/>
-
-        <TextView
-            android:id="@+id/rating_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/rating_image_view"
-            app:layout_constraintStart_toStartOf="@+id/rating_image_view"
-            tools:text="9.5"/>
-
-        <ImageView
-            android:id="@+id/income_image_view"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/ic_money_24dp"
-            app:layout_constraintBottom_toTopOf="@+id/income_text_view"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorPrimarySmooth"
+            android:padding="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/rating_image_view"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/book_cover_image_view">
 
-        <TextView
-            android:id="@+id/income_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/income_image_view"
-            app:layout_constraintStart_toStartOf="@+id/income_image_view"
-            tools:text="$500"/>
+            <Button
+                android:id="@+id/edit_button"
+                style="@android:style/Widget.Material.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/edit"
+                android:textColor="@color/text_primary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/view_opinions_button"/>
+
+            <Button
+                android:id="@+id/view_opinions_button"
+                style="@android:style/Widget.Material.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorAccent"
+                android:text="@string/opinions"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </android.support.constraint.ConstraintLayout>
 
 
     </android.support.constraint.ConstraintLayout>

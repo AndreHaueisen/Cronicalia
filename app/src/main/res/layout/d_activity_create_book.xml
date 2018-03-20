@@ -38,7 +38,7 @@
 
                 <ImageView
                     android:id="@+id/book_cover_image_view"
-                    android:layout_width="96dp"
+                    android:layout_width="104dp"
                     android:layout_height="148dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
@@ -103,7 +103,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:maxCharacters="@integer/text_box_max_length"
+                        app:maxCharacters="@integer/title_text_box_max_length"
                         app:minCharacters="1"
                         app:panelBackgroundColor="@color/colorPrimarySmooth"
                         app:primaryColor="@color/text_primary">
@@ -120,6 +120,35 @@
 
                     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
+                    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                        android:id="@+id/synopsis_title_text_box"
+                        android:layout_width="0dp"
+                        android:layout_height="120dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="16dp"
+                        app:enabled="true"
+                        app:hasClearButton="true"
+                        app:labelText="@string/book_synopsis"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/book_title_text_box"
+                        app:maxCharacters="@integer/synopsis_text_box_max_length"
+                        app:minCharacters="1"
+                        app:panelBackgroundColor="@color/colorPrimarySmooth"
+                        app:primaryColor="@color/text_primary">
+
+                        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                            android:id="@+id/book_synopsis_extended_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="true"
+                            android:imeOptions="actionDone"
+                            android:inputType="textMultiLine"
+                            android:textColor="@color/text_primary"/>
+
+                    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
                     <RadioGroup
                         android:id="@+id/book_launch_status_radio_group"
                         android:layout_width="match_parent"
@@ -131,7 +160,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/book_title_text_box">
+                        app:layout_constraintTop_toBottomOf="@+id/synopsis_title_text_box">
 
                         <RadioButton
                             android:id="@+id/launch_full_book_radio_button"

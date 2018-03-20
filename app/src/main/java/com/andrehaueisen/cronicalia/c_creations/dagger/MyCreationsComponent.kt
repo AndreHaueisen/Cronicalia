@@ -1,7 +1,7 @@
 package com.andrehaueisen.cronicalia.c_creations.dagger
 
 import com.andrehaueisen.cronicalia.a_application.dagger.ApplicationComponent
-import com.andrehaueisen.cronicalia.c_creations.mvp.MyCreationsActivity
+import com.andrehaueisen.cronicalia.c_creations.mvp.MyCreationsPresenterActivity
 import dagger.Component
 
 /**
@@ -11,5 +11,5 @@ import dagger.Component
 @Component(modules = [MyCreationsModule::class], dependencies = [ApplicationComponent::class])
 interface MyCreationsComponent {
 
-    fun inject(myCreationsActivity: MyCreationsActivity)
+    fun inject(myCreationsPresenterActivity: MyCreationsPresenterActivity)
 }

@@ -4,17 +4,19 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.andrehaueisen.cronicalia.*
 import com.google.firebase.firestore.Exclude
+import java.util.*
 
 /**
  * Created by andre on 2/18/2018.
  */
 data class Book(
     var title: String? = null,
+    var originalImmutableTitle: String? = null,
     var authorName: String? = null,
     var authorEmailId: String? = null,
     var genre: BookGenre = BookGenre.UNDEFINED,
     var rating: Float = 0F,
-    var vote: Int = 0,
+    var voteCounter: Int = 0,
     var income: Float = 0F,
     var readingNumber: Int = 0,
     var language: BookLanguage = BookLanguage.UNDEFINED,
@@ -28,7 +30,8 @@ data class Book(
     var remotePosterUri: String? = null,
     var isComplete: Boolean = true,
     var periodicity: ChapterPeriodicity = ChapterPeriodicity.NONE,
-    var synopsis: String? = null) : Parcelable {
+    var synopsis: String? = null
+) : Parcelable {
 
     enum class BookGenre {
         UNDEFINED,
@@ -80,8 +83,7 @@ data class Book(
     }
 
     fun generateDocumentId(): String {
-        return "${authorEmailId}_${title?.replace(" ", "")?.toLowerCase()}_$language"
-
+        return "${authorEmailId}_${originalImmutableTitle?.replace(" ", "")?.toLowerCase()}_$language"
     }
 
     fun generateChapterRepositoryTitle(chapterNumber: Int, value: String): String {
@@ -92,7 +94,60 @@ data class Book(
         return localMapChapterUriTitle[key]!!.removePrefix("chapter_$chapterNumber")
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as Book
+        return title == that.title && // Possible to not use "id"?
+                originalImmutableTitle == that.originalImmutableTitle &&
+                authorName == that.authorName &&
+                authorEmailId == that.authorEmailId &&
+                genre == that.genre &&
+                rating == that.rating &&
+                voteCounter == that.voteCounter &&
+                income == that.income &&
+                readingNumber == that.readingNumber &&
+                language == that.language &&
+                localFullBookUri == that.localFullBookUri &&
+                remoteFullBookUri == that.remoteFullBookUri &&
+                localMapChapterUriTitle == that.localMapChapterUriTitle &&
+                remoteMapChapterUriTitle == that.remoteMapChapterUriTitle &&
+                localCoverUri == that.localCoverUri &&
+                localPosterUri == that.localPosterUri &&
+                remoteCoverUri == that.remoteCoverUri &&
+                remotePosterUri == that.remotePosterUri &&
+                isComplete == that.isComplete
+
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(
+            title,
+            originalImmutableTitle,
+            authorName,
+            authorEmailId,
+            genre,
+            rating,
+            voteCounter,
+            income,
+            readingNumber,
+            language,
+            localFullBookUri,
+            remoteFullBookUri,
+            localMapChapterUriTitle,
+            remoteMapChapterUriTitle,
+            localCoverUri,
+            localPosterUri,
+            remoteCoverUri,
+            remotePosterUri,
+            isComplete,
+            periodicity,
+            synopsis
+        )
+    }
+
     constructor(source: Parcel) : this(
+        source.readString(),
         source.readString(),
         source.readString(),
         source.readString(),
@@ -119,11 +174,12 @@ data class Book(
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(title)
+        writeString(originalImmutableTitle)
         writeString(authorName)
         writeString(authorEmailId)
         writeInt(genre.ordinal)
         writeFloat(rating)
-        writeInt(vote)
+        writeInt(voteCounter)
         writeFloat(income)
         writeInt(readingNumber)
         writeInt(language.ordinal)

@@ -10,8 +10,7 @@ import com.andrehaueisen.cronicalia.utils.extensions.pullStringFromSharedPrefere
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.*
 
 /**
  * Created by andre on 2/18/2018.
@@ -23,11 +22,16 @@ class Authenticator(
     private val mUser: User) {
 
     private val LOG_TAG = Authenticator::class.java.simpleName
+    private lateinit var mUserChangesRegistration: ListenerRegistration
 
     fun isUserLoggedIn() = mFirebaseAuth.currentUser != null
-
     fun getUserEncodedEmail() = mFirebaseAuth.currentUser?.email?.encodeEmail()
     fun getUserName() = mFirebaseAuth.currentUser?.displayName
+
+    init {
+        if (isUserLoggedIn())
+            listenToUserChanges()
+    }
 
     fun getCurrentUser(): FirebaseUser? {
         return mFirebaseAuth.currentUser
@@ -60,6 +64,25 @@ class Authenticator(
             database.set(emailUidMap, SetOptions.merge())
             sendRegistrationToServer(encodedEmail)
         }
+    }
+
+    fun listenToUserChanges(){
+        val listener = EventListener<DocumentSnapshot>{ documentSnapshot, exception ->
+            exception?.let {
+                Log.e("LoginActivity", "User fetch failed")
+            }
+
+            if (documentSnapshot != null && documentSnapshot.exists()) {
+                val newUser = documentSnapshot.toObject(User::class.java)
+                mUser.refreshUser(newUser)
+            }
+        }
+
+        mUserChangesRegistration = mDatabaseInstance.collection(COLLECTION_USERS).document(getUserEncodedEmail()!!).addSnapshotListener(listener)
+    }
+
+    fun cancelUserListener(){
+        mUserChangesRegistration.remove()
     }
 
     private fun sendRegistrationToServer(email: String?) {

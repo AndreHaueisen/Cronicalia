@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import com.andrehaueisen.cronicalia.R
-import kotlinx.android.synthetic.main.item_chapter_representation.view.*
+import kotlinx.android.synthetic.main.item_chapter.view.*
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
 
 /**
@@ -45,7 +45,7 @@ class SelectedFilesAdapter(
 
         val view = if (mBookFileTitle == null) {
             LayoutInflater.from(mContext)
-                .inflate(R.layout.item_chapter_representation, parent, false)
+                .inflate(R.layout.item_chapter, parent, false)
         } else {
             LayoutInflater.from(mContext)
                 .inflate(R.layout.item_book_representation, parent, false)
@@ -87,7 +87,7 @@ class SelectedFilesAdapter(
 
         loop@ for(i in 0 until mTitles.size){
             val title = mTitles[i]
-            if (title.replace(" ", "").length > mContext.resources.getInteger(R.integer.text_box_max_length) || title.isBlank()) {
+            if (title.replace(" ", "").length > mContext.resources.getInteger(R.integer.title_text_box_max_length) || title.isBlank()) {
                 areValid = false
                 break@loop
             }

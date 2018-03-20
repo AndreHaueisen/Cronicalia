@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="64dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/poster_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="172dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/poster_placeholder"/>
+
+            <ImageView
+                android:id="@+id/cover_image_view"
+                android:layout_width="136dp"
+                android:layout_height="204dp"
+                android:layout_marginStart="8dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+                tools:src="@drawable/cover_placeholder"/>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_gradient"
+                app:layout_constraintBottom_toBottomOf="@id/poster_image_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cover_image_view">
+
+                <ImageView
+                    android:id="@+id/readings_image_view"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@drawable/ic_eye_24dp"
+                    app:layout_constraintBottom_toTopOf="@+id/readings_text_view"
+                    app:layout_constraintEnd_toEndOf="@+id/readings_text_view"
+                    app:layout_constraintStart_toStartOf="@+id/readings_text_view"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/readings_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginStart="16dp"
+                    android:textColor="@color/text_primary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="10k"/>
+
+                <ImageView
+                    android:id="@+id/rating_image_view"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@drawable/ic_star_24dp"
+                    app:layout_constraintBottom_toTopOf="@+id/rating_text_view"
+                    app:layout_constraintEnd_toEndOf="@+id/rating_text_view"
+                    app:layout_constraintStart_toStartOf="@+id/rating_text_view"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/rating_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/text_primary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/income_text_view"
+                    app:layout_constraintStart_toEndOf="@+id/readings_text_view"
+                    tools:text="9.5"/>
+
+                <ImageView
+                    android:id="@+id/income_image_view"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:src="@drawable/ic_money_24dp"
+                    app:layout_constraintBottom_toTopOf="@+id/income_text_view"
+                    app:layout_constraintEnd_toEndOf="@+id/income_text_view"
+                    app:layout_constraintStart_toStartOf="@+id/income_text_view"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/income_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/text_primary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:text="$500"/>
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/title_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cover_image_view"
+                app:layout_constraintTop_toBottomOf="@+id/poster_image_view"
+                tools:text="The Giant Of Merkle"/>
+
+            <TextView
+                android:id="@+id/synopsis_text_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:textColor="@color/text_secondary"
+                app:layout_constraintBottom_toBottomOf="@+id/cover_image_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cover_image_view"
+                app:layout_constraintTop_toBottomOf="@+id/title_text_view"
+                tools:text="In the giant mounting of Merkle tree there is a small little giant that lives on a red summoner bridge. They"/>
+
+            <RadioGroup
+                android:id="@+id/book_launch_status_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cover_image_view">
+
+                <RadioButton
+                    android:id="@+id/launch_full_book_radio_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/mark_book_as_completed"
+                    android:textColor="@color/white_android"
+                    android:theme="@style/RadioButtonWhite"/>
+
+                <RadioButton
+                    android:id="@+id/launch_chapters_periodically_radio_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mark_book_as_incomplete"
+                    android:textColor="@color/white_android"
+                    android:theme="@style/RadioButtonWhite"/>
+            </RadioGroup>
+
+            <Spinner
+                android:id="@+id/genre_spinner"
+                style="@android:style/Widget.Material.Light.Spinner.Underlined"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/colorPrimaryBright"
+                android:spinnerMode="dropdown"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/book_launch_status_radio_group"/>
+
+            <Spinner
+                android:id="@+id/periodicity_spinner"
+                style="@android:style/Widget.Material.Spinner.Underlined"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/colorPrimaryBright"
+                android:spinnerMode="dropdown"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/genre_spinner"
+                tools:visibility="visible"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/chapters_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/periodicity_spinner"
+                tools:visibility="visible"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_chapter_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_add_24dp"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/delete_book_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_delete_24dp"
+        app:backgroundTint="@color/colorPrimaryLight"/>
+
+</FrameLayout>

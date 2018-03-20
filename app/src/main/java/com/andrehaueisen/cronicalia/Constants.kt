@@ -51,6 +51,8 @@ const val SHARED_MESSAGE_TOKEN = "message_token"
 
 const val INTENT_CALLING_ACTIVITY = "intent_calling_activity"
 
+const val FRAGMENT_MY_CREATION_TAG = "fragment_my_creation_tag"
+
 //coroutines test code
 
 /* val uiThread: CoroutineContext = UI
