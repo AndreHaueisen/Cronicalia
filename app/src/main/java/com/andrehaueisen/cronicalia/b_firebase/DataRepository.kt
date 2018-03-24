@@ -18,14 +18,15 @@ import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import kotlinx.coroutines.experimental.launch
 
 
-
 /**
  * Created by andre on 2/18/2018.
  */
-class DataRepository(private val mDatabaseInstance: FirebaseFirestore, 
-                     private val mGlobalProgressBroadcastChannel: ArrayBroadcastChannel<Int?>,
-                     private val mGlobalProgressReceiver: SubscriptionReceiveChannel<Int?>,
-                     private val mUser: User) {
+class DataRepository(
+    private val mDatabaseInstance: FirebaseFirestore,
+    private val mGlobalProgressBroadcastChannel: ArrayBroadcastChannel<Int?>,
+    private val mGlobalProgressReceiver: SubscriptionReceiveChannel<Int?>,
+    private val mUser: User
+) {
 
     /*fun createUser(user: User, uid: String){
         val batch = mDatabaseInstance.batch()
@@ -38,22 +39,29 @@ class DataRepository(private val mDatabaseInstance: FirebaseFirestore,
         batch.commit()
     }*/
 
-    fun createBook(book: Book){
+    /**
+     * Updates book on user collection and on book collection. Creates if book does not exists
+     */
+    fun setBookDocuments(book: Book, sendProgressUpdate: Boolean = true) {
         val batch = mDatabaseInstance.batch()
-        mUser.books[book.generateDocumentId()] = book
+        mUser.books[book.generateBookKey()] = book
 
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
-        val booksLocationReference = mDatabaseInstance.collection(book.getDatabaseCollectionLocation()).document(book.generateDocumentId() )
+        val booksLocationReference = mDatabaseInstance.collection(book.getDatabaseCollectionLocation()).document(book.generateBookKey())
 
         batch.set(userDataLocationReference, mUser, SetOptions.merge())
         batch.set(booksLocationReference, book, SetOptions.merge())
 
         batch
             .commit()
-            .addOnSuccessListener{ _ ->
-                launch(UI) { mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_OK) } }
-            .addOnFailureListener( { _ ->
-                launch(UI) { mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL) } })
+            .addOnSuccessListener { _ ->
+                if (sendProgressUpdate)
+                    launch(UI) { mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_OK) }
+            }
+            .addOnFailureListener({ _ ->
+                if (sendProgressUpdate)
+                    launch(UI) { mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL) }
+            })
 
     }
 
@@ -63,7 +71,7 @@ class DataRepository(private val mDatabaseInstance: FirebaseFirestore,
                 val newUser = taskSnapshot.toObject(User::class.java)
                 mUser.refreshUser(newUser)
 
-                if(activity is LoginActivity){
+                if (activity is LoginActivity) {
                     activity.startCallingActivity()
                 }
             }.addOnFailureListener { _ ->
@@ -71,7 +79,7 @@ class DataRepository(private val mDatabaseInstance: FirebaseFirestore,
             }
     }
 
-    fun createUserOnServer(userName: String, userEncodedEmail: String){
+    fun setUserDocument(userName: String, userEncodedEmail: String) {
         mUser.name = userName
         mUser.encodedEmail = userEncodedEmail
 

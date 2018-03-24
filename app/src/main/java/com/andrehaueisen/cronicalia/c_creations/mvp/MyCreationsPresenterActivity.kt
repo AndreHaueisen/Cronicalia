@@ -2,7 +2,8 @@ package com.andrehaueisen.cronicalia.c_creations.mvp
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.andrehaueisen.cronicalia.FRAGMENT_MY_CREATION_TAG
+import com.andrehaueisen.cronicalia.FRAGMENT_EDIT_CREATION_TAG
+import com.andrehaueisen.cronicalia.PARCELABLE_BOOK
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.a_application.BaseApplication
 import com.andrehaueisen.cronicalia.c_creations.dagger.DaggerMyCreationsComponent
@@ -10,6 +11,9 @@ import com.andrehaueisen.cronicalia.c_creations.dagger.MyCreationsModule
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.addFragment
+import com.andrehaueisen.cronicalia.utils.extensions.getSmallestScreenWidth
+import com.andrehaueisen.cronicalia.utils.extensions.replaceFragment
+import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import javax.inject.Inject
 
 
@@ -21,6 +25,9 @@ class MyCreationsPresenterActivity : AppCompatActivity(), MyCreationsViewFragmen
 
     @Inject
     lateinit var mUser: User
+
+    @Inject
+    lateinit var mModel: MyCreationsModel
 
     private val LOG_TAG = MyCreationsPresenterActivity::class.java.simpleName
 
@@ -35,8 +42,16 @@ class MyCreationsPresenterActivity : AppCompatActivity(), MyCreationsViewFragmen
 
         setContentView(R.layout.c_activity_my_creations)
 
-        val myCreationsViewFragment = MyCreationsViewFragment.newInstance()
-        addFragment(R.id.fragment_container, myCreationsViewFragment)
+        if(getSmallestScreenWidth() < 600) {
+            val myCreationsViewFragment = MyCreationsViewFragment.newInstance()
+            addFragment(R.id.fragment_container, myCreationsViewFragment)
+        } else {
+
+            val bundle = Bundle()
+            bundle.putParcelable(PARCELABLE_BOOK, mUser.books.values.first { book -> book.bookPosition == 0 })
+            val editCreationFragment = MyCreationEditViewFragment.newInstance(bundle)
+            addFragment(R.id.edit_creation_fragment_container, editCreationFragment)
+        }
 
         /*upload_button.setOnClickListener {
 
@@ -85,20 +100,42 @@ class MyCreationsPresenterActivity : AppCompatActivity(), MyCreationsViewFragmen
         }*/
     }
 
-    override fun onCreationClick(book: Book) {
+    fun notifyBookEditionToDatabase(book: Book){
+        mModel.updateBookOnDatabase(book)
+    }
 
-        var creationFragment = (supportFragmentManager.findFragmentByTag(FRAGMENT_MY_CREATION_TAG) as? MyCreationEditViewFragment)
+    suspend fun updateBookPoster(book: Book): SubscriptionReceiveChannel<Int?> {
+        return mModel.updateBookPoster(book)
+    }
 
-        if (creationFragment == null) {
-            creationFragment = MyCreationEditViewFragment.newInstance()
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.add(creationFragment, FRAGMENT_MY_CREATION_TAG)
-            transaction.addToBackStack(null)
-            transaction.commit()
+    suspend fun updateBookCover(book: Book): SubscriptionReceiveChannel<Int?>{
+        return mModel.updateBookCover(book)
+    }
+
+    override fun onCreationClick(bookKey: String) {
+
+        if(getSmallestScreenWidth() >= 600){
+            val editCreationFragment = (supportFragmentManager.findFragmentById(R.id.edit_creation_fragment_container) as? MyCreationEditViewFragment)
+
+            editCreationFragment?.let {
+                if (editCreationFragment.isVisible)
+                    editCreationFragment.refreshFragmentData(mUser.books[bookKey]!!)
+            }
 
         } else {
-            if (creationFragment.isVisible)
-                creationFragment.refreshFragmentData(book)
+
+            var editCreationFragment = (supportFragmentManager.findFragmentByTag(FRAGMENT_EDIT_CREATION_TAG) as? MyCreationEditViewFragment)
+
+            if (editCreationFragment == null) {
+                val bundle = Bundle()
+                bundle.putParcelable(PARCELABLE_BOOK, mUser.books[bookKey]!!)
+                editCreationFragment = MyCreationEditViewFragment.newInstance(bundle)
+                replaceFragment(R.id.fragment_container, editCreationFragment)
+
+            } else {
+                if (editCreationFragment.isVisible)
+                    editCreationFragment.refreshFragmentData(mUser.books[bookKey]!!)
+            }
         }
 
     }

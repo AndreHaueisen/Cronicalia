@@ -21,7 +21,7 @@ class MyCreationsAdapter(private val mFragment: MyCreationsViewFragment, private
     RecyclerView.Adapter<MyCreationsAdapter.CreationHolder>() {
 
     interface CreationClickListener{
-        fun onCreationClick(book: Book)
+        fun onCreationClick(bookKey: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CreationHolder {
@@ -71,7 +71,7 @@ class MyCreationsAdapter(private val mFragment: MyCreationsViewFragment, private
         fun bindBooksToViews(book: Book) {
 
             mItemView.setOnClickListener {
-                mFragment.onCreationClick(book)
+                mFragment.onCreationClick(bookKey = book.generateBookKey())
             }
 
             if (book.remoteCoverUri != null) {

@@ -5,13 +5,13 @@
               android:layout_height="match_parent">
 
     <fragment android:name="com.andrehaueisen.cronicalia.c_creations.mvp.MyCreationsViewFragment"
-              android:id="@+id/headlines_fragment"
+              android:id="@+id/creations_fragment"
               android:layout_weight="1"
               android:layout_width="0dp"
               android:layout_height="match_parent" />
 
-    <fragment android:name="com.andrehaueisen.cronicalia.c_creations.mvp.MyCreationEditViewFragment"
-              android:id="@+id/article_fragment"
+    <FrameLayout
+              android:id="@+id/edit_creation_fragment_container"
               android:layout_weight="2"
               android:layout_width="0dp"
               android:layout_height="match_parent" />

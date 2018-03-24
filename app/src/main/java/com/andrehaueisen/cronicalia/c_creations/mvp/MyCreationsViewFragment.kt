@@ -24,7 +24,7 @@ import kotlinx.coroutines.experimental.launch
 class MyCreationsViewFragment : Fragment(), MyCreationsAdapter.CreationClickListener {
 
     interface CreationClickListener {
-        fun onCreationClick(book: Book)
+        fun onCreationClick(bookKey: String)
     }
 
     private lateinit var mMyCreationsRecyclerView: RecyclerView
@@ -88,9 +88,9 @@ class MyCreationsViewFragment : Fragment(), MyCreationsAdapter.CreationClickList
     }
 
 
-    override fun onCreationClick(book: Book) {
+    override fun onCreationClick(bookKey: String) {
         try {
-            (activity as? MyCreationsPresenterActivity)?.onCreationClick(book)
+            (activity as? MyCreationsPresenterActivity)?.onCreationClick(bookKey)
         } catch (e: ClassCastException) {
             throw ClassCastException(activity.toString() + " must implement CreationClickListener")
         }

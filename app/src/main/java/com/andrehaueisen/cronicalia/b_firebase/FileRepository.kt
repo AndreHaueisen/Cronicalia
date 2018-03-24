@@ -27,7 +27,8 @@ class FileRepository(
 
     private var mTasksReadyCounter = 0
 
-    suspend fun createBook(book: Book, uriTitleLinkedMap: LinkedHashMap<String, String>, dataRepository: DataRepository
+    suspend fun createBook(
+        book: Book, uriTitleLinkedMap: LinkedHashMap<String, String>, dataRepository: DataRepository
     ): SubscriptionReceiveChannel<Int?> {
 
         var uploadTask: UploadTask
@@ -39,7 +40,7 @@ class FileRepository(
         val locationReference = mStorageReference
             .child(book.getStorageRootLocation())
             .child(mUser.encodedEmail!!)
-            .child(book.generateDocumentId())
+            .child(book.generateBookKey())
 
         fun uploadPdfs() {
 
@@ -188,6 +189,89 @@ class FileRepository(
         return mGlobalProgressReceiver
     }
 
+    suspend fun updateBookCover(book: Book, dataRepository: DataRepository): SubscriptionReceiveChannel<Int?> {
+
+        var uploadTask: UploadTask
+
+        val locationReference = mStorageReference
+            .child(book.getStorageRootLocation())
+            .child(mUser.encodedEmail!!)
+            .child(book.generateBookKey())
+
+        book.localCoverUri?.let { coverUri ->
+            val metadata = StorageMetadata.Builder()
+                .setCustomMetadata(
+                    METADATA_TITLE_IMAGE_TYPE,
+                    METADATA_PROPERTY_IMAGE_TYPE_COVER
+                )
+                .build()
+
+            val filePath = Uri.parse(coverUri)
+            uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
+
+            uploadTask.addOnSuccessListener { taskSnapshot ->
+                launch {
+                    book.remoteCoverUri = taskSnapshot.downloadUrl?.toString()
+                    dataRepository.setBookDocuments(book)
+                }
+
+            }.addOnFailureListener { exception ->
+                launch {
+                    val errorCode = (exception as StorageException).errorCode
+                    when (errorCode) {
+                        StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(errorCode)
+                        else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                    }
+                }
+            }
+        }
+
+        return mGlobalProgressReceiver
+    }
+
+    suspend fun updateBookPoster(book: Book, dataRepository: DataRepository): SubscriptionReceiveChannel<Int?> {
+
+        var uploadTask: UploadTask
+
+        val locationReference = mStorageReference
+            .child(book.getStorageRootLocation())
+            .child(mUser.encodedEmail!!)
+            .child(book.generateBookKey())
+
+        book.localPosterUri?.let { posterUri ->
+            val metadata = StorageMetadata.Builder()
+                .setCustomMetadata(
+                    METADATA_TITLE_IMAGE_TYPE,
+                    METADATA_PROPERTY_IMAGE_TYPE_POSTER
+                )
+                .build()
+
+            val filePath = Uri.parse(posterUri)
+            uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
+
+            uploadTask.addOnSuccessListener { taskSnapshot ->
+                book.remotePosterUri = taskSnapshot.downloadUrl?.toString()
+                dataRepository.setBookDocuments(book)
+
+            }.addOnFailureListener { exception ->
+                launch {
+                    val errorCode = (exception as StorageException).errorCode
+                    when (errorCode) {
+                        StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(errorCode)
+                        else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                    }
+                }
+            }
+        }
+
+        return mGlobalProgressReceiver
+    }
+
+    suspend fun updatePdfs() {
+
+    }
+
+
     private fun getProgressCap(book: Book, uriTitleLinkedMap: LinkedHashMap<String, String>): Double {
         var progressCap = 0.0
 
@@ -206,7 +290,7 @@ class FileRepository(
 
         Log.i("FileRepository", "Tasks counter: $mTasksReadyCounter Max Tasks: $maxTasksNumber")
         if (mTasksReadyCounter == maxTasksNumber) {
-            dataRepository.createBook(book)
+            dataRepository.setBookDocuments(book)
             mTasksReadyCounter = 0
         }
 

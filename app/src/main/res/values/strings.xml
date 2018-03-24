@@ -7,6 +7,10 @@
     <string name="income_amount">\$%1$.2f</string>
     <string name="mark_book_as_completed">Book is finished</string>
     <string name="mark_book_as_incomplete">Still have chapter to launch</string>
+    <string name="cover_updated">Cover updated</string>
+    <string name="cover_update_fail">Cover update failed</string>
+    <string name="poster_updated">Poster updated</string>
+    <string name="poster_update_fail">Poster update failed</string>
 
     <!--d_create_book strings -->
     <string name="create_new_book">Create new book</string>

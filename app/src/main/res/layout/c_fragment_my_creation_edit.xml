@@ -29,7 +29,7 @@
 
             <ImageView
                 android:id="@+id/cover_image_view"
-                android:layout_width="136dp"
+                android:layout_width="153dp"
                 android:layout_height="204dp"
                 android:layout_marginStart="8dp"
                 android:scaleType="centerCrop"
@@ -41,7 +41,7 @@
                 android:id="@+id/constraintLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_gradient"
+                android:background="@drawable/background_gradient_primary"
                 app:layout_constraintBottom_toBottomOf="@id/poster_image_view"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/cover_image_view">
@@ -121,12 +121,16 @@
             <TextView
                 android:id="@+id/title_text_view"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="26dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:textColor="@color/text_primary"
+                android:drawableStart="@drawable/ic_edit_24dp"
+                android:drawablePadding="8dp"
                 android:textSize="16sp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cover_image_view"
                 app:layout_constraintTop_toBottomOf="@+id/poster_image_view"
@@ -139,6 +143,10 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_edit_24dp"
+                android:maxLines="6"
+                app:layout_constraintHeight_max="110dp"
                 android:ellipsize="end"
                 android:textColor="@color/text_secondary"
                 app:layout_constraintBottom_toBottomOf="@+id/cover_image_view"
@@ -147,36 +155,30 @@
                 app:layout_constraintTop_toBottomOf="@+id/title_text_view"
                 tools:text="In the giant mounting of Merkle tree there is a small little giant that lives on a red summoner bridge. They"/>
 
-            <RadioGroup
-                android:id="@+id/book_launch_status_radio_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+            <TextView
+                android:id="@+id/genre_text_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                android:text="@string/genre"
+                android:gravity="center_vertical"
+                android:textColor="@color/text_tertiary"
+                app:layout_constraintBottom_toBottomOf="@+id/genre_spinner"
+                app:layout_constraintEnd_toEndOf="@+id/launch_frequency_text_view"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cover_image_view">
+                app:layout_constraintTop_toTopOf="@+id/genre_spinner"/>
 
-                <RadioButton
-                    android:id="@+id/launch_full_book_radio_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/mark_book_as_completed"
-                    android:textColor="@color/white_android"
-                    android:theme="@style/RadioButtonWhite"/>
-
-                <RadioButton
-                    android:id="@+id/launch_chapters_periodically_radio_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mark_book_as_incomplete"
-                    android:textColor="@color/white_android"
-                    android:theme="@style/RadioButtonWhite"/>
-            </RadioGroup>
+            <TextView
+                android:id="@+id/launch_frequency_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:text="@string/launch_frequency"
+                android:textColor="@color/text_tertiary"
+                app:layout_constraintBottom_toBottomOf="@+id/periodicity_spinner"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/periodicity_spinner"/>
 
             <Spinner
                 android:id="@+id/genre_spinner"
@@ -184,13 +186,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/colorPrimaryBright"
                 android:spinnerMode="dropdown"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/book_launch_status_radio_group"/>
+                app:layout_constraintStart_toEndOf="@+id/genre_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/cover_image_view"/>
 
             <Spinner
                 android:id="@+id/periodicity_spinner"
@@ -198,14 +200,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/colorPrimaryBright"
                 android:spinnerMode="dropdown"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/launch_frequency_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/genre_spinner"
                 tools:visibility="visible"/>
 

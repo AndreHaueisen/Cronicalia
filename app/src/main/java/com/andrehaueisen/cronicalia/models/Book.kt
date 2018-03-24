@@ -1,9 +1,11 @@
 package com.andrehaueisen.cronicalia.models
 
+import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import com.andrehaueisen.cronicalia.*
 import com.google.firebase.firestore.Exclude
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -15,6 +17,7 @@ data class Book(
     var authorName: String? = null,
     var authorEmailId: String? = null,
     var genre: BookGenre = BookGenre.UNDEFINED,
+    var bookPosition: Int = 0,
     var rating: Float = 0F,
     var voteCounter: Int = 0,
     var income: Float = 0F,
@@ -30,8 +33,7 @@ data class Book(
     var remotePosterUri: String? = null,
     var isComplete: Boolean = true,
     var periodicity: ChapterPeriodicity = ChapterPeriodicity.NONE,
-    var synopsis: String? = null
-) : Parcelable {
+    var synopsis: String? = null) : Serializable, Parcelable {
 
     enum class BookGenre {
         UNDEFINED,
@@ -82,7 +84,7 @@ data class Book(
         else -> STORAGE_ENGLISH_BOOKS
     }
 
-    fun generateDocumentId(): String {
+    fun generateBookKey(): String {
         return "${authorEmailId}_${originalImmutableTitle?.replace(" ", "")?.toLowerCase()}_$language"
     }
 
@@ -90,7 +92,35 @@ data class Book(
         return "chapter_${chapterNumber}_$value"
     }
 
-    fun getChapterOriginalTitle(chapterNumber: Int, key: String): String {
+    fun convertGenreToPosition(): Int {
+        return when (genre) {
+            Book.BookGenre.ACTION -> 0
+            Book.BookGenre.FICTION -> 1
+            Book.BookGenre.ROMANCE -> 2
+            Book.BookGenre.COMEDY -> 3
+            Book.BookGenre.DRAMA -> 4
+            Book.BookGenre.HORROR -> 5
+            Book.BookGenre.SATIRE -> 6
+            Book.BookGenre.FANTASY -> 7
+            Book.BookGenre.MYTHOLOGY -> 8
+            Book.BookGenre.ADVENTURE -> 9
+            else -> 0
+        }
+    }
+
+    fun convertPeriodicityToPosition(): Int {
+        return when (periodicity) {
+            ChapterPeriodicity.EVERY_DAY -> 0
+            ChapterPeriodicity.EVERY_3_DAYS -> 1
+            ChapterPeriodicity.EVERY_7_DAYS -> 2
+            ChapterPeriodicity.EVERY_14_DAYS -> 3
+            ChapterPeriodicity.EVERY_30_DAYS -> 4
+            ChapterPeriodicity.EVERY_42_DAYS -> 5
+            else -> 0
+        }
+    }
+
+    fun generateChapterOriginalTitle(chapterNumber: Int, key: String): String {
         return localMapChapterUriTitle[key]!!.removePrefix("chapter_$chapterNumber")
     }
 
@@ -152,6 +182,7 @@ data class Book(
         source.readString(),
         source.readString(),
         BookGenre.values()[source.readInt()],
+        source.readInt(),
         source.readFloat(),
         source.readInt(),
         source.readFloat(),
@@ -170,6 +201,22 @@ data class Book(
         source.readString()
     )
 
+    @Exclude
+    fun isBookTitleValid(context: Context): Boolean {
+        return !this.title.isNullOrBlank() && this.title!!.replace(
+            " ",
+            ""
+        ).length <= context.resources.getInteger(R.integer.title_text_box_max_length)
+    }
+
+    @Exclude
+    fun isSynopsisValid(context: Context): Boolean {
+        return !this.synopsis.isNullOrBlank() && this.synopsis!!.replace(
+            " ",
+            ""
+        ).length <= context.resources.getInteger(R.integer.synopsis_text_box_max_length)
+    }
+
     override fun describeContents() = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
@@ -178,6 +225,7 @@ data class Book(
         writeString(authorName)
         writeString(authorEmailId)
         writeInt(genre.ordinal)
+        writeInt(bookPosition)
         writeFloat(rating)
         writeInt(voteCounter)
         writeFloat(income)

@@ -20,8 +20,7 @@ data class User(
     var aboutSelf: String? = null,
     var profilePictureUri: String? = null,
     var fans: Int = 0,
-    var books: HashMap<String, Book> = hashMapOf()
-) : Parcelable {
+    var books: HashMap<String, Book> = hashMapOf()) : Parcelable {
 
     private val mUserDataUpdateBroadcastChannel = ArrayBroadcastChannel<Boolean>(capacity = 2)
     private val mUserUpdateSignalReceiver = mUserDataUpdateBroadcastChannel.openSubscription()
@@ -35,7 +34,7 @@ data class User(
     }
 
     @Exclude
-    fun getUserBookNumber() = books.size
+    fun getUserBookCount() = books.size
 
     fun toSimpleMap(): Map<String, Any> {
 

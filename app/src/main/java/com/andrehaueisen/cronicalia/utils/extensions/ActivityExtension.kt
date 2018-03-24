@@ -21,11 +21,21 @@ fun AppCompatActivity.addFragment(containerId: Int, fragment: Fragment){
     this.supportFragmentManager.beginTransaction().add(containerId, fragment).commit()
 }
 
-fun AppCompatActivity.replaceFragment(containerId: Int, fragment: Fragment){
-    this.supportFragmentManager.beginTransaction().replace(containerId, fragment).commit()
+fun AppCompatActivity.replaceFragment(containerId: Int, fragment: Fragment, stackTag : String? = null){
+    this.supportFragmentManager.beginTransaction().replace(containerId, fragment).addToBackStack(stackTag).commit()
 }
 
 fun Activity.getProperLayoutManager(orientation: Int = LinearLayoutManager.VERTICAL): RecyclerView.LayoutManager {
+    val smallestWidth = getSmallestScreenWidth()
+
+    return if (smallestWidth >= 600) {
+        GridLayoutManager(this, 2, orientation, false)
+    } else {
+        LinearLayoutManager(this, orientation, false)
+    }
+}
+
+fun Activity.getSmallestScreenWidth(): Float{
     val display = this.windowManager.defaultDisplay
     val metrics = DisplayMetrics()
     display.getMetrics(metrics)
@@ -34,14 +44,8 @@ fun Activity.getProperLayoutManager(orientation: Int = LinearLayoutManager.VERTI
 
     val widthDp = metrics.widthPixels / scaleFactor
     val heightDp = metrics.heightPixels / scaleFactor
-    val smallestWidth = Math.min(widthDp, heightDp)
 
-    return if (smallestWidth >= 600) {
-        GridLayoutManager(this, 2, orientation, false)
-    } else {
-        LinearLayoutManager(this, orientation, false)
-    }
-
+    return Math.min(widthDp, heightDp)
 }
 
 fun <T : Activity> Context.startNewActivity(classToInit: Class<T>, flags: List<Int>? = null, extras: Bundle? = null, options: Bundle? = null) {

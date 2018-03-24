@@ -20,7 +20,6 @@ import com.andrehaueisen.cronicalia.*
 import com.andrehaueisen.cronicalia.d_create_book.SelectedFilesAdapter
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.createBookPictureDirectory
-import com.andrehaueisen.cronicalia.utils.extensions.showSnackbar
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -75,7 +74,7 @@ class CreateBookView(
             placePosterImage()
 
         } else {
-            mBook = Book(authorName = authorName, authorEmailId = emailId)
+            mBook = Book(authorName = authorName, authorEmailId = emailId, bookPosition = mUserBookCount)
             initiateChapterRecyclerView()
         }
 
@@ -368,7 +367,7 @@ class CreateBookView(
                 //upload else select file
                 if (adapter != null) {
 
-                    if (adapter.areChapterTitlesValid() && isBookTitleValid() && isSynopsisValid()) {
+                    if (adapter.areChapterTitlesValid() && mBook.isBookTitleValid(this) && mBook.isSynopsisValid(this)) {
                         uploadBookData()
                     } else
                         Toasty.error(this, getString(R.string.invalid_text_detected)).show()
@@ -392,16 +391,6 @@ class CreateBookView(
                 }
             }
         }
-    }
-
-    private fun isBookTitleValid(): Boolean {
-        val title = mActivity.book_title_text_box.book_title_extended_edit_text.text.toString()
-        return title.isNotBlank() && title.replace(" ", "" ).length <= mActivity.resources.getInteger(R.integer.title_text_box_max_length)
-    }
-
-    private fun isSynopsisValid(): Boolean {
-        val synopsis = mActivity.synopsis_title_text_box.book_synopsis_extended_edit_text.text.toString()
-        return synopsis.isNotBlank() && synopsis.replace( " ", "").length <= mActivity.resources.getInteger(R.integer.synopsis_text_box_max_length)
     }
 
     private fun initiateCancelButton() {
@@ -523,10 +512,7 @@ class CreateBookView(
     }
 
     override fun onError(exception: Exception) {
-        with(mActivity) {
-            findViewById<View>(R.id.create_book_root_view)
-                .showSnackbar(getString(R.string.resource_error))
-        }
+        Toasty.error(mActivity, mActivity.getString(R.string.resource_error)).show()
     }
 
     private fun getFileTitle(uri: Uri): String? {

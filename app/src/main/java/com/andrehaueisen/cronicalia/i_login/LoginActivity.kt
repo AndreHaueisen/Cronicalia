@@ -53,7 +53,7 @@ class LoginActivity : AppCompatActivity() {
             if (idpResponse != null) {
 
                 if (resultCode == Activity.RESULT_OK) {
-                    mDatabaseInstance.createUserOnServer(mAuthenticator.getUserName()!!, mAuthenticator.getUserEncodedEmail()!!)
+                    mDatabaseInstance.setUserDocument(mAuthenticator.getUserName()!!, mAuthenticator.getUserEncodedEmail()!!)
                     mDatabaseInstance.loadLoggingInUser(mAuthenticator.getUserEncodedEmail()!!, this)
                     mAuthenticator.listenToUserChanges()
                     mAuthenticator.saveUserIdOnLogin()
