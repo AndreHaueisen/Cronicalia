@@ -8,6 +8,8 @@ import android.widget.Button
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.c_creations.mvp.MyCreationEditViewFragment
 import com.andrehaueisen.cronicalia.models.Book
+import com.andrehaueisen.cronicalia.utils.extensions.isBookTitleValid
+import com.andrehaueisen.cronicalia.utils.extensions.isSynopsisValid
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.c_dialog_edit_text.view.*
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
@@ -47,9 +49,13 @@ class EditTextDialog(
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
 
         when(viewBeingEdited){
-            ViewBeingEdited.TITLE_VIEW -> { mGeneralTextBox.general_extended_edit_text.text = SpannableStringBuilder(mBook.title ?: "")
+            ViewBeingEdited.TITLE_VIEW -> {
+                mGeneralTextBox.labelText = context.getString(R.string.book_title)
+                mGeneralTextBox.general_extended_edit_text.text = SpannableStringBuilder(mBook.title ?: "")
             }
+
             ViewBeingEdited.SYNOPSIS_VIEW -> {
+                mGeneralTextBox.labelText = context.getString(R.string.book_synopsis)
                 mGeneralTextBox.general_extended_edit_text.text = SpannableStringBuilder(mBook.synopsis ?: "")
             }
         }
@@ -57,9 +63,10 @@ class EditTextDialog(
         mOkButton.setOnClickListener {
             when (viewBeingEdited) {
                 ViewBeingEdited.TITLE_VIEW -> {
-                    mBook.title = mGeneralTextBox.general_extended_edit_text.text.toString()
-                    if (mBook.isBookTitleValid(context)) {
-                        fragment.notifyTitleChange(mGeneralTextBox.general_extended_edit_text.text.toString())
+                    val newTitle = mGeneralTextBox.general_extended_edit_text.text.toString()
+                    if (newTitle.isBookTitleValid(context)) {
+                        mBook.title = newTitle
+                        fragment.notifyTitleChange(newTitle)
                         dismiss()
                     } else {
                         Toasty.error(context, context.getString(R.string.invalid_text_detected)).show()
@@ -67,9 +74,10 @@ class EditTextDialog(
 
                 }
                 ViewBeingEdited.SYNOPSIS_VIEW -> {
-                    mBook.synopsis = mGeneralTextBox.general_extended_edit_text.text.toString()
-                    if (mBook.isSynopsisValid(context)) {
-                        fragment.notifySynopsisChange(mGeneralTextBox.general_extended_edit_text.text.toString())
+                    val newSynopsis = mGeneralTextBox.general_extended_edit_text.text.toString()
+                    if (newSynopsis.isSynopsisValid(context)) {
+                        mBook.synopsis = newSynopsis
+                        fragment.notifySynopsisChange(newSynopsis)
                         dismiss()
                     } else {
                         Toasty.error(context, context.getString(R.string.invalid_text_detected)).show()

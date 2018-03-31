@@ -25,16 +25,17 @@ data class Book(
     var language: BookLanguage = BookLanguage.UNDEFINED,
     var localFullBookUri: String? = null,
     var remoteFullBookUri: String? = null,
-    val localMapChapterUriTitle: HashMap<String, String> = hashMapOf(),
-    val remoteMapChapterUriTitle: HashMap<String, String> = hashMapOf(),
+    val remoteChapterTitles: ArrayList<String> = arrayListOf(),
+    val remoteChapterUris: ArrayList<String> = arrayListOf(),
     var localCoverUri: String? = null,
     var localPosterUri: String? = null,
     var remoteCoverUri: String? = null,
     var remotePosterUri: String? = null,
-    var isComplete: Boolean = true,
+    var isLaunchedComplete: Boolean = true,
+    var isCurrentlyComplete: Boolean = true,
     var periodicity: ChapterPeriodicity = ChapterPeriodicity.NONE,
-    var synopsis: String? = null) : Serializable, Parcelable {
-
+    var synopsis: String? = null
+) : Serializable, Parcelable {
     enum class BookGenre {
         UNDEFINED,
         ACTION,
@@ -88,10 +89,6 @@ data class Book(
         return "${authorEmailId}_${originalImmutableTitle?.replace(" ", "")?.toLowerCase()}_$language"
     }
 
-    fun generateChapterRepositoryTitle(chapterNumber: Int, value: String): String {
-        return "chapter_${chapterNumber}_$value"
-    }
-
     fun convertGenreToPosition(): Int {
         return when (genre) {
             Book.BookGenre.ACTION -> 0
@@ -120,10 +117,6 @@ data class Book(
         }
     }
 
-    fun generateChapterOriginalTitle(chapterNumber: Int, key: String): String {
-        return localMapChapterUriTitle[key]!!.removePrefix("chapter_$chapterNumber")
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
@@ -133,6 +126,7 @@ data class Book(
                 authorName == that.authorName &&
                 authorEmailId == that.authorEmailId &&
                 genre == that.genre &&
+                bookPosition == that.bookPosition &&
                 rating == that.rating &&
                 voteCounter == that.voteCounter &&
                 income == that.income &&
@@ -140,13 +134,14 @@ data class Book(
                 language == that.language &&
                 localFullBookUri == that.localFullBookUri &&
                 remoteFullBookUri == that.remoteFullBookUri &&
-                localMapChapterUriTitle == that.localMapChapterUriTitle &&
-                remoteMapChapterUriTitle == that.remoteMapChapterUriTitle &&
+                remoteChapterTitles == that.remoteChapterTitles &&
+                remoteChapterUris == that.remoteChapterUris &&
                 localCoverUri == that.localCoverUri &&
                 localPosterUri == that.localPosterUri &&
                 remoteCoverUri == that.remoteCoverUri &&
                 remotePosterUri == that.remotePosterUri &&
-                isComplete == that.isComplete
+                isLaunchedComplete == that.isLaunchedComplete &&
+                isCurrentlyComplete == that.isCurrentlyComplete
 
     }
 
@@ -157,6 +152,7 @@ data class Book(
             authorName,
             authorEmailId,
             genre,
+            bookPosition,
             rating,
             voteCounter,
             income,
@@ -164,16 +160,27 @@ data class Book(
             language,
             localFullBookUri,
             remoteFullBookUri,
-            localMapChapterUriTitle,
-            remoteMapChapterUriTitle,
+            remoteChapterTitles,
+            remoteChapterUris,
             localCoverUri,
             localPosterUri,
             remoteCoverUri,
             remotePosterUri,
-            isComplete,
+            isLaunchedComplete,
+            isCurrentlyComplete,
             periodicity,
             synopsis
         )
+    }
+
+    @Exclude
+    fun isBookTitleValid(context: Context): Boolean {
+        return !this.title.isNullOrBlank() && this.title!!.replace(" ", "").length <= context.resources.getInteger(R.integer.title_text_box_max_length)
+    }
+
+    @Exclude
+    fun isSynopsisValid(context: Context): Boolean {
+        return !this.synopsis.isNullOrBlank() && this.synopsis!!.replace(" ", "").length <= context.resources.getInteger(R.integer.synopsis_text_box_max_length)
     }
 
     constructor(source: Parcel) : this(
@@ -190,32 +197,17 @@ data class Book(
         BookLanguage.values()[source.readInt()],
         source.readString(),
         source.readString(),
-        source.readSerializable() as HashMap<String, String>,
-        source.readSerializable() as HashMap<String, String>,
+        source.createStringArrayList(),
+        source.createStringArrayList(),
         source.readString(),
         source.readString(),
         source.readString(),
         source.readString(),
         1 == source.readInt(),
+        1 == source.readInt(),
         ChapterPeriodicity.values()[source.readInt()],
         source.readString()
     )
-
-    @Exclude
-    fun isBookTitleValid(context: Context): Boolean {
-        return !this.title.isNullOrBlank() && this.title!!.replace(
-            " ",
-            ""
-        ).length <= context.resources.getInteger(R.integer.title_text_box_max_length)
-    }
-
-    @Exclude
-    fun isSynopsisValid(context: Context): Boolean {
-        return !this.synopsis.isNullOrBlank() && this.synopsis!!.replace(
-            " ",
-            ""
-        ).length <= context.resources.getInteger(R.integer.synopsis_text_box_max_length)
-    }
 
     override fun describeContents() = 0
 
@@ -233,13 +225,14 @@ data class Book(
         writeInt(language.ordinal)
         writeString(localFullBookUri)
         writeString(remoteFullBookUri)
-        writeSerializable(localMapChapterUriTitle)
-        writeSerializable(remoteMapChapterUriTitle)
+        writeStringList(remoteChapterTitles)
+        writeStringList(remoteChapterUris)
         writeString(localCoverUri)
         writeString(localPosterUri)
         writeString(remoteCoverUri)
         writeString(remotePosterUri)
-        writeInt((if (isComplete) 1 else 0))
+        writeInt((if (isLaunchedComplete) 1 else 0))
+        writeInt((if(isCurrentlyComplete) 1 else 0))
         writeInt(periodicity.ordinal)
         writeString(synopsis)
     }

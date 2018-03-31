@@ -17,7 +17,6 @@
         android:layout_marginTop="8dp"
         app:enabled="true"
         app:hasClearButton="true"
-        app:labelText="@string/book_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

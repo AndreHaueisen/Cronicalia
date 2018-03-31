@@ -10,8 +10,22 @@ import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
  */
 class MyCreationsModel(private val mFileRepository: FileRepository, private val mDataRepository: DataRepository){
 
+    enum class SimpleUpdateVariable{
+        TITLE, SYNOPSIS, PERIODICITY, GENRE
+    }
+
     fun updateBookOnDatabase(book: Book){
         mDataRepository.setBookDocuments(book, sendProgressUpdate = false)
+    }
+
+    fun simpleUpdateBook(newValue: String, collectionLocation: String, bookKey: String, variableToUpdate: SimpleUpdateVariable){
+
+        when(variableToUpdate){
+            SimpleUpdateVariable.TITLE -> mDataRepository.updateBookTitle(newValue, collectionLocation, bookKey)
+            SimpleUpdateVariable.SYNOPSIS -> mDataRepository.updateBookSynopsis(newValue, collectionLocation, bookKey)
+            SimpleUpdateVariable.GENRE -> mDataRepository.updateBookGenre(newValue, collectionLocation, bookKey)
+            SimpleUpdateVariable.PERIODICITY -> mDataRepository.updateBookPeriodicity(newValue, collectionLocation, bookKey)
+        }
     }
 
     suspend fun updateBookPoster(book: Book): SubscriptionReceiveChannel<Int?> {

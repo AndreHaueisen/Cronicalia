@@ -2,11 +2,9 @@ package com.andrehaueisen.cronicalia.d_create_book.mvp
 
 import android.app.Activity
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
-import android.provider.OpenableColumns
 import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
@@ -20,6 +18,7 @@ import com.andrehaueisen.cronicalia.*
 import com.andrehaueisen.cronicalia.d_create_book.SelectedFilesAdapter
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.createBookPictureDirectory
+import com.andrehaueisen.cronicalia.utils.extensions.getFileTitle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -33,7 +32,6 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
-import java.io.File
 
 
 /**
@@ -54,9 +52,8 @@ class CreateBookView(
     }
 
     private lateinit var mImageDestination: ImageDestination
-    private val mBook: Book
+    private val mBookIsolated: Book
     private val mUploadDialog = UploadProgressDialog(mActivity)
-    private val mUriTitleLinkedMap = linkedMapOf<String, String>()
 
     interface UploadState {
         fun onUploadStateChanged(progress: Int)
@@ -64,17 +61,14 @@ class CreateBookView(
 
     init {
         if (savedState != null) {
-            mBook = savedState.getParcelable(PARCELABLE_BOOK)
-            if (savedState.containsKey(PARCELABLE_URI_KEYS) && savedState.containsKey(PARCELABLE_TITLE_VALUES)) {
-                restoreLinkedMap(savedState.getStringArray(PARCELABLE_URI_KEYS), savedState.getStringArray(PARCELABLE_TITLE_VALUES))
-            }
+            mBookIsolated = savedState.getParcelable(PARCELABLE_BOOK)
             initiateChapterRecyclerView(savedState.getParcelable(PARCELABLE_LAYOUT_MANAGER))
             initiateAdapter()
             placeCoverImage()
             placePosterImage()
 
         } else {
-            mBook = Book(authorName = authorName, authorEmailId = emailId, bookPosition = mUserBookCount)
+            mBookIsolated = Book(authorName = authorName, authorEmailId = emailId, bookPosition = mUserBookCount)
             initiateChapterRecyclerView()
         }
 
@@ -124,8 +118,8 @@ class CreateBookView(
         mActivity.book_title_text_box.book_title_extended_edit_text.addTextChangedListener(object :
             TextWatcher {
             override fun afterTextChanged(title: Editable?) {
-                mBook.title = title.toString()
-                mBook.originalImmutableTitle = title.toString()
+                mBookIsolated.title = title.toString()
+                mBookIsolated.originalImmutableTitle = title.toString()
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -133,9 +127,9 @@ class CreateBookView(
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
 
-        mActivity.synopsis_title_text_box.book_synopsis_extended_edit_text.addTextChangedListener(object: TextWatcher{
+        mActivity.synopsis_title_text_box.book_synopsis_extended_edit_text.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(synopsis: Editable?) {
-                mBook.synopsis = synopsis.toString()
+                mBookIsolated.synopsis = synopsis.toString()
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -152,9 +146,9 @@ class CreateBookView(
             book_launch_status_radio_group.setOnCheckedChangeListener { _, _ ->
 
                 if (launch_full_book_radio_button.isChecked) {
-                    if (!mBook.isComplete) {
-                        mBook.isComplete = true
-                        mBook.periodicity = Book.ChapterPeriodicity.NONE
+                    if (!mBookIsolated.isLaunchedComplete) {
+                        mBookIsolated.isLaunchedComplete = true
+                        mBookIsolated.periodicity = Book.ChapterPeriodicity.NONE
                         periodicity_spinner.visibility = View.GONE
                         select_files_and_upload_button.text =
                                 mActivity.getString(R.string.select_book_file)
@@ -167,10 +161,10 @@ class CreateBookView(
 
                 } else {
 
-                    if (mBook.isComplete) {
-                        mBook.isComplete = false
-                        mBook.localFullBookUri = null
-                        mBook.periodicity = Book.ChapterPeriodicity.EVERY_DAY
+                    if (mBookIsolated.isLaunchedComplete) {
+                        mBookIsolated.isLaunchedComplete = false
+                        mBookIsolated.localFullBookUri = null
+                        mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_DAY
                         periodicity_spinner.setSelection(0)
                         periodicity_spinner.visibility = View.VISIBLE
                         select_files_and_upload_button.text =
@@ -209,7 +203,7 @@ class CreateBookView(
                 genre_spinner.onItemSelectedListener =
                         object : AdapterView.OnItemSelectedListener {
                             override fun onNothingSelected(p0: AdapterView<*>?) {
-                                mBook.genre = Book.BookGenre.UNDEFINED
+                                mBookIsolated.genre = Book.BookGenre.UNDEFINED
                             }
 
                             override fun onItemSelected(
@@ -220,16 +214,16 @@ class CreateBookView(
                             ) {
 
                                 when (itemPosition) {
-                                    0 -> mBook.genre = Book.BookGenre.ACTION
-                                    1 -> mBook.genre = Book.BookGenre.FICTION
-                                    2 -> mBook.genre = Book.BookGenre.ROMANCE
-                                    3 -> mBook.genre = Book.BookGenre.COMEDY
-                                    4 -> mBook.genre = Book.BookGenre.DRAMA
-                                    5 -> mBook.genre = Book.BookGenre.HORROR
-                                    6 -> mBook.genre = Book.BookGenre.SATIRE
-                                    7 -> mBook.genre = Book.BookGenre.FANTASY
-                                    8 -> mBook.genre = Book.BookGenre.MYTHOLOGY
-                                    9 -> mBook.genre = Book.BookGenre.ADVENTURE
+                                    0 -> mBookIsolated.genre = Book.BookGenre.ACTION
+                                    1 -> mBookIsolated.genre = Book.BookGenre.FICTION
+                                    2 -> mBookIsolated.genre = Book.BookGenre.ROMANCE
+                                    3 -> mBookIsolated.genre = Book.BookGenre.COMEDY
+                                    4 -> mBookIsolated.genre = Book.BookGenre.DRAMA
+                                    5 -> mBookIsolated.genre = Book.BookGenre.HORROR
+                                    6 -> mBookIsolated.genre = Book.BookGenre.SATIRE
+                                    7 -> mBookIsolated.genre = Book.BookGenre.FANTASY
+                                    8 -> mBookIsolated.genre = Book.BookGenre.MYTHOLOGY
+                                    9 -> mBookIsolated.genre = Book.BookGenre.ADVENTURE
                                 }
                                 changeLaunchDescriptionText()
                             }
@@ -247,7 +241,7 @@ class CreateBookView(
                 language_spinner.onItemSelectedListener =
                         object : AdapterView.OnItemSelectedListener {
                             override fun onNothingSelected(p0: AdapterView<*>?) {
-                                mBook.language = Book.BookLanguage.UNDEFINED
+                                mBookIsolated.language = Book.BookLanguage.UNDEFINED
                             }
 
                             override fun onItemSelected(
@@ -258,9 +252,9 @@ class CreateBookView(
                             ) {
 
                                 when (itemPosition) {
-                                    0 -> mBook.language = Book.BookLanguage.ENGLISH
-                                    1 -> mBook.language = Book.BookLanguage.PORTUGUESE
-                                    2 -> mBook.language = Book.BookLanguage.DEUTSCH
+                                    0 -> mBookIsolated.language = Book.BookLanguage.ENGLISH
+                                    1 -> mBookIsolated.language = Book.BookLanguage.PORTUGUESE
+                                    2 -> mBookIsolated.language = Book.BookLanguage.DEUTSCH
                                 }
                                 changeLaunchDescriptionText()
                             }
@@ -280,7 +274,7 @@ class CreateBookView(
                 periodicity_spinner.onItemSelectedListener =
                         object : AdapterView.OnItemSelectedListener {
                             override fun onNothingSelected(adapter: AdapterView<*>?) {
-                                mBook.periodicity = Book.ChapterPeriodicity.NONE
+                                mBookIsolated.periodicity = Book.ChapterPeriodicity.NONE
                             }
 
                             override fun onItemSelected(
@@ -290,12 +284,12 @@ class CreateBookView(
                                 id: Long
                             ) {
                                 when (itemPosition) {
-                                    0 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_DAY
-                                    1 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_3_DAYS
-                                    2 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_7_DAYS
-                                    3 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_14_DAYS
-                                    4 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_30_DAYS
-                                    5 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_42_DAYS
+                                    0 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_DAY
+                                    1 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_3_DAYS
+                                    2 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_7_DAYS
+                                    3 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_14_DAYS
+                                    4 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_30_DAYS
+                                    5 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_42_DAYS
                                 }
                                 changeLaunchDescriptionText()
                             }
@@ -323,11 +317,11 @@ class CreateBookView(
             val languageText = selectedLanguageView?.text?.toString()?.toLowerCase()
                     ?: getString(R.string.language)
 
-            if (mBook.isComplete) {
+            if (mBookIsolated.isLaunchedComplete) {
                 launch_description_text_view.text =
                         String.format(launchDescriptionArray[0], genreText, languageText)
             } else {
-                when (mBook.periodicity) {
+                when (mBookIsolated.periodicity) {
                     Book.ChapterPeriodicity.EVERY_DAY -> launch_description_text_view.text =
                             String.format(
                                 launchDescriptionArray[1],
@@ -340,7 +334,7 @@ class CreateBookView(
                             launchDescriptionArray[2],
                             genreText,
                             languageText,
-                            mBook.periodicity.getPeriodicity()
+                            mBookIsolated.periodicity.getPeriodicity()
                         )
                     }
                 }
@@ -354,7 +348,7 @@ class CreateBookView(
             mUploadDialog.show()
 
             launch(CommonPool) {
-                (mActivity as CreateBookActivity).uploadBookFiles(mBook, mUriTitleLinkedMap).consumeEach { progress ->
+                (mActivity as CreateBookActivity).uploadBookFiles(mBookIsolated).consumeEach { progress ->
                     progress?.let { launch(UI) { mUploadDialog.onUploadStateChanged(it) } }
                 }
             }
@@ -367,7 +361,7 @@ class CreateBookView(
                 //upload else select file
                 if (adapter != null) {
 
-                    if (adapter.areChapterTitlesValid() && mBook.isBookTitleValid(this) && mBook.isSynopsisValid(this)) {
+                    if (adapter.areChapterTitlesValid() && mBookIsolated.isBookTitleValid(this) && mBookIsolated.isSynopsisValid(this)) {
                         uploadBookData()
                     } else
                         Toasty.error(this, getString(R.string.invalid_text_detected)).show()
@@ -420,14 +414,10 @@ class CreateBookView(
     fun onSaveInstanceState(bundle: Bundle): Bundle {
 
         if (mActivity.chapters_recycler_view.adapter != null) {
-            (mActivity.chapters_recycler_view.adapter as SelectedFilesAdapter).organizeLinkedMap()
-
-            bundle.putStringArray(PARCELABLE_URI_KEYS, getUrisFromLinkedMap())
-            bundle.putStringArray(PARCELABLE_TITLE_VALUES, getTitlesFromLinkedMap())
             bundle.putParcelable(PARCELABLE_LAYOUT_MANAGER, mActivity.chapters_recycler_view.layoutManager.onSaveInstanceState())
         }
 
-        bundle.putParcelable(PARCELABLE_BOOK, mBook)
+        bundle.putParcelable(PARCELABLE_BOOK, mBookIsolated)
         return bundle
     }
 
@@ -435,24 +425,24 @@ class CreateBookView(
 
         when (mImageDestination) {
             ImageDestination.COVER -> {
-                mBook.localCoverUri = pictureUri.toString()
+                mBookIsolated.localCoverUri = pictureUri.toString()
                 placeCoverImage()
             }
             ImageDestination.POSTER -> {
-                mBook.localPosterUri = pictureUri.toString()
+                mBookIsolated.localPosterUri = pictureUri.toString()
                 placePosterImage()
             }
         }
     }
 
     private fun placeCoverImage() {
-        mBook.localCoverUri?.let {
+        mBookIsolated.localCoverUri?.let {
             val requestOptions =
                 RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE).skipMemoryCache(true)
             val transitionOptions = DrawableTransitionOptions.withCrossFade()
 
             Glide.with(mActivity)
-                .load(Uri.parse(mBook.localCoverUri))
+                .load(Uri.parse(mBookIsolated.localCoverUri))
                 .apply(requestOptions)
                 .transition(transitionOptions)
                 .into(mActivity.book_cover_image_view)
@@ -460,13 +450,13 @@ class CreateBookView(
     }
 
     private fun placePosterImage() {
-        mBook.localPosterUri?.let {
+        mBookIsolated.localPosterUri?.let {
             val requestOptions =
                 RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE).skipMemoryCache(true)
             val transitionOptions = DrawableTransitionOptions.withCrossFade()
 
             Glide.with(mActivity)
-                .load(Uri.parse(mBook.localPosterUri))
+                .load(Uri.parse(mBookIsolated.localPosterUri))
                 .apply(requestOptions)
                 .transition(transitionOptions)
                 .into(mActivity.book_poster_image_view)
@@ -474,80 +464,37 @@ class CreateBookView(
     }
 
     override fun onFullBookPDFFileReady(fileUri: Uri) {
-        mBook.localFullBookUri = fileUri.toString()
+        mBookIsolated.localFullBookUri = fileUri.toString()
         initiateAdapter()
     }
 
     override fun onSeriesChaptersPDFsFilesReady(filesUris: ArrayList<Uri>) {
 
         filesUris.forEach { fileUri ->
-            val initialTitle = getFileTitle(fileUri)
+            val initialTitle = mActivity.getFileTitle(fileUri)
             if (initialTitle != null) {
-                mUriTitleLinkedMap[fileUri.toString()] = initialTitle.substringBefore('.')
+                mBookIsolated.remoteChapterUris.add(fileUri.toString())
+                mBookIsolated.remoteChapterTitles.add(initialTitle.substringBefore('.'))
             } else {
-                mUriTitleLinkedMap[fileUri.toString()] = ""
+                mBookIsolated.remoteChapterUris.add(fileUri.toString())
+                mBookIsolated.remoteChapterTitles.add("")
             }
         }
         initiateAdapter()
     }
 
     private fun initiateAdapter() {
-        if (mBook.localFullBookUri != null) {
-            mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(
-                mActivity,
-                mActivity.chapters_recycler_view,
-                mBookFileTitle = getFileTitle(Uri.parse(mBook.localFullBookUri))
-            )
-            mActivity.select_files_and_upload_button.text = mActivity.getString(R.string.confirm)
 
-        } else if (mUriTitleLinkedMap.isNotEmpty()) {
-            mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(
-                mActivity,
-                mActivity.chapters_recycler_view,
-                mUriTitleLinkedMap
-            )
+        mActivity.chapters_recycler_view.adapter = SelectedFilesAdapter(
+            mActivity,
+            mActivity.chapters_recycler_view,
+            mBookIsolated
+        )
+        mActivity.select_files_and_upload_button.text = mActivity.getString(R.string.confirm)
 
-            mActivity.select_files_and_upload_button.text = mActivity.getString(R.string.confirm)
-        }
     }
 
     override fun onError(exception: Exception) {
         Toasty.error(mActivity, mActivity.getString(R.string.resource_error)).show()
     }
-
-    private fun getFileTitle(uri: Uri): String? {
-        val uriString = uri.toString()
-        val myFile = File(uriString)
-
-        if (uriString.startsWith("content://")) {
-            var cursor: Cursor? = null
-
-            try {
-                cursor = mActivity.contentResolver.query(uri, null, null, null, null)
-                if (cursor != null && cursor.moveToFirst()) {
-                    return cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                }
-            } finally {
-                cursor?.close()
-            }
-
-        } else if (uriString.startsWith("file://")) {
-            return myFile.name
-        }
-
-        return null
-    }
-
-    private fun getUrisFromLinkedMap(): Array<String>{
-        return mUriTitleLinkedMap.keys.toTypedArray()
-    }
-
-    private fun getTitlesFromLinkedMap(): Array<String>{
-        return mUriTitleLinkedMap.values.toTypedArray()
-    }
-
-    private fun restoreLinkedMap(keys: Array<String>, values: Array<String>){
-        keys.forEachIndexed { index, key ->  mUriTitleLinkedMap[key] = values[index] }
-    }
-
 }

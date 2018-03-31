@@ -99,13 +99,13 @@ class MyCreationsAdapter(private val mFragment: MyCreationsViewFragment, private
             mReadingsTextView.text = mFragment.getString(R.string.simple_number_integer, book.readingNumber)
             mBookTitleTextView.text = book.title
             mBookSynopsisTextView.text = book.synopsis
-            if (book.isComplete) {
+            if (book.isLaunchedComplete) {
                 mBookStatusTextView.text = mFragment.getString(R.string.book_is_complete)
             } else {
                 mBookStatusTextView.text = mFragment.resources.getQuantityString(
                     R.plurals.chapter_number,
-                    book.remoteMapChapterUriTitle.size,
-                    book.remoteMapChapterUriTitle.size
+                    book.remoteChapterTitles.size,
+                    book.remoteChapterTitles.size
                 )
             }
 

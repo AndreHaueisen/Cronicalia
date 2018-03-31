@@ -4,7 +4,10 @@ package com.andrehaueisen.cronicalia.utils.extensions
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
@@ -12,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
 import com.andrehaueisen.cronicalia.SHARED_PREFERENCES
+import java.io.File
 
 /**
  * Created by andre on 2/19/2018.
@@ -80,6 +84,29 @@ inline fun <reified T : Any> Context.putValueOnSharedPreferences(key: String, da
     }
 
     editor.apply()
+}
+
+fun Context.getFileTitle(uri: Uri): String? {
+    val uriString = uri.toString()
+    val myFile = File(uriString)
+
+    if (uriString.startsWith("content://")) {
+        var cursor: Cursor? = null
+
+        try {
+            cursor = this.contentResolver.query(uri, null, null, null, null)
+            if (cursor != null && cursor.moveToFirst()) {
+                return cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+            }
+        } finally {
+            cursor?.close()
+        }
+
+    } else if (uriString.startsWith("file://")) {
+        return myFile.name
+    }
+
+    return null
 }
 
 fun Context.pullStringFromSharedPreferences(key: String): String =

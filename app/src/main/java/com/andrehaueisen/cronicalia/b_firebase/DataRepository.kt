@@ -40,7 +40,7 @@ class DataRepository(
     }*/
 
     /**
-     * Updates book on user collection and on book collection. Creates if book does not exists
+     * Updates full book on user collection and on book collection. Creates if book does not exists
      */
     fun setBookDocuments(book: Book, sendProgressUpdate: Boolean = true) {
         val batch = mDatabaseInstance.batch()
@@ -64,6 +64,51 @@ class DataRepository(
             })
 
     }
+
+    fun updateBookTitle(newTitle: String, collectionLocation: String, bookKey: String){
+        val batch = mDatabaseInstance.batch()
+
+        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
+        val booksLocationReference = mDatabaseInstance.collection(collectionLocation).document(bookKey)
+
+        batch.update(userDataLocationReference, "books.$bookKey.title", newTitle)
+        batch.update(booksLocationReference, "title", newTitle)
+        batch.commit()
+    }
+
+    fun updateBookSynopsis(newSynopsis: String, collectionLocation: String, bookKey: String){
+        val batch = mDatabaseInstance.batch()
+
+        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
+        val booksLocationReference = mDatabaseInstance.collection(collectionLocation).document(bookKey)
+
+        batch.update(userDataLocationReference, "books.$bookKey.synopsis", newSynopsis)
+        batch.update(booksLocationReference, "synopsis", newSynopsis)
+        batch.commit()
+    }
+
+    fun updateBookGenre(newGenre: String, collectionLocation: String, bookKey: String){
+        val batch = mDatabaseInstance.batch()
+
+        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
+        val booksLocationReference = mDatabaseInstance.collection(collectionLocation).document(bookKey)
+
+        batch.update(userDataLocationReference, "books.$bookKey.genre", newGenre)
+        batch.update(booksLocationReference, "genre", newGenre)
+        batch.commit()
+    }
+
+    fun updateBookPeriodicity(newPeriodicity: String, collectionLocation: String, bookKey: String){
+        val batch = mDatabaseInstance.batch()
+
+        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
+        val booksLocationReference = mDatabaseInstance.collection(collectionLocation).document(bookKey)
+
+        batch.update(userDataLocationReference, "books.$bookKey.periodicity", newPeriodicity)
+        batch.update(booksLocationReference, "periodicity", newPeriodicity)
+        batch.commit()
+    }
+
 
     fun loadLoggingInUser(userEncodedEmail: String, activity: Activity) {
         mDatabaseInstance.collection(COLLECTION_USERS).document(userEncodedEmail).get()

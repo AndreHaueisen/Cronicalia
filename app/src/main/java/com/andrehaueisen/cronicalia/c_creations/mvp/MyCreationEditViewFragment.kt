@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.andrehaueisen.cronicalia.*
 import com.andrehaueisen.cronicalia.c_creations.EditTextDialog
+import com.andrehaueisen.cronicalia.c_creations.EditionFilesAdapter
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.createBookPictureDirectory
 import com.bumptech.glide.Glide
@@ -33,7 +35,7 @@ import java.io.File
  */
 class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.PresenterActivity, EditTextDialog.BookChangesListener {
 
-    private lateinit var mBook: Book
+    private lateinit var mBookIsolated: Book
     private lateinit var mImageDestination: ImageDestination
     private lateinit var mPosterImageView: ImageView
     private lateinit var mCoverImageView: ImageView
@@ -69,7 +71,7 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
 
         val view = inflater.inflate(R.layout.c_fragment_my_creation_edit, container, false)
 
-        mBook = arguments?.getParcelable(PARCELABLE_BOOK)!!
+        mBookIsolated = arguments?.getParcelable(PARCELABLE_BOOK)!!
 
         mPosterImageView = view.findViewById(R.id.poster_image_view)
         mCoverImageView = view.findViewById(R.id.cover_image_view)
@@ -84,31 +86,33 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
         mAddChapterFab = view.findViewById(R.id.add_chapter_fab)
         mDeleteBookFab = view.findViewById(R.id.delete_book_fab)
 
-        if (!mBook.isComplete) {
+        if (!mBookIsolated.isLaunchedComplete) {
             mGenreSpinner.visibility = View.VISIBLE
             mPeriodicitySpinner.visibility = View.VISIBLE
             mAddChapterFab.visibility = View.VISIBLE
-            mChaptersRecyclerView.visibility = View.VISIBLE
         }
 
         initiateTitleTextView()
         initiateSynopsisTextView()
         initiateImageViews()
         initiateSpinners()
+        initiateRecyclerView()
+        initiateFabs()
         bindDataToViews()
+        setSpinnersListener()
 
         return view
     }
 
     private fun initiateTitleTextView() {
         mTitleTextView.setOnClickListener {
-            EditTextDialog(this, EditTextDialog.ViewBeingEdited.TITLE_VIEW, mBook).show()
+            EditTextDialog(this, EditTextDialog.ViewBeingEdited.TITLE_VIEW, mBookIsolated).show()
         }
     }
 
     private fun initiateSynopsisTextView() {
         mSynopsisTextView.setOnClickListener {
-            EditTextDialog(this, EditTextDialog.ViewBeingEdited.SYNOPSIS_VIEW, mBook).show()
+            EditTextDialog(this, EditTextDialog.ViewBeingEdited.SYNOPSIS_VIEW, mBookIsolated).show()
         }
     }
 
@@ -117,13 +121,13 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
             val file: File
             val directoryName: String
 
-            if (mBook != null && mBook?.localCoverUri != null) {
-                directoryName = mBook!!.localCoverUri!!.substringBeforeLast("/").substringAfterLast("/")
+            if (mBookIsolated.localCoverUri != null) {
+                directoryName = mBookIsolated.localCoverUri!!.substringBeforeLast("/").substringAfterLast("/")
                 file = activity!!
                     .cacheDir
                     .createBookPictureDirectory(directoryName, FILE_NAME_BOOK_COVER)
             } else {
-                file = context!!.cacheDir.createBookPictureDirectory("book_0${mBook?.bookPosition}", FILE_NAME_BOOK_COVER)
+                file = context!!.cacheDir.createBookPictureDirectory("book_0${mBookIsolated.bookPosition}", FILE_NAME_BOOK_COVER)
             }
 
             CropImage.activity()
@@ -138,7 +142,7 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
         }
 
         mPosterImageView.setOnClickListener {
-            val directoryName = mBook?.localCoverUri?.substringBeforeLast("/")?.substringAfterLast("/")
+            val directoryName = mBookIsolated.localCoverUri?.substringBeforeLast("/")?.substringAfterLast("/")
 
             if (directoryName != null) {
                 val file = activity!!
@@ -163,58 +167,46 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
             val adapter = ArrayAdapter.createFromResource(context, R.array.genre_array, R.layout.item_spinner)
             adapter.setDropDownViewResource(R.layout.item_dropdown_spinner)
             mGenreSpinner.adapter = adapter
-            mGenreSpinner.onItemSelectedListener =
-                    object : AdapterView.OnItemSelectedListener {
-                        override fun onNothingSelected(p0: AdapterView<*>?) {
-                            mBook.genre = Book.BookGenre.UNDEFINED
-                        }
-
-                        override fun onItemSelected(adapter: AdapterView<*>?, clickedView: View?, itemPosition: Int, id: Long) {
-
-                            when (itemPosition) {
-                                0 -> mBook.genre = Book.BookGenre.ACTION
-                                1 -> mBook.genre = Book.BookGenre.FICTION
-                                2 -> mBook.genre = Book.BookGenre.ROMANCE
-                                3 -> mBook.genre = Book.BookGenre.COMEDY
-                                4 -> mBook.genre = Book.BookGenre.DRAMA
-                                5 -> mBook.genre = Book.BookGenre.HORROR
-                                6 -> mBook.genre = Book.BookGenre.SATIRE
-                                7 -> mBook.genre = Book.BookGenre.FANTASY
-                                8 -> mBook.genre = Book.BookGenre.MYTHOLOGY
-                                9 -> mBook.genre = Book.BookGenre.ADVENTURE
-                            }
-                            notifySimpleChange()
-                        }
-                    }
         }
 
         fun setPeriodicitySpinner() {
-
             val adapter = ArrayAdapter.createFromResource(context, R.array.periodicity_array, R.layout.item_spinner)
-
             adapter.setDropDownViewResource(R.layout.item_dropdown_spinner)
             mPeriodicitySpinner.adapter = adapter
-            mPeriodicitySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(adapter: AdapterView<*>?) {
-                    mBook.periodicity = Book.ChapterPeriodicity.NONE
-                }
-
-                override fun onItemSelected(adapter: AdapterView<*>?, clickedView: View?, itemPosition: Int, id: Long) {
-                    when (itemPosition) {
-                        0 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_DAY
-                        1 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_3_DAYS
-                        2 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_7_DAYS
-                        3 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_14_DAYS
-                        4 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_30_DAYS
-                        5 -> mBook.periodicity = Book.ChapterPeriodicity.EVERY_42_DAYS
-                    }
-                    notifySimpleChange()
-                }
-            }
         }
 
         setGenreSpinner()
         setPeriodicitySpinner()
+    }
+
+    private fun initiateRecyclerView(){
+        mChaptersRecyclerView.layoutManager = LinearLayoutManager(context!!)
+        mChaptersRecyclerView.setHasFixedSize(true)
+        mChaptersRecyclerView.adapter = EditionFilesAdapter(this, mChaptersRecyclerView, mBookIsolated)
+    }
+
+    private fun initiateFabs(){
+        if(mBookIsolated.isLaunchedComplete){
+
+            mAddChapterFab.visibility = View.GONE
+            mDeleteBookFab.visibility = View.GONE
+
+        } else {
+
+            mAddChapterFab.setOnClickListener {
+                val allowMultipleFiles = false
+
+                val intent = Intent()
+                intent.type = "application/pdf"
+                intent.action = Intent.ACTION_GET_CONTENT
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, allowMultipleFiles)
+
+                startActivityForResult(Intent.createChooser(intent, "Select Pdf"), PDF_ADD_CODE, null)
+            }
+
+            mDeleteBookFab.setOnClickListener {  }
+        }
+
     }
 
     private fun bindDataToViews() {
@@ -222,22 +214,69 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
         val requestOptions = RequestOptions().skipMemoryCache(true)
 
         Glide.with(this)
-            .load(mBook.remotePosterUri)
+            .load(mBookIsolated.remotePosterUri)
             .apply(requestOptions)
             .into(mPosterImageView)
 
         Glide.with(this)
-            .load(mBook.remoteCoverUri)
+            .load(mBookIsolated.remoteCoverUri)
             .apply(requestOptions)
             .into(mCoverImageView)
 
-        mTitleTextView.text = mBook.title
-        mSynopsisTextView.text = mBook.synopsis
-        mReadingsTextView.text = getString(R.string.simple_number_integer, mBook.readingNumber)
-        mRatingTextView.text = getString(R.string.simple_number_float, mBook.rating)
-        mIncomeTextView.text = getString(R.string.income_amount, mBook.income)
-        mGenreSpinner.setSelection(mBook.convertGenreToPosition())
-        mPeriodicitySpinner.setSelection(mBook.convertPeriodicityToPosition())
+        mTitleTextView.text = mBookIsolated.title
+        mSynopsisTextView.text = mBookIsolated.synopsis
+        mReadingsTextView.text = getString(R.string.simple_number_integer, mBookIsolated.readingNumber)
+        mRatingTextView.text = getString(R.string.simple_number_float, mBookIsolated.rating)
+        mIncomeTextView.text = getString(R.string.income_amount, mBookIsolated.income)
+        mGenreSpinner.setSelection(mBookIsolated.convertGenreToPosition())
+        mPeriodicitySpinner.setSelection(mBookIsolated.convertPeriodicityToPosition())
+    }
+
+    private fun setSpinnersListener(){
+
+        mGenreSpinner.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onNothingSelected(p0: AdapterView<*>?) {
+                        mBookIsolated.genre = Book.BookGenre.UNDEFINED
+                    }
+
+                    override fun onItemSelected(adapter: AdapterView<*>?, clickedView: View?, itemPosition: Int, id: Long) {
+
+                        when (itemPosition) {
+                            0 -> mBookIsolated.genre = Book.BookGenre.ACTION
+                            1 -> mBookIsolated.genre = Book.BookGenre.FICTION
+                            2 -> mBookIsolated.genre = Book.BookGenre.ROMANCE
+                            3 -> mBookIsolated.genre = Book.BookGenre.COMEDY
+                            4 -> mBookIsolated.genre = Book.BookGenre.DRAMA
+                            5 -> mBookIsolated.genre = Book.BookGenre.HORROR
+                            6 -> mBookIsolated.genre = Book.BookGenre.SATIRE
+                            7 -> mBookIsolated.genre = Book.BookGenre.FANTASY
+                            8 -> mBookIsolated.genre = Book.BookGenre.MYTHOLOGY
+                            9 -> mBookIsolated.genre = Book.BookGenre.ADVENTURE
+                        }
+                        notifySimpleChange(mBookIsolated.genre.toString(), MyCreationsModel.SimpleUpdateVariable.GENRE)
+                    }
+                }
+
+
+        mPeriodicitySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(adapter: AdapterView<*>?) {
+                mBookIsolated.periodicity = Book.ChapterPeriodicity.NONE
+            }
+
+            override fun onItemSelected(adapter: AdapterView<*>?, clickedView: View?, itemPosition: Int, id: Long) {
+                when (itemPosition) {
+                    0 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_DAY
+                    1 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_3_DAYS
+                    2 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_7_DAYS
+                    3 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_14_DAYS
+                    4 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_30_DAYS
+                    5 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_42_DAYS
+                }
+
+                notifySimpleChange(mBookIsolated.periodicity.toString(), MyCreationsModel.SimpleUpdateVariable.PERIODICITY)
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -253,30 +292,18 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
                 }
             }
 
-            PDF_REQUEST_CODE -> {
-                /*val filesUris = arrayListOf<Uri>()
+            PDF_EDIT_CODE -> {
+
+                if (resultCode == Activity.RESULT_OK && data != null){
+                    (mChaptersRecyclerView.adapter as EditionFilesAdapter).onEditFileReady(data.data)
+                }
+            }
+
+            PDF_ADD_CODE -> {
 
                 if (resultCode == Activity.RESULT_OK && data != null) {
-
-                    if (mBookView.isLaunchingFullBook()) {
-                        mBookView.onFullBookPDFFileReady(data.data)
-                    } else {
-                        //Has selected several chapters
-                        if (data.clipData != null) {
-
-                            (0 until (data.clipData.itemCount)).mapTo(filesUris) { index ->
-                                data.clipData.getItemAt(index).uri
-                            }
-                            mBookView.onSeriesChaptersPDFsFilesReady(filesUris)
-                            //Has selected one chapter
-                        } else {
-                            mBookView.onSeriesChaptersPDFsFilesReady(arrayListOf(data.data))
-                        }
-                    }
-
-                } else {
-                    mBookView.onError(Exception(getString(R.string.resource_error)))
-                }*/
+                    (mChaptersRecyclerView.adapter as EditionFilesAdapter).onAddFileReady(data.data)
+                }
             }
         }
     }
@@ -284,30 +311,30 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
     private fun onImageReady(pictureUri: Uri) {
         when (mImageDestination) {
             ImageDestination.COVER -> {
-                mBook.localCoverUri = pictureUri.toString()
+                mBookIsolated.localCoverUri = pictureUri.toString()
                 placeAndUploadCoverImage()
             }
             ImageDestination.POSTER -> {
-                mBook.localPosterUri = pictureUri.toString()
+                mBookIsolated.localPosterUri = pictureUri.toString()
                 placeAndUploadPosterImage()
             }
         }
     }
 
     private fun placeAndUploadCoverImage() {
-        mBook.localCoverUri?.let {
+        mBookIsolated.localCoverUri?.let {
             val requestOptions =
                 RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE).skipMemoryCache(true)
             val transitionOptions = DrawableTransitionOptions.withCrossFade()
 
             Glide.with(context!!)
-                .load(Uri.parse(mBook.localCoverUri))
+                .load(Uri.parse(mBookIsolated.localCoverUri))
                 .apply(requestOptions)
                 .transition(transitionOptions)
                 .into(mCoverImageView)
 
             launch(CommonPool) {
-                (activity as? MyCreationsPresenterActivity)?.updateBookCover(mBook)?.consumeEach { progress ->
+                (activity as? MyCreationsPresenterActivity)?.updateBookCover(mBookIsolated)?.consumeEach { progress ->
                     progress?.let {
                         launch(UI) {
                             if (progress == UPLOAD_STATUS_FAIL)
@@ -323,19 +350,19 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
     }
 
     private fun placeAndUploadPosterImage() {
-        mBook.localPosterUri?.let {
+        mBookIsolated.localPosterUri?.let {
             val requestOptions =
                 RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE).skipMemoryCache(true)
             val transitionOptions = DrawableTransitionOptions.withCrossFade()
 
             Glide.with(context!!)
-                .load(Uri.parse(mBook.localPosterUri))
+                .load(Uri.parse(mBookIsolated.localPosterUri))
                 .apply(requestOptions)
                 .transition(transitionOptions)
                 .into(mPosterImageView)
 
             launch(CommonPool) {
-                (activity as? MyCreationsPresenterActivity)?.updateBookPoster(mBook)?.consumeEach { progress ->
+                (activity as? MyCreationsPresenterActivity)?.updateBookPoster(mBookIsolated)?.consumeEach { progress ->
                     progress?.let {
                         launch(UI) {
                             if (progress == UPLOAD_STATUS_FAIL)
@@ -355,20 +382,24 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
 
     override fun notifyTitleChange(title: String) {
         mTitleTextView.text = title
-        notifySimpleChange()
+        notifySimpleChange(title, MyCreationsModel.SimpleUpdateVariable.TITLE)
     }
 
     override fun notifySynopsisChange(synopsis: String) {
         mSynopsisTextView.text = synopsis
-        notifySimpleChange()
+        notifySimpleChange(synopsis, MyCreationsModel.SimpleUpdateVariable.SYNOPSIS)
     }
 
-    private fun notifySimpleChange() {
-        (activity as? MyCreationsPresenterActivity)?.notifyBookEditionToDatabase(mBook)
+    private fun notifySimpleChange(newValue: String, variableToUpdate: MyCreationsModel.SimpleUpdateVariable) {
+
+        val collectionLocation = mBookIsolated.getDatabaseCollectionLocation()
+        val bookKey = mBookIsolated.generateBookKey()
+
+        (activity as? MyCreationsPresenterActivity)?.notifySimpleBookEdition(newValue, collectionLocation, bookKey, variableToUpdate)
     }
 
     override fun refreshFragmentData(book: Book) {
-        mBook = book
+        mBookIsolated = book
 
         bindDataToViews()
     }

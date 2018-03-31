@@ -28,11 +28,11 @@ class FileRepository(
     private var mTasksReadyCounter = 0
 
     suspend fun createBook(
-        book: Book, uriTitleLinkedMap: LinkedHashMap<String, String>, dataRepository: DataRepository
+        book: Book, dataRepository: DataRepository
     ): SubscriptionReceiveChannel<Int?> {
 
         var uploadTask: UploadTask
-        val progressCap = getProgressCap(book, uriTitleLinkedMap)
+        val progressCap = getProgressCap(book)
         var currentProgress = 0.0
 
         val maxTaskCount = (progressCap).toInt()
@@ -44,7 +44,7 @@ class FileRepository(
 
         fun uploadPdfs() {
 
-            if (book.isComplete) {
+            if (book.isLaunchedComplete) {
                 val filePath = Uri.parse(book.localFullBookUri!!)
                 uploadTask = locationReference.child("${book.originalImmutableTitle}.pdf".replace(" ", ""))
                     .putFile(filePath)
@@ -74,11 +74,12 @@ class FileRepository(
                 }
 
             } else {
-                uriTitleLinkedMap.keys.forEachIndexed { index, key ->
+                book.remoteChapterUris.forEachIndexed { index, key ->
+
                     val filePath = Uri.parse(key)
                     val chapterNumberMetadata =
                         StorageMetadata.Builder().setCustomMetadata(METADATA_CHAPTER_NUMBER, index.toString()).build()
-                    val chapterTitle = book.generateChapterRepositoryTitle(index, uriTitleLinkedMap[key]!!)
+                    val chapterTitle = book.remoteChapterTitles[index]
                     uploadTask = locationReference.child("$chapterTitle.pdf").putFile(filePath, chapterNumberMetadata)
                     uploadTask.addOnProgressListener { taskSnapshot ->
                         launch(UI) {
@@ -92,7 +93,8 @@ class FileRepository(
                     }.addOnSuccessListener { taskSnapshot ->
                         val uri = taskSnapshot.downloadUrl
                         uri?.let {
-                            book.remoteMapChapterUriTitle.put(it.toString(), chapterTitle)
+                            book.remoteChapterTitles.set(index, chapterTitle)
+                            book.remoteChapterUris.set(index, it.toString())
                         }
                         saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository)
                     }.addOnFailureListener { exception ->
@@ -272,15 +274,15 @@ class FileRepository(
     }
 
 
-    private fun getProgressCap(book: Book, uriTitleLinkedMap: LinkedHashMap<String, String>): Double {
+    private fun getProgressCap(book: Book): Double {
         var progressCap = 0.0
 
         book.localPosterUri?.let { progressCap += 1 }
         book.localCoverUri?.let { progressCap += 1 }
-        if (book.isComplete)
+        if (book.isLaunchedComplete)
             progressCap += 1
         else
-            uriTitleLinkedMap.keys.forEach { progressCap += 1 }
+            book.remoteChapterTitles.forEach { progressCap += 1 }
 
         return progressCap
     }

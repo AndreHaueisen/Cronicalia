@@ -11,6 +11,9 @@
     <string name="cover_update_fail">Cover update failed</string>
     <string name="poster_updated">Poster updated</string>
     <string name="poster_update_fail">Poster update failed</string>
+    <string name="remove">Remove</string>
+    <string name="change">Change</string>
+    <string name="one_file_selected_warning">There must be at least one file selected</string>
 
     <!--d_create_book strings -->
     <string name="create_new_book">Create new book</string>

@@ -100,8 +100,8 @@ class MyCreationsPresenterActivity : AppCompatActivity(), MyCreationsViewFragmen
         }*/
     }
 
-    fun notifyBookEditionToDatabase(book: Book){
-        mModel.updateBookOnDatabase(book)
+    fun notifySimpleBookEdition(newTitle: String, collectionLocation: String, bookKey: String, variableToUpdate: MyCreationsModel.SimpleUpdateVariable){
+        mModel.simpleUpdateBook(newTitle, collectionLocation, bookKey, variableToUpdate)
     }
 
     suspend fun updateBookPoster(book: Book): SubscriptionReceiveChannel<Int?> {

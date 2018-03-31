@@ -101,7 +101,7 @@ class CreateBookActivity : AppCompatActivity() {
         super.onSaveInstanceState(mBookView.onSaveInstanceState(outState))
     }
 
-    suspend fun uploadBookFiles(book: Book, uriTitleLinkedMap: LinkedHashMap<String, String>): SubscriptionReceiveChannel<Int?>{
-        return mModel.uploadBookFiles(book, uriTitleLinkedMap)
+    suspend fun uploadBookFiles(book: Book): SubscriptionReceiveChannel<Int?>{
+        return mModel.uploadBookFiles(book)
     }
 }

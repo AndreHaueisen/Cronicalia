@@ -34,7 +34,9 @@ const val FILE_NAME_BOOK_POSTER = "poster.jpg"
 const val FILE_NAME_BOOK_COVER = "cover.jpg"
 const val FILE_NAME_USER_PICTURE = "user_profile.jpg"
 
+const val PDF_ADD_CODE = 400
 const val PDF_REQUEST_CODE = 500
+const val PDF_EDIT_CODE = 600
 const val LOGIN_REQUEST_CODE = 700
 
 const val UPLOAD_STATUS_OK = 100
