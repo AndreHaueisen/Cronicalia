@@ -14,6 +14,9 @@
     <string name="remove">Remove</string>
     <string name="change">Change</string>
     <string name="one_file_selected_warning">There must be at least one file selected</string>
+    <string name="save_file_changes">Save Files Changes</string>
+    <string name="add_chapter">Add Chapter</string>
+    <string name="delete_book">Delete Book</string>
 
     <!--d_create_book strings -->
     <string name="create_new_book">Create new book</string>
@@ -29,6 +32,7 @@
     <string name="select_book_file">Select book file</string>
     <string name="select_chapters_files">Select chapters files</string>
     <string name="cancel">Cancel</string>
+    <string name="dismiss">Dismiss</string>
     <string name="chapter_number_hint">Chapter #%1$d title</string>
     <string name="error_title_blank">Title can not be blank</string>
     <string name="confirm">Confirm</string>
@@ -40,6 +44,7 @@
     <string name="english">english</string>
     <string name="progress_dialog_title">Creating book</string>
     <string name="progress_dialog_success">Book created</string>
+    <string name="progress_updating_book">Updating book</string>
     <string name="progress_dialog_fail">Error detected. Try again</string>
     <string name="check_internet_connection">Upload failed. No internet connection</string>
     <string name="background">Background</string>

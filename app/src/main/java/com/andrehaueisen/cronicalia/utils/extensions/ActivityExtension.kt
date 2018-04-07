@@ -25,8 +25,8 @@ fun AppCompatActivity.addFragment(containerId: Int, fragment: Fragment){
     this.supportFragmentManager.beginTransaction().add(containerId, fragment).commit()
 }
 
-fun AppCompatActivity.replaceFragment(containerId: Int, fragment: Fragment, stackTag : String? = null){
-    this.supportFragmentManager.beginTransaction().replace(containerId, fragment).addToBackStack(stackTag).commit()
+fun AppCompatActivity.replaceFragment(containerId: Int, fragment: Fragment, fragmentTag: String? = null, stackTag : String? = null){
+    this.supportFragmentManager.beginTransaction().replace(containerId, fragment, fragmentTag).addToBackStack(stackTag).commit()
 }
 
 fun Activity.getProperLayoutManager(orientation: Int = LinearLayoutManager.VERTICAL): RecyclerView.LayoutManager {

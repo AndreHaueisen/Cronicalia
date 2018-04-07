@@ -1,7 +1,9 @@
 package com.andrehaueisen.cronicalia.c_creations.mvp
 
 import android.os.Bundle
+import android.support.v4.util.ArraySet
 import android.support.v7.app.AppCompatActivity
+import com.andrehaueisen.cronicalia.BACK_STACK_CREATIONS_TO_EDIT_TAG
 import com.andrehaueisen.cronicalia.FRAGMENT_EDIT_CREATION_TAG
 import com.andrehaueisen.cronicalia.PARCELABLE_BOOK
 import com.andrehaueisen.cronicalia.R
@@ -112,6 +114,14 @@ class MyCreationsPresenterActivity : AppCompatActivity(), MyCreationsViewFragmen
         return mModel.updateBookCover(book)
     }
 
+    suspend fun updateBookPdfs(book: Book, filesToBeDeleted: ArraySet<String>): SubscriptionReceiveChannel<Int?>{
+        return mModel.updateBookPdfs(book, filesToBeDeleted)
+    }
+
+    fun updateBookPdfsReferences(book: Book){
+        mModel.updateBookPdfsReferences(book)
+    }
+
     override fun onCreationClick(bookKey: String) {
 
         if(getSmallestScreenWidth() >= 600){
@@ -130,7 +140,11 @@ class MyCreationsPresenterActivity : AppCompatActivity(), MyCreationsViewFragmen
                 val bundle = Bundle()
                 bundle.putParcelable(PARCELABLE_BOOK, mUser.books[bookKey]!!)
                 editCreationFragment = MyCreationEditViewFragment.newInstance(bundle)
-                replaceFragment(R.id.fragment_container, editCreationFragment)
+                replaceFragment(
+                    containerId = R.id.fragment_container,
+                    fragment = editCreationFragment,
+                    fragmentTag = FRAGMENT_EDIT_CREATION_TAG,
+                    stackTag = BACK_STACK_CREATIONS_TO_EDIT_TAG)
 
             } else {
                 if (editCreationFragment.isVisible)

@@ -34,8 +34,8 @@ data class Book(
     var isLaunchedComplete: Boolean = true,
     var isCurrentlyComplete: Boolean = true,
     var periodicity: ChapterPeriodicity = ChapterPeriodicity.NONE,
-    var synopsis: String? = null
-) : Serializable, Parcelable {
+    var synopsis: String? = null) : Serializable, Parcelable {
+
     enum class BookGenre {
         UNDEFINED,
         ACTION,
@@ -208,6 +208,15 @@ data class Book(
         ChapterPeriodicity.values()[source.readInt()],
         source.readString()
     )
+
+    override fun toString(): String {
+        var result = "\n"
+        remoteChapterUris.forEachIndexed{index, key ->
+            result += "${remoteChapterTitles[index]} : $key\n"
+        }
+
+        return result
+    }
 
     override fun describeContents() = 0
 

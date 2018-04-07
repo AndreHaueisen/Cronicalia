@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v4.util.ArraySet
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.andrehaueisen.cronicalia.c_creations.EditTextDialog
 import com.andrehaueisen.cronicalia.c_creations.EditionFilesAdapter
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.createBookPictureDirectory
+import com.andrehaueisen.cronicalia.utils.extensions.getSmallestScreenWidth
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -48,7 +50,10 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
     private lateinit var mPeriodicitySpinner: Spinner
     private lateinit var mChaptersRecyclerView: RecyclerView
     private lateinit var mAddChapterFab: FloatingActionButton
-    private lateinit var mDeleteBookFab: FloatingActionButton
+    private lateinit var mSaveFileChangesButton: Button
+    private lateinit var mDeleteBookFab: Button
+
+    private val mFileUrisToBeDeleted = ArraySet<String>()
 
     private enum class ImageDestination {
         COVER, POSTER
@@ -84,6 +89,7 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
         mPeriodicitySpinner = view.findViewById(R.id.periodicity_spinner)
         mChaptersRecyclerView = view.findViewById(R.id.chapters_recycler_view)
         mAddChapterFab = view.findViewById(R.id.add_chapter_fab)
+        mSaveFileChangesButton = view.findViewById(R.id.save_file_changes_button)
         mDeleteBookFab = view.findViewById(R.id.delete_book_fab)
 
         if (!mBookIsolated.isLaunchedComplete) {
@@ -97,7 +103,7 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
         initiateImageViews()
         initiateSpinners()
         initiateRecyclerView()
-        initiateFabs()
+        initiateButtons()
         bindDataToViews()
         setSpinnersListener()
 
@@ -179,17 +185,16 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
         setPeriodicitySpinner()
     }
 
-    private fun initiateRecyclerView(){
+    private fun initiateRecyclerView() {
         mChaptersRecyclerView.layoutManager = LinearLayoutManager(context!!)
         mChaptersRecyclerView.setHasFixedSize(true)
-        mChaptersRecyclerView.adapter = EditionFilesAdapter(this, mChaptersRecyclerView, mBookIsolated)
+        mChaptersRecyclerView.adapter = EditionFilesAdapter(this, mChaptersRecyclerView, mBookIsolated, mFileUrisToBeDeleted)
     }
 
-    private fun initiateFabs(){
-        if(mBookIsolated.isLaunchedComplete){
+    private fun initiateButtons() {
+        if (mBookIsolated.isLaunchedComplete) {
 
             mAddChapterFab.visibility = View.GONE
-            mDeleteBookFab.visibility = View.GONE
 
         } else {
 
@@ -204,9 +209,38 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
                 startActivityForResult(Intent.createChooser(intent, "Select Pdf"), PDF_ADD_CODE, null)
             }
 
-            mDeleteBookFab.setOnClickListener {  }
         }
 
+        mSaveFileChangesButton.setOnClickListener {
+            if (isChangeOnlyInFileOrder()){
+                //TODO save only mBookIsolated.chapterUri, mBookIsolated.chapterTitles
+            } else {
+                val uploadDialog = UploadProgressDialog(activity!!, activity!!.getSmallestScreenWidth() < 600)
+                uploadDialog.show()
+
+                launch(CommonPool) {
+                    (activity as MyCreationsPresenterActivity).updateBookPdfs(mBookIsolated, mFileUrisToBeDeleted).consumeEach { progress ->
+                        progress?.let { launch(UI) {uploadDialog.onUploadStateChanged(it)} }
+                    } }
+
+            }
+        }
+
+        mDeleteBookFab.setOnClickListener {
+
+        }
+    }
+
+    private fun isChangeOnlyInFileOrder(): Boolean {
+        if (mFileUrisToBeDeleted.isNotEmpty())
+            return false
+
+        mBookIsolated.remoteChapterUris.forEach { uri ->
+            if (!uri.startsWith("https://firebasestorage"))
+                return false
+        }
+
+        return true
     }
 
     private fun bindDataToViews() {
@@ -232,7 +266,7 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
         mPeriodicitySpinner.setSelection(mBookIsolated.convertPeriodicityToPosition())
     }
 
-    private fun setSpinnersListener(){
+    private fun setSpinnersListener() {
 
         mGenreSpinner.onItemSelectedListener =
                 object : AdapterView.OnItemSelectedListener {
@@ -294,7 +328,7 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
 
             PDF_EDIT_CODE -> {
 
-                if (resultCode == Activity.RESULT_OK && data != null){
+                if (resultCode == Activity.RESULT_OK && data != null) {
                     (mChaptersRecyclerView.adapter as EditionFilesAdapter).onEditFileReady(data.data)
                 }
             }
@@ -378,6 +412,10 @@ class MyCreationEditViewFragment : Fragment(), MyCreationsPresenterActivity.Pres
 
     private fun onError() {
         Toasty.error(context!!, getString(R.string.resource_error)).show()
+    }
+
+    fun notifyChangeOnFileDetected() {
+        mSaveFileChangesButton.visibility = View.VISIBLE
     }
 
     override fun notifyTitleChange(title: String) {

@@ -55,6 +55,7 @@ const val SHARED_MESSAGE_TOKEN = "message_token"
 const val INTENT_CALLING_ACTIVITY = "intent_calling_activity"
 
 const val FRAGMENT_EDIT_CREATION_TAG = "fragment_edit_creation_tag"
+const val BACK_STACK_CREATIONS_TO_EDIT_TAG = "back_stack_creations_to_edit_tag"
 
 //coroutines test code
 

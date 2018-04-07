@@ -20,7 +20,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:maxCharacters="@integer/title_text_box_max_length"
         app:minCharacters="1"
         app:panelBackgroundColor="@color/colorPrimarySmooth"
         app:primaryColor="@color/text_primary">
@@ -31,9 +30,7 @@
             android:layout_height="wrap_content"
             android:enabled="true"
             android:imeOptions="actionDone"
-            android:inputType="textCapWords|textMultiLine"
-            android:textColor="@color/text_primary"
-            android:textStyle="bold"/>
+            android:textColor="@color/text_primary"/>
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 

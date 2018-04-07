@@ -1,5 +1,6 @@
 package com.andrehaueisen.cronicalia.c_creations.mvp
 
+import android.support.v4.util.ArraySet
 import com.andrehaueisen.cronicalia.b_firebase.DataRepository
 import com.andrehaueisen.cronicalia.b_firebase.FileRepository
 import com.andrehaueisen.cronicalia.models.Book
@@ -18,6 +19,10 @@ class MyCreationsModel(private val mFileRepository: FileRepository, private val 
         mDataRepository.setBookDocuments(book, sendProgressUpdate = false)
     }
 
+    fun updateBookPdfsReferences(book: Book){
+        mDataRepository.updateBookPdfReferences(book, false)
+    }
+
     fun simpleUpdateBook(newValue: String, collectionLocation: String, bookKey: String, variableToUpdate: SimpleUpdateVariable){
 
         when(variableToUpdate){
@@ -34,5 +39,9 @@ class MyCreationsModel(private val mFileRepository: FileRepository, private val 
 
     suspend fun updateBookCover(book: Book): SubscriptionReceiveChannel<Int?>{
         return mFileRepository.updateBookCover(book, mDataRepository)
+    }
+
+    suspend fun updateBookPdfs(book: Book, filesToBeDeleted: ArraySet<String>): SubscriptionReceiveChannel<Int?>{
+        return mFileRepository.updatePdfs(book, mDataRepository,  filesToBeDeleted)
     }
 }

@@ -18,3 +18,8 @@ fun String.isBookTitleValid(context: Context): Boolean {
 fun String.isSynopsisValid(context: Context): Boolean {
     return !this.isNullOrBlank() && this.replace(" ", "").length <= context.resources.getInteger(R.integer.synopsis_text_box_max_length)
 }
+
+
+fun String.isUriFromFirebaseStorage(): Boolean{
+    return this.startsWith("https://firebasestorage")
+}

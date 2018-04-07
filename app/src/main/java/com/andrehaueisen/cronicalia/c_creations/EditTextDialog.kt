@@ -2,6 +2,7 @@ package com.andrehaueisen.cronicalia.c_creations
 
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.text.InputType
 import android.text.SpannableStringBuilder
 import android.view.WindowManager
 import android.widget.Button
@@ -50,13 +51,21 @@ class EditTextDialog(
 
         when(viewBeingEdited){
             ViewBeingEdited.TITLE_VIEW -> {
+                val title = SpannableStringBuilder(mBook.title ?: "")
                 mGeneralTextBox.labelText = context.getString(R.string.book_title)
-                mGeneralTextBox.general_extended_edit_text.text = SpannableStringBuilder(mBook.title ?: "")
+                mGeneralTextBox.maxCharacters = context.resources.getInteger(R.integer.title_text_box_max_length)
+                mGeneralTextBox.general_extended_edit_text.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
+                mGeneralTextBox.general_extended_edit_text.text = title
+                mGeneralTextBox.general_extended_edit_text.setSelection(title.length)
             }
 
             ViewBeingEdited.SYNOPSIS_VIEW -> {
+                val synopsis = SpannableStringBuilder(mBook.synopsis ?: "")
                 mGeneralTextBox.labelText = context.getString(R.string.book_synopsis)
+                mGeneralTextBox.maxCharacters = context.resources.getInteger(R.integer.synopsis_text_box_max_length)
+                mGeneralTextBox.general_extended_edit_text.inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
                 mGeneralTextBox.general_extended_edit_text.text = SpannableStringBuilder(mBook.synopsis ?: "")
+                mGeneralTextBox.general_extended_edit_text.setSelection(synopsis.length)
             }
         }
 

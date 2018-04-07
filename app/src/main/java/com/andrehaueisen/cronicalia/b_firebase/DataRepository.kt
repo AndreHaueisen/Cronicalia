@@ -65,7 +65,50 @@ class DataRepository(
 
     }
 
-    fun updateBookTitle(newTitle: String, collectionLocation: String, bookKey: String){
+    fun updateBookPdfReferences(book: Book, sendProgressUpdate: Boolean = true) {
+
+        val batch = mDatabaseInstance.batch()
+
+        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
+        val booksLocationReference = mDatabaseInstance.collection(book.getDatabaseCollectionLocation()).document(book.generateBookKey())
+
+        val valuesToUpdateOnUserMap = HashMap<String, Any>()
+        val valuesToUpdateOnBooksLocationMap = HashMap<String, Any>()
+
+        if (book.isLaunchedComplete) {
+            valuesToUpdateOnUserMap["books.${book.generateBookKey()}.localFullBookUri"] = book.localFullBookUri!!
+            valuesToUpdateOnUserMap["books.${book.generateBookKey()}.remoteFullBookUri"] = book.remoteFullBookUri!!
+            valuesToUpdateOnBooksLocationMap["localFullBookUri"] = book.localFullBookUri!!
+            valuesToUpdateOnBooksLocationMap["remoteFullBookUri"] = book.remoteFullBookUri!!
+
+            batch.update(userDataLocationReference, valuesToUpdateOnUserMap)
+            batch.update(booksLocationReference, valuesToUpdateOnBooksLocationMap)
+
+        } else {
+            valuesToUpdateOnUserMap["books.${book.generateBookKey()}.remoteChapterTitles"] = book.remoteChapterTitles
+            valuesToUpdateOnUserMap["books.${book.generateBookKey()}.remoteChapterUris"] = book.remoteChapterUris
+            valuesToUpdateOnBooksLocationMap["remoteChapterTitles"] = book.remoteChapterTitles
+            valuesToUpdateOnBooksLocationMap["remoteChapterUris"] = book.remoteChapterUris
+
+            batch.update(userDataLocationReference, valuesToUpdateOnUserMap)
+            batch.update(booksLocationReference, valuesToUpdateOnBooksLocationMap)
+
+        }
+
+        batch
+            .commit()
+            .addOnSuccessListener { _ ->
+            if (sendProgressUpdate)
+                launch(UI) { mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_OK) }
+            }
+            .addOnFailureListener({ _ ->
+                if (sendProgressUpdate)
+                    launch(UI) { mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL) }
+            })
+    }
+
+    fun updateBookTitle(newTitle: String, collectionLocation: String, bookKey: String) {
+
         val batch = mDatabaseInstance.batch()
 
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
@@ -76,7 +119,7 @@ class DataRepository(
         batch.commit()
     }
 
-    fun updateBookSynopsis(newSynopsis: String, collectionLocation: String, bookKey: String){
+    fun updateBookSynopsis(newSynopsis: String, collectionLocation: String, bookKey: String) {
         val batch = mDatabaseInstance.batch()
 
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
@@ -87,7 +130,7 @@ class DataRepository(
         batch.commit()
     }
 
-    fun updateBookGenre(newGenre: String, collectionLocation: String, bookKey: String){
+    fun updateBookGenre(newGenre: String, collectionLocation: String, bookKey: String) {
         val batch = mDatabaseInstance.batch()
 
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
@@ -98,7 +141,7 @@ class DataRepository(
         batch.commit()
     }
 
-    fun updateBookPeriodicity(newPeriodicity: String, collectionLocation: String, bookKey: String){
+    fun updateBookPeriodicity(newPeriodicity: String, collectionLocation: String, bookKey: String) {
         val batch = mDatabaseInstance.batch()
 
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
@@ -108,7 +151,6 @@ class DataRepository(
         batch.update(booksLocationReference, "periodicity", newPeriodicity)
         batch.commit()
     }
-
 
     fun loadLoggingInUser(userEncodedEmail: String, activity: Activity) {
         mDatabaseInstance.collection(COLLECTION_USERS).document(userEncodedEmail).get()

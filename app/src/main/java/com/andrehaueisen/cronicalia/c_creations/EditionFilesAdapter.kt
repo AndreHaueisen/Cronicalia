@@ -2,10 +2,11 @@ package com.andrehaueisen.cronicalia.c_creations
 
 import android.content.Intent
 import android.net.Uri
-import android.support.v4.app.Fragment
+import android.support.v4.util.ArraySet
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.andrehaueisen.cronicalia.PDF_EDIT_CODE
 import com.andrehaueisen.cronicalia.R
+import com.andrehaueisen.cronicalia.c_creations.mvp.MyCreationEditViewFragment
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.getFileTitle
 import es.dmoral.toasty.Toasty
@@ -24,18 +26,18 @@ import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
  * Created by andre on 3/25/2018.
  */
 class EditionFilesAdapter(
-    private val mFragment: Fragment,
+    private val mFragment: MyCreationEditViewFragment,
     private val mRecyclerView: RecyclerView,
-    private val mBookIsolated: Book
-) : RecyclerView.Adapter<EditionFilesAdapter.SelectedFileHolder>() {
+    private val mBookIsolated: Book,
+    private val mFileUrisToBeDeleted: ArraySet<String>) : RecyclerView.Adapter<EditionFilesAdapter.SelectedFileHolder>() {
 
+    private val LOG_TAG: String = EditionFilesAdapter::class.java.simpleName
     private var mLastClickedViewHolder: SelectedFileHolder? = null
-    private var mLastClickedLayoutPosition: Int? = null
+    private var mLastClickedLayoutPosition: Int = -1
 
     override fun getItemCount(): Int {
         return if (mBookIsolated.isLaunchedComplete) 1 else mBookIsolated.remoteChapterTitles.size
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectedFileHolder {
 
@@ -52,7 +54,7 @@ class EditionFilesAdapter(
 
     override fun onBindViewHolder(holder: SelectedFileHolder, position: Int) {
         if (!mBookIsolated.isLaunchedComplete) {
-            holder.bindChaptersToView(position)
+            holder.bindChaptersToView()
         } else {
             holder.bindBookToView()
         }
@@ -61,17 +63,24 @@ class EditionFilesAdapter(
     fun onEditFileReady(uri: Uri) {
         val newFileTitle = mFragment.context!!.getFileTitle(uri)
 
+        val previousUri = mBookIsolated.remoteChapterUris[mLastClickedLayoutPosition]
+        if (previousUri.startsWith("https://firebasestorage"))
+            mFileUrisToBeDeleted.add(previousUri)
+
         if (mBookIsolated.isLaunchedComplete) {
             mBookIsolated.localFullBookUri = uri.toString()
             mLastClickedViewHolder!!.mFullBookFileNameTextView!!.text = newFileTitle
 
         } else {
-            mBookIsolated.remoteChapterUris[mLastClickedLayoutPosition!!] = uri.toString()
-            mBookIsolated.remoteChapterTitles[mLastClickedLayoutPosition!!] = newFileTitle!!
+            mBookIsolated.remoteChapterUris[mLastClickedLayoutPosition] = uri.toString()
+            mBookIsolated.remoteChapterTitles[mLastClickedLayoutPosition] = newFileTitle!!
 
-            notifyItemChanged(mLastClickedLayoutPosition!!)
+            notifyItemChanged(mLastClickedLayoutPosition)
             mLastClickedViewHolder!!.mTitleTextInput!!.extended_edition_edit_text.setText(newFileTitle)
         }
+
+        mFragment.notifyChangeOnFileDetected()
+        Log.d(LOG_TAG, mBookIsolated.toString())
     }
 
     fun onAddFileReady(uri: Uri){
@@ -81,6 +90,8 @@ class EditionFilesAdapter(
         mBookIsolated.remoteChapterTitles.add(newFileTitle!!)
 
         notifyItemInserted(mBookIsolated.remoteChapterTitles.size)
+        mFragment.notifyChangeOnFileDetected()
+        Log.d(LOG_TAG, mBookIsolated.toString())
     }
 
     fun clearData() {
@@ -124,9 +135,9 @@ class EditionFilesAdapter(
             mChangeFileButton.setOnClickListener { editItem() }
         }
 
-        fun bindChaptersToView(position: Int) {
+        fun bindChaptersToView() {
 
-            if (position == 0) {
+            if (layoutPosition == 0) {
                 mPushFileUpButton.visibility = View.INVISIBLE
             } else {
                 mPushFileUpButton.visibility = View.VISIBLE
@@ -152,11 +163,7 @@ class EditionFilesAdapter(
                     val title = editable.toString()
 
                     if (title.isNotBlank()) {
-                        if (mBookIsolated.isLaunchedComplete) {
-                            mBookIsolated.title = title
-                        } else {
-                            mBookIsolated.remoteChapterTitles[position] = title
-                        }
+                        mBookIsolated.remoteChapterTitles[layoutPosition] = title
                     }
 
                 }
@@ -195,17 +202,25 @@ class EditionFilesAdapter(
 
         private fun removeItem(){
 
+            val uri = mBookIsolated.remoteChapterUris[layoutPosition]
+            if (uri.startsWith("https://firebasestorage"))
+                mFileUrisToBeDeleted.add(uri)
+
             mBookIsolated.remoteChapterUris.removeAt(layoutPosition)
             mBookIsolated.remoteChapterTitles.removeAt(layoutPosition)
 
-            val bellowClickedViewHolder = mRecyclerView.findViewHolderForLayoutPosition(layoutPosition + 1) as SelectedFileHolder
-            bellowClickedViewHolder.mTitleTextInput!!.labelText = mFragment.getString(R.string.chapter_number_hint, layoutPosition)
+            if(layoutPosition + 1 < itemCount) {
+                val bellowClickedViewHolder = mRecyclerView.findViewHolderForLayoutPosition(layoutPosition + 1) as SelectedFileHolder
+                bellowClickedViewHolder.mTitleTextInput!!.labelText = mFragment.getString(R.string.chapter_number_hint, layoutPosition)
 
-            if(layoutPosition == 0) {
-                bellowClickedViewHolder.mPushFileUpButton.visibility = View.INVISIBLE
+                if(layoutPosition == 0) {
+                    bellowClickedViewHolder.mPushFileUpButton.visibility = View.INVISIBLE
+                }
             }
 
             notifyItemRemoved(layoutPosition)
+            mFragment.notifyChangeOnFileDetected()
+            Log.d(LOG_TAG, mBookIsolated.toString())
         }
 
         /**
@@ -235,6 +250,9 @@ class EditionFilesAdapter(
             mBookIsolated.remoteChapterTitles[layoutPosition] =  mBookIsolated.remoteChapterTitles[layoutPosition - 1]
             mBookIsolated.remoteChapterTitles[layoutPosition - 1] = ascendingTitle
 
+            mFragment.notifyChangeOnFileDetected()
+
+            Log.d(LOG_TAG, mBookIsolated.toString())
         }
 
     }

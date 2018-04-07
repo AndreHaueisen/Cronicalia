@@ -7,7 +7,7 @@ import com.andrehaueisen.cronicalia.b_firebase.FileRepository
 import com.andrehaueisen.cronicalia.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.experimental.channels.ArrayBroadcastChannel
@@ -18,7 +18,7 @@ import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
  */
 @Module
 class ApplicationModule(
-    private val mStorageReference: StorageReference,
+    private val mStorageInstance: FirebaseStorage,
     private val mDatabaseInstance: FirebaseFirestore,
     private val mFirebaseAuth: FirebaseAuth,
     private val mGlobalProgressBroadcastChannel: ArrayBroadcastChannel<Int?>,
@@ -30,7 +30,7 @@ class ApplicationModule(
     @Provides
     fun provideFileRepository() =
         FileRepository(
-            mStorageReference,
+            mStorageInstance,
             mGlobalProgressBroadcastChannel,
             mGlobalProgressReceiver,
             mUser

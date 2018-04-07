@@ -39,9 +39,9 @@ class BaseApplication : Application() {
             .build()
 
         FirebaseApp.initializeApp(this)
-        val storageReference = FirebaseStorage.getInstance().reference
-        val databaseReference = FirebaseFirestore.getInstance()
-        databaseReference.firestoreSettings = settings
+        val storageInstance = FirebaseStorage.getInstance()
+        val databaseInstance = FirebaseFirestore.getInstance()
+        databaseInstance.firestoreSettings = settings
         val user = User()
 
         val globalProgressBroadcastChannel = ArrayBroadcastChannel<Int?>(6)
@@ -49,8 +49,8 @@ class BaseApplication : Application() {
 
         mComponent = DaggerApplicationComponent.builder()
             .applicationModule(ApplicationModule(
-                storageReference,
-                databaseReference,
+                storageInstance,
+                databaseInstance,
                 FirebaseAuth.getInstance(),
                 globalProgressBroadcastChannel,
                 globalProgressReceiver,

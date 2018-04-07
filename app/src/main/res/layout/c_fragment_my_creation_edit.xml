@@ -4,164 +4,185 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@null"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/poster_image_view"
                 android:layout_width="match_parent"
-                android:layout_height="172dp"
+                android:layout_height="200dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/poster_placeholder"/>
 
+            <android.support.v7.widget.CardView
+                android:id="@+id/container_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="74dp"
+                app:cardBackgroundColor="@color/colorPrimaryLight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline3">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/title_text_view"
+                        android:layout_width="0dp"
+                        android:layout_height="26dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="104dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="The Giant Of Merkle"/>
+
+                    <TextView
+                        android:id="@+id/synopsis_text_view"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:maxHeight="84dp"
+                        android:maxLines="5"
+                        android:textColor="@color/text_secondary"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/title_text_view"
+                        tools:text="In the giant mounting of Merkle tree there is a small little giant that lives on a red summoner bridge. They"/>
+
+                    <ImageView
+                        android:id="@+id/readings_image_view"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginBottom="4dp"
+                        android:src="@drawable/ic_eye_24dp"
+                        app:layout_constraintBottom_toTopOf="@+id/readings_text_view"
+                        app:layout_constraintEnd_toEndOf="@+id/readings_text_view"
+                        app:layout_constraintStart_toStartOf="@+id/readings_text_view"/>
+
+                    <TextView
+                        android:id="@+id/readings_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginStart="16dp"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="10k"/>
+
+                    <ImageView
+                        android:id="@+id/rating_image_view"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="16dp"
+                        android:src="@drawable/ic_star_24dp"
+                        app:layout_constraintBottom_toTopOf="@+id/rating_text_view"
+                        app:layout_constraintEnd_toEndOf="@+id/rating_text_view"
+                        app:layout_constraintStart_toStartOf="@+id/rating_text_view"
+                        app:layout_constraintTop_toBottomOf="@+id/synopsis_text_view"/>
+
+                    <TextView
+                        android:id="@+id/rating_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/income_text_view"
+                        app:layout_constraintStart_toEndOf="@+id/readings_text_view"
+                        tools:text="9.5"/>
+
+                    <ImageView
+                        android:id="@+id/income_image_view"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginBottom="4dp"
+                        android:src="@drawable/ic_money_24dp"
+                        app:layout_constraintBottom_toTopOf="@+id/income_text_view"
+                        app:layout_constraintEnd_toEndOf="@+id/income_text_view"
+                        app:layout_constraintStart_toStartOf="@+id/income_text_view"
+                        />
+
+                    <TextView
+                        android:id="@+id/income_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:text="$500"/>
+
+                    <android.support.constraint.Guideline
+                        android:id="@+id/guideline4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_begin="130dp"/>
+
+
+                </android.support.constraint.ConstraintLayout>
+
+
+            </android.support.v7.widget.CardView>
+
             <ImageView
                 android:id="@+id/cover_image_view"
-                android:layout_width="153dp"
-                android:layout_height="204dp"
+                android:layout_width="123dp"
+                android:layout_height="164dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
+                android:background="@color/colorPrimaryLight"
+                android:elevation="2.3dp"
+                android:padding="5dp"
                 android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+                app:layout_constraintTop_toTopOf="@+id/guideline3"
                 tools:src="@drawable/cover_placeholder"/>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_gradient_primary"
-                app:layout_constraintBottom_toBottomOf="@id/poster_image_view"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/cover_image_view">
-
-                <ImageView
-                    android:id="@+id/readings_image_view"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp"
-                    android:src="@drawable/ic_eye_24dp"
-                    app:layout_constraintBottom_toTopOf="@+id/readings_text_view"
-                    app:layout_constraintEnd_toEndOf="@+id/readings_text_view"
-                    app:layout_constraintStart_toStartOf="@+id/readings_text_view"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <TextView
-                    android:id="@+id/readings_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginStart="16dp"
-                    android:textColor="@color/text_primary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:text="10k"/>
-
-                <ImageView
-                    android:id="@+id/rating_image_view"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp"
-                    android:src="@drawable/ic_star_24dp"
-                    app:layout_constraintBottom_toTopOf="@+id/rating_text_view"
-                    app:layout_constraintEnd_toEndOf="@+id/rating_text_view"
-                    app:layout_constraintStart_toStartOf="@+id/rating_text_view"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <TextView
-                    android:id="@+id/rating_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:textColor="@color/text_primary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/income_text_view"
-                    app:layout_constraintStart_toEndOf="@+id/readings_text_view"
-                    tools:text="9.5"/>
-
-                <ImageView
-                    android:id="@+id/income_image_view"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp"
-                    android:src="@drawable/ic_money_24dp"
-                    app:layout_constraintBottom_toTopOf="@+id/income_text_view"
-                    app:layout_constraintEnd_toEndOf="@+id/income_text_view"
-                    app:layout_constraintStart_toStartOf="@+id/income_text_view"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <TextView
-                    android:id="@+id/income_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginEnd="16dp"
-                    android:textColor="@color/text_primary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    tools:text="$500"/>
-            </android.support.constraint.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/title_text_view"
-                android:layout_width="0dp"
-                android:layout_height="26dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/text_primary"
-                android:drawableStart="@drawable/ic_edit_24dp"
-                android:drawablePadding="8dp"
-                android:textSize="16sp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/cover_image_view"
-                app:layout_constraintTop_toBottomOf="@+id/poster_image_view"
-                tools:text="The Giant Of Merkle"/>
-
-            <TextView
-                android:id="@+id/synopsis_text_view"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:drawablePadding="8dp"
-                android:drawableStart="@drawable/ic_edit_24dp"
-                android:maxLines="6"
-                app:layout_constraintHeight_max="110dp"
-                android:ellipsize="end"
-                android:textColor="@color/text_secondary"
-                app:layout_constraintBottom_toBottomOf="@+id/cover_image_view"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/cover_image_view"
-                app:layout_constraintTop_toBottomOf="@+id/title_text_view"
-                tools:text="In the giant mounting of Merkle tree there is a small little giant that lives on a red summoner bridge. They"/>
 
             <TextView
                 android:id="@+id/genre_text_view"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:text="@string/genre"
+                android:layout_marginStart="16dp"
                 android:gravity="center_vertical"
+                android:text="@string/genre"
                 android:textColor="@color/text_tertiary"
                 app:layout_constraintBottom_toBottomOf="@+id/genre_spinner"
                 app:layout_constraintEnd_toEndOf="@+id/launch_frequency_text_view"
@@ -172,8 +193,8 @@
                 android:id="@+id/launch_frequency_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:layout_marginStart="16dp"
                 android:gravity="center_vertical"
-                android:layout_marginStart="8dp"
                 android:text="@string/launch_frequency"
                 android:textColor="@color/text_tertiary"
                 app:layout_constraintBottom_toBottomOf="@+id/periodicity_spinner"
@@ -185,21 +206,22 @@
                 style="@android:style/Widget.Material.Light.Spinner.Underlined"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:backgroundTint="@color/colorPrimaryBright"
                 android:spinnerMode="dropdown"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/genre_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/cover_image_view"/>
+                app:layout_constraintTop_toBottomOf="@id/container_card_view"/>
 
             <Spinner
                 android:id="@+id/periodicity_spinner"
                 style="@android:style/Widget.Material.Spinner.Underlined"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/colorPrimaryBright"
@@ -215,38 +237,62 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintBottom_toTopOf="@+id/add_chapter_fab"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/periodicity_spinner"
                 tools:visibility="visible"/>
 
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/add_chapter_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_add_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="93dp"/>
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_chapter_fab"
+    <Button
+        android:id="@+id/save_file_changes_button"
+        style="@android:style/Widget.Material.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_add_24dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape_button_outline"
+        android:padding="8dp"
+        android:text="@string/save_file_changes"
+        android:textColor="@color/colorAccent"
         android:visibility="gone"
         tools:visibility="visible"/>
 
-    <android.support.design.widget.FloatingActionButton
+    <Button
         android:id="@+id/delete_book_fab"
+        style="@android:style/Widget.Material.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:src="@drawable/ic_delete_24dp"
-        app:backgroundTint="@color/colorPrimaryLight"/>
+        android:layout_margin="8dp"
+        android:text="@string/delete_book"
+        android:textColor="@color/text_quaternary"/>
 
 </FrameLayout>
