@@ -21,7 +21,7 @@
             android:layout_height="248dp"
             android:scaleType="centerCrop"
             android:src="@drawable/poster_placeholder"
-            android:tint="#d7353535"
+            android:tint="#ee5c5c5c"
             android:tintMode="src_over"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,10 +40,10 @@
 
         <ImageView
             android:id="@+id/readings_image_view"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:src="@drawable/ic_eye_24dp"
             app:layout_constraintStart_toStartOf="@+id/book_cover_image_view"
             app:layout_constraintTop_toBottomOf="@+id/book_cover_image_view"/>
@@ -54,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textColor="@color/colorAccent"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@+id/readings_image_view"
             app:layout_constraintStart_toStartOf="@+id/readings_image_view"
             app:layout_constraintTop_toBottomOf="@+id/readings_image_view"
@@ -61,8 +62,8 @@
 
         <ImageView
             android:id="@+id/rating_image_view"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:src="@drawable/ic_star_24dp"
             app:layout_constraintEnd_toEndOf="@+id/rating_text_view"
             app:layout_constraintStart_toStartOf="@+id/rating_text_view"
@@ -75,6 +76,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
+            android:textSize="16sp"
             android:textColor="@color/colorAccent"
             app:layout_constraintEnd_toStartOf="@+id/income_text_view"
             app:layout_constraintStart_toEndOf="@+id/readings_text_view"
@@ -83,8 +85,8 @@
 
         <ImageView
             android:id="@+id/income_image_view"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:src="@drawable/ic_money_24dp"
             app:layout_constraintEnd_toEndOf="@+id/income_text_view"
             app:layout_constraintStart_toStartOf="@+id/income_text_view"
@@ -96,6 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="4dp"
+            android:textSize="16sp"
             android:textColor="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/income_image_view"

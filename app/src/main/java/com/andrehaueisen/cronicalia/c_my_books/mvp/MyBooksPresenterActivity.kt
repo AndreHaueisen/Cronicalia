@@ -1,4 +1,4 @@
-package com.andrehaueisen.cronicalia.c_creations.mvp
+package com.andrehaueisen.cronicalia.c_my_books.mvp
 
 import android.os.Bundle
 import android.support.v4.util.ArraySet
@@ -8,8 +8,8 @@ import com.andrehaueisen.cronicalia.FRAGMENT_EDIT_CREATION_TAG
 import com.andrehaueisen.cronicalia.PARCELABLE_BOOK
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.a_application.BaseApplication
-import com.andrehaueisen.cronicalia.c_creations.dagger.DaggerMyCreationsComponent
-import com.andrehaueisen.cronicalia.c_creations.dagger.MyCreationsModule
+import com.andrehaueisen.cronicalia.c_my_books.dagger.DaggerMyBooksComponent
+import com.andrehaueisen.cronicalia.c_my_books.dagger.MyBooksModule
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.addFragment
@@ -19,7 +19,7 @@ import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import javax.inject.Inject
 
 
-class MyCreationsPresenterActivity : AppCompatActivity(), MyCreationsViewFragment.CreationClickListener {
+class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.CreationClickListener {
 
     interface PresenterActivity {
         fun refreshFragmentData(book: Book)
@@ -29,30 +29,32 @@ class MyCreationsPresenterActivity : AppCompatActivity(), MyCreationsViewFragmen
     lateinit var mUser: User
 
     @Inject
-    lateinit var mModel: MyCreationsModel
+    lateinit var mModel: MyBooksModel
 
-    private val LOG_TAG = MyCreationsPresenterActivity::class.java.simpleName
+    private val LOG_TAG = MyBooksPresenterActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerMyCreationsComponent.builder()
+        DaggerMyBooksComponent.builder()
             .applicationComponent(BaseApplication.get(this).getAppComponent())
-            .myCreationsModule(MyCreationsModule())
+            .myBooksModule(MyBooksModule())
             .build()
             .inject(this)
 
-        setContentView(R.layout.c_activity_my_creations)
+        setContentView(R.layout.c_activity_my_books)
 
-        if(getSmallestScreenWidth() < 600) {
-            val myCreationsViewFragment = MyCreationsViewFragment.newInstance()
-            addFragment(R.id.fragment_container, myCreationsViewFragment)
-        } else {
+        if(savedInstanceState == null) {
+            if (getSmallestScreenWidth() < 600) {
+                val myCreationsViewFragment = MyBooksViewFragment.newInstance()
+                addFragment(R.id.fragment_container, myCreationsViewFragment)
+            } else {
 
-            val bundle = Bundle()
-            bundle.putParcelable(PARCELABLE_BOOK, mUser.books.values.first { book -> book.bookPosition == 0 })
-            val editCreationFragment = MyCreationEditViewFragment.newInstance(bundle)
-            addFragment(R.id.edit_creation_fragment_container, editCreationFragment)
+                val bundle = Bundle()
+                bundle.putParcelable(PARCELABLE_BOOK, mUser.books.values.first { book -> book.bookPosition == 0 })
+                val editCreationFragment = MyBookEditViewFragment.newInstance(bundle)
+                addFragment(R.id.edit_creation_fragment_container, editCreationFragment)
+            }
         }
 
         /*upload_button.setOnClickListener {
@@ -102,7 +104,7 @@ class MyCreationsPresenterActivity : AppCompatActivity(), MyCreationsViewFragmen
         }*/
     }
 
-    fun notifySimpleBookEdition(newTitle: String, collectionLocation: String, bookKey: String, variableToUpdate: MyCreationsModel.SimpleUpdateVariable){
+    fun notifySimpleBookEdition(newTitle: String, collectionLocation: String, bookKey: String, variableToUpdate: MyBooksModel.SimpleUpdateVariable){
         mModel.simpleUpdateBook(newTitle, collectionLocation, bookKey, variableToUpdate)
     }
 
@@ -122,10 +124,14 @@ class MyCreationsPresenterActivity : AppCompatActivity(), MyCreationsViewFragmen
         mModel.updateBookPdfsReferences(book)
     }
 
+    fun deleteBook(book: Book){
+        mModel.deleteBook(book)
+    }
+
     override fun onCreationClick(bookKey: String) {
 
         if(getSmallestScreenWidth() >= 600){
-            val editCreationFragment = (supportFragmentManager.findFragmentById(R.id.edit_creation_fragment_container) as? MyCreationEditViewFragment)
+            val editCreationFragment = (supportFragmentManager.findFragmentById(R.id.edit_creation_fragment_container) as? MyBookEditViewFragment)
 
             editCreationFragment?.let {
                 if (editCreationFragment.isVisible)
@@ -134,12 +140,12 @@ class MyCreationsPresenterActivity : AppCompatActivity(), MyCreationsViewFragmen
 
         } else {
 
-            var editCreationFragment = (supportFragmentManager.findFragmentByTag(FRAGMENT_EDIT_CREATION_TAG) as? MyCreationEditViewFragment)
+            var editCreationFragment = (supportFragmentManager.findFragmentByTag(FRAGMENT_EDIT_CREATION_TAG) as? MyBookEditViewFragment)
 
             if (editCreationFragment == null) {
                 val bundle = Bundle()
                 bundle.putParcelable(PARCELABLE_BOOK, mUser.books[bookKey]!!)
-                editCreationFragment = MyCreationEditViewFragment.newInstance(bundle)
+                editCreationFragment = MyBookEditViewFragment.newInstance(bundle)
                 replaceFragment(
                     containerId = R.id.fragment_container,
                     fragment = editCreationFragment,

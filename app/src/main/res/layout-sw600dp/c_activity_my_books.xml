@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <fragment android:name="com.andrehaueisen.cronicalia.c_creations.mvp.MyCreationsViewFragment"
+    <fragment android:name="com.andrehaueisen.cronicalia.c_my_books.mvp.MyBooksViewFragment"
               android:id="@+id/creations_fragment"
               android:layout_weight="1"
               android:layout_width="0dp"

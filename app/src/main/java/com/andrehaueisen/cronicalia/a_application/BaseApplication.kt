@@ -27,10 +27,6 @@ class BaseApplication : Application() {
         fun get(activity: Activity): BaseApplication = activity.application as BaseApplication
     }
 
-    enum class FileUrlId{
-        POSTER, COVER, FULL_BOOK, CHAPTER
-    }
-
     override fun onCreate() {
         super.onCreate()
 
@@ -44,7 +40,7 @@ class BaseApplication : Application() {
         databaseInstance.firestoreSettings = settings
         val user = User()
 
-        val globalProgressBroadcastChannel = ArrayBroadcastChannel<Int?>(6)
+        val globalProgressBroadcastChannel = ArrayBroadcastChannel<Int?>(4)
         val globalProgressReceiver = globalProgressBroadcastChannel.openSubscription()
 
         mComponent = DaggerApplicationComponent.builder()

@@ -45,8 +45,7 @@ class FileRepository(
 
             if (book.isLaunchedComplete) {
                 val filePath = Uri.parse(book.localFullBookUri!!)
-                uploadTask = locationReference.child("${book.originalImmutableTitle}.pdf".replace(" ", ""))
-                    .putFile(filePath)
+                uploadTask = locationReference.child("${book.originalImmutableTitle}.pdf".replace(" ", "")).putFile(filePath)
                 uploadTask.addOnProgressListener { taskSnapshot ->
                     launch {
                         currentProgress += (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount) / progressCap
@@ -320,8 +319,7 @@ class FileRepository(
                     editionFound = true
 
                     val filePath = Uri.parse(key)
-                    val chapterNumberMetadata =
-                        StorageMetadata.Builder().setCustomMetadata(METADATA_CHAPTER_NUMBER, index.toString()).build()
+                    val chapterNumberMetadata = StorageMetadata.Builder().setCustomMetadata(METADATA_CHAPTER_NUMBER, index.toString()).build()
                     val chapterTitle = book.remoteChapterTitles[index]
 
                     uploadTask = locationReference.child("$chapterTitle.pdf").putFile(filePath, chapterNumberMetadata)
@@ -362,6 +360,27 @@ class FileRepository(
         }
 
         return mGlobalProgressReceiver
+    }
+
+    fun deleteFullBook(book: Book, dataRepository: DataRepository){
+        val filesToBeDeleted = ArraySet<String>()
+
+        book.remoteCoverUri?.let{
+            filesToBeDeleted.add(book.remoteCoverUri!!)
+        }
+        book.remotePosterUri?.let {
+            filesToBeDeleted.add(book.remotePosterUri!!)
+        }
+
+        if(book.isLaunchedComplete){
+            filesToBeDeleted.add(book.remoteFullBookUri!!)
+
+        } else {
+            filesToBeDeleted.addAll(book.remoteChapterUris)
+        }
+
+        deleteBookFiles(filesToBeDeleted)
+        dataRepository.deleteBook(book)
     }
 
     private fun deleteBookFiles(filesToBeDeleted: ArraySet<String>){

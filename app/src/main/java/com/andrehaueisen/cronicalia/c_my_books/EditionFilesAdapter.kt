@@ -1,4 +1,4 @@
-package com.andrehaueisen.cronicalia.c_creations
+package com.andrehaueisen.cronicalia.c_my_books
 
 import android.content.Intent
 import android.net.Uri
@@ -15,7 +15,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.andrehaueisen.cronicalia.PDF_EDIT_CODE
 import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.c_creations.mvp.MyCreationEditViewFragment
+import com.andrehaueisen.cronicalia.c_my_books.mvp.MyBookEditViewFragment
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.getFileTitle
 import es.dmoral.toasty.Toasty
@@ -26,7 +26,7 @@ import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
  * Created by andre on 3/25/2018.
  */
 class EditionFilesAdapter(
-    private val mFragment: MyCreationEditViewFragment,
+    private val mFragment: MyBookEditViewFragment,
     private val mRecyclerView: RecyclerView,
     private val mBookIsolated: Book,
     private val mFileUrisToBeDeleted: ArraySet<String>) : RecyclerView.Adapter<EditionFilesAdapter.SelectedFileHolder>() {
@@ -61,17 +61,16 @@ class EditionFilesAdapter(
     }
 
     fun onEditFileReady(uri: Uri) {
-        val newFileTitle = mFragment.context!!.getFileTitle(uri)
-
-        val previousUri = mBookIsolated.remoteChapterUris[mLastClickedLayoutPosition]
-        if (previousUri.startsWith("https://firebasestorage"))
-            mFileUrisToBeDeleted.add(previousUri)
+        val newFileTitle = mFragment.requireContext().getFileTitle(uri)
+        val previousUri: String
 
         if (mBookIsolated.isLaunchedComplete) {
+            previousUri = mBookIsolated.remoteFullBookUri!!
             mBookIsolated.localFullBookUri = uri.toString()
             mLastClickedViewHolder!!.mFullBookFileNameTextView!!.text = newFileTitle
 
         } else {
+            previousUri = mBookIsolated.remoteChapterUris[mLastClickedLayoutPosition]
             mBookIsolated.remoteChapterUris[mLastClickedLayoutPosition] = uri.toString()
             mBookIsolated.remoteChapterTitles[mLastClickedLayoutPosition] = newFileTitle!!
 
@@ -79,12 +78,15 @@ class EditionFilesAdapter(
             mLastClickedViewHolder!!.mTitleTextInput!!.extended_edition_edit_text.setText(newFileTitle)
         }
 
+        if (previousUri.startsWith("https://firebasestorage"))
+            mFileUrisToBeDeleted.add(previousUri)
+
         mFragment.notifyChangeOnFileDetected()
         Log.d(LOG_TAG, mBookIsolated.toString())
     }
 
     fun onAddFileReady(uri: Uri){
-        val newFileTitle = mFragment.context!!.getFileTitle(uri)
+        val newFileTitle = mFragment.requireContext().getFileTitle(uri)
 
         mBookIsolated.remoteChapterUris.add(uri.toString())
         mBookIsolated.remoteChapterTitles.add(newFileTitle!!)
@@ -153,7 +155,7 @@ class EditionFilesAdapter(
                 if( mBookIsolated.remoteChapterTitles.size > 1)
                     removeItem()
                 else
-                    Toasty.info(mFragment.context!!, mFragment.context!!.getString(R.string.one_file_selected_warning)).show()
+                    Toasty.info(mFragment.requireContext(), mFragment.context!!.getString(R.string.one_file_selected_warning)).show()
             }
 
             mPushFileUpButton.setOnClickListener { swapItems() }

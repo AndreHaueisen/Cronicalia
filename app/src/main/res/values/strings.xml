@@ -15,8 +15,13 @@
     <string name="change">Change</string>
     <string name="one_file_selected_warning">There must be at least one file selected</string>
     <string name="save_file_changes">Save Files Changes</string>
+    <string name="book_updated">Book Updated</string>
     <string name="add_chapter">Add Chapter</string>
     <string name="delete_book">Delete Book</string>
+    <string name="delete">Delete</string>
+    <string name="delete_book_dialog_title">Delete this book?</string>
+    <string name="delete_book_dialog_message">Deleting this book will erase all reviews and comments immediately</string>
+    <string name="book_deleted">Book Deleted</string>
 
     <!--d_create_book strings -->
     <string name="create_new_book">Create new book</string>
@@ -43,7 +48,6 @@
     <string name="action">action</string>
     <string name="english">english</string>
     <string name="progress_dialog_title">Creating book</string>
-    <string name="progress_dialog_success">Book created</string>
     <string name="progress_updating_book">Updating book</string>
     <string name="progress_dialog_fail">Error detected. Try again</string>
     <string name="check_internet_connection">Upload failed. No internet connection</string>

@@ -3,11 +3,6 @@ package com.andrehaueisen.cronicalia
 /**
  * Created by andre on 2/18/2018.
  */
-const val AUTHOR_NAME_PLACE_HOLDER = "Andre Haueisen"
-const val ENCODED_EMAIL_PLACE_HOLDER = "andrehaueisen@gmail,com"
-const val READINGS_PLACE_HOLDER = 500
-const val RATING_PLACE_HOLDER = 8.5
-const val INCOME_PLACE_HOLDER = 230
 
 const val DOCUMENT_UID_MAPPINGS = "UID_mappings"
 const val DOCUMENT_MESSAGE_TOKENS = "Message_tokens"
@@ -44,6 +39,8 @@ const val UPLOAD_STATUS_FAIL = -1
 
 const val PARCELABLE_USER = "parcelable_user"
 const val PARCELABLE_BOOK = "parcelable_book"
+const val PARCELABLE_IS_SAVE_BUTTON_SHOWING = "parcelable_is_save_button_showing"
+const val PARCELABLE_FILES_TO_BE_DELETED = "parcelable_files_to_be_deleted"
 const val PARCELABLE_URI_KEYS = "parcelable_uri_keys"
 const val PARCELABLE_TITLE_VALUES = "parcelable_title_values"
 const val PARCELABLE_LAYOUT_MANAGER = "parcelable_layout_manager"
@@ -55,6 +52,7 @@ const val SHARED_MESSAGE_TOKEN = "message_token"
 const val INTENT_CALLING_ACTIVITY = "intent_calling_activity"
 
 const val FRAGMENT_EDIT_CREATION_TAG = "fragment_edit_creation_tag"
+const val DIALOG_DELETE_BOOK_TAG = "dialog_delete_book_tag"
 const val BACK_STACK_CREATIONS_TO_EDIT_TAG = "back_stack_creations_to_edit_tag"
 
 //coroutines test code

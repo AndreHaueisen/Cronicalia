@@ -5,6 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.andrehaueisen.cronicalia.c_creations.mvp.MyCreationsPresenterActivity">
+    tools:context="com.andrehaueisen.cronicalia.c_my_books.mvp.MyBooksPresenterActivity">
 
 </FrameLayout>

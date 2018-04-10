@@ -9,6 +9,7 @@ import com.andrehaueisen.cronicalia.UPLOAD_STATUS_OK
 import com.andrehaueisen.cronicalia.i_login.LoginActivity
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.User
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import es.dmoral.toasty.Toasty
@@ -81,19 +82,15 @@ class DataRepository(
             valuesToUpdateOnBooksLocationMap["localFullBookUri"] = book.localFullBookUri!!
             valuesToUpdateOnBooksLocationMap["remoteFullBookUri"] = book.remoteFullBookUri!!
 
-            batch.update(userDataLocationReference, valuesToUpdateOnUserMap)
-            batch.update(booksLocationReference, valuesToUpdateOnBooksLocationMap)
-
         } else {
             valuesToUpdateOnUserMap["books.${book.generateBookKey()}.remoteChapterTitles"] = book.remoteChapterTitles
             valuesToUpdateOnUserMap["books.${book.generateBookKey()}.remoteChapterUris"] = book.remoteChapterUris
             valuesToUpdateOnBooksLocationMap["remoteChapterTitles"] = book.remoteChapterTitles
             valuesToUpdateOnBooksLocationMap["remoteChapterUris"] = book.remoteChapterUris
-
-            batch.update(userDataLocationReference, valuesToUpdateOnUserMap)
-            batch.update(booksLocationReference, valuesToUpdateOnBooksLocationMap)
-
         }
+
+        batch.update(userDataLocationReference, valuesToUpdateOnUserMap)
+        batch.update(booksLocationReference, valuesToUpdateOnBooksLocationMap)
 
         batch
             .commit()
@@ -149,6 +146,21 @@ class DataRepository(
 
         batch.update(userDataLocationReference, "books.$bookKey.periodicity", newPeriodicity)
         batch.update(booksLocationReference, "periodicity", newPeriodicity)
+        batch.commit()
+    }
+
+    fun deleteBook(book: Book){
+        val batch = mDatabaseInstance.batch()
+
+        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
+        val booksLocationReference = mDatabaseInstance.collection(book.getDatabaseCollectionLocation()).document(book.generateBookKey())
+
+        val valuesToDeleteOnUserMap = HashMap<String, Any>()
+
+        valuesToDeleteOnUserMap["books.${book.generateBookKey()}"] = FieldValue.delete()
+
+        batch.update(userDataLocationReference, valuesToDeleteOnUserMap)
+        batch.delete(booksLocationReference)
         batch.commit()
     }
 

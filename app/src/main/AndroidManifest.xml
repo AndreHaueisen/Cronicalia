@@ -42,7 +42,7 @@
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
                   android:theme="@style/Base.Theme.AppCompat"/>
 
-        <activity android:name=".c_creations.mvp.MyCreationsPresenterActivity"/>
+        <activity android:name=".c_my_books.mvp.MyBooksPresenterActivity"/>
 
         <service
             android:name=".a_application.InstanceIdService">

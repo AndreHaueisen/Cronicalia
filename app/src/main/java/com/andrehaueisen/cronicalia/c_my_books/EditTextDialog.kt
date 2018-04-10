@@ -1,4 +1,4 @@
-package com.andrehaueisen.cronicalia.c_creations
+package com.andrehaueisen.cronicalia.c_my_books
 
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -7,7 +7,7 @@ import android.text.SpannableStringBuilder
 import android.view.WindowManager
 import android.widget.Button
 import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.c_creations.mvp.MyCreationEditViewFragment
+import com.andrehaueisen.cronicalia.c_my_books.mvp.MyBookEditViewFragment
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.isBookTitleValid
 import com.andrehaueisen.cronicalia.utils.extensions.isSynopsisValid
@@ -19,7 +19,7 @@ import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
  * Created by andre on 3/21/2018.
  */
 class EditTextDialog(
-    private val fragment: MyCreationEditViewFragment,
+    private val fragment: MyBookEditViewFragment,
     private val viewBeingEdited: ViewBeingEdited,
     private val mBook: Book
 ) : AlertDialog(fragment.context!!) {

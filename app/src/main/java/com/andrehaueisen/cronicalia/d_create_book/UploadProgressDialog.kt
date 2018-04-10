@@ -1,4 +1,4 @@
-package com.andrehaueisen.cronicalia.d_create_book.mvp
+package com.andrehaueisen.cronicalia.d_create_book
 
 import android.app.Activity
 import android.os.Bundle
@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.UPLOAD_STATUS_FAIL
 import com.andrehaueisen.cronicalia.UPLOAD_STATUS_OK
+import com.andrehaueisen.cronicalia.d_create_book.mvp.CreateBookView
 import com.google.firebase.storage.StorageException
 import es.dmoral.toasty.Toasty
 
@@ -16,7 +17,8 @@ import es.dmoral.toasty.Toasty
 /**
  * Created by andre on 11/23/2017.
  */
-class UploadProgressDialog(activity: Activity): AlertDialog(activity), CreateBookView.UploadState {
+class UploadProgressDialog(activity: Activity): AlertDialog(activity),
+    CreateBookView.UploadState {
 
     private val mActivity: Activity = activity
     private lateinit var mTitleTextView: TextView
@@ -36,7 +38,7 @@ class UploadProgressDialog(activity: Activity): AlertDialog(activity), CreateBoo
         mLoadingProgressBar.progress = 0
 
         findViewById<Button>(R.id.background_button)!!.setOnClickListener {
-            dismiss()
+            this.dismiss()
         }
     }
 
@@ -45,18 +47,17 @@ class UploadProgressDialog(activity: Activity): AlertDialog(activity), CreateBoo
         when (progress) {
             UPLOAD_STATUS_OK -> {
                 mLoadingProgressBar.progress = progress
-                mTitleTextView.text = context.getString(R.string.progress_dialog_success)
-                Toasty.success(context, context.getString(R.string.book_created))
-                dismiss()
+                Toasty.success(context, context.getString(R.string.book_created)).show()
+                this.dismiss()
                 mActivity.finish()
             }
             UPLOAD_STATUS_FAIL -> {
                 Toasty.error(context, context.getString(R.string.progress_dialog_fail)).show()
-                dismiss()
+                this.dismiss()
             }
             StorageException.ERROR_UNKNOWN ->{
                 Toasty.error(context, context.getString(R.string.check_internet_connection)).show()
-                dismiss()
+                this.dismiss()
             }
 
             else  -> {

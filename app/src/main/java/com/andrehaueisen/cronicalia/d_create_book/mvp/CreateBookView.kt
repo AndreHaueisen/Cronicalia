@@ -16,6 +16,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.andrehaueisen.cronicalia.*
 import com.andrehaueisen.cronicalia.d_create_book.SelectedFilesAdapter
+import com.andrehaueisen.cronicalia.d_create_book.UploadProgressDialog
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.createBookPictureDirectory
 import com.andrehaueisen.cronicalia.utils.extensions.getFileTitle
@@ -53,7 +54,6 @@ class CreateBookView(
 
     private lateinit var mImageDestination: ImageDestination
     private val mBookIsolated: Book
-    private val mUploadDialog = UploadProgressDialog(mActivity)
 
     interface UploadState {
         fun onUploadStateChanged(progress: Int)
@@ -345,11 +345,12 @@ class CreateBookView(
     private fun initiateFileSelectorAndUploadButton() {
 
         fun uploadBookData() {
-            mUploadDialog.show()
+            val uploadDialog = UploadProgressDialog(mActivity)
+            uploadDialog.show()
 
             launch(CommonPool) {
                 (mActivity as CreateBookActivity).uploadBookFiles(mBookIsolated).consumeEach { progress ->
-                    progress?.let { launch(UI) { mUploadDialog.onUploadStateChanged(it) } }
+                    progress?.let { launch(UI) { uploadDialog.onUploadStateChanged(it) } }
                 }
             }
         }

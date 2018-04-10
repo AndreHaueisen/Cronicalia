@@ -144,7 +144,7 @@
                             android:layout_height="wrap_content"
                             android:enabled="true"
                             android:imeOptions="actionDone"
-                            android:inputType="textMultiLine"
+                            android:inputType="textMultiLine|textCapSentences"
                             android:textColor="@color/text_primary"/>
 
                     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>

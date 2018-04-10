@@ -13,6 +13,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="DeleteBookDialog" parent="@android:style/Theme.Material.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:background">@color/colorPrimaryLight</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
     <style name="EditTextDark" parent="@android:style/Widget.Material.EditText">
         <!--<item name="android:fontFamily">@font/lato</item>-->
         <item name="android:dropDownSelector">@color/text_secondary</item>
