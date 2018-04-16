@@ -22,6 +22,8 @@
     <string name="delete_book_dialog_title">Delete this book?</string>
     <string name="delete_book_dialog_message">Deleting this book will erase all reviews and comments immediately</string>
     <string name="book_deleted">Book Deleted</string>
+    <string name="change_cover">Change Cover</string>
+    <string name="change_poster">Change Poster</string>
 
     <!--d_create_book strings -->
     <string name="create_new_book">Create new book</string>
@@ -97,6 +99,13 @@
         <item>I\'m gonna launch an incomplete %1$s book written in %2$s. I intend to post a new chapter every day</item>
         <item>I\'m gonna launch an incomplete %1$s book written in %2$s. I intend to post a new chapter every %3$d days</item>
     </string-array>
+
+    <!--e_featured_books_activity-->
+    <string name="starred">Starred</string>
+    <string name="search">Search</string>
+    <string name="my_books">My Books</string>
+    <string name="collection">Collection</string>
+    <string name="account">Account</string>
 
     <!-- Login Strings -->
     <string name="facebook_application_id" translatable="false">284060812125351</string>

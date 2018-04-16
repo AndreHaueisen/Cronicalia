@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_starred"
+        android:enabled="true"
+        android:icon="@drawable/ic_star_24dp"
+        android:title="@string/starred"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_search"
+        android:enabled="true"
+        android:icon="@drawable/ic_search_24dp"
+        android:title="@string/search"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_reading_collection"
+        android:enabled="true"
+        android:icon="@drawable/ic_collections_24dp"
+        android:title="@string/collection"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_my_books"
+        android:enabled="true"
+        android:icon="@drawable/ic_books_24dp"
+        android:title="@string/my_books"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_account"
+        android:enabled="true"
+        android:icon="@drawable/ic_account_box_24dp"
+        android:title="@string/account"
+        app:showAsAction="ifRoom"/>
+
+</menu>

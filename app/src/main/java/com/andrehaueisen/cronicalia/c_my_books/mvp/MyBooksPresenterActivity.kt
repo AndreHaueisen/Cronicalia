@@ -1,5 +1,6 @@
 package com.andrehaueisen.cronicalia.c_my_books.mvp
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.util.ArraySet
 import android.support.v7.app.AppCompatActivity
@@ -10,11 +11,14 @@ import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.a_application.BaseApplication
 import com.andrehaueisen.cronicalia.c_my_books.dagger.DaggerMyBooksComponent
 import com.andrehaueisen.cronicalia.c_my_books.dagger.MyBooksModule
+import com.andrehaueisen.cronicalia.e_featured_books.mvp.FeaturedBooksPresenterActivity
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.addFragment
 import com.andrehaueisen.cronicalia.utils.extensions.getSmallestScreenWidth
 import com.andrehaueisen.cronicalia.utils.extensions.replaceFragment
+import com.andrehaueisen.cronicalia.utils.extensions.startNewActivity
+import kotlinx.android.synthetic.main.c_activity_my_books.*
 import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import javax.inject.Inject
 
@@ -56,6 +60,23 @@ class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.Creati
                 addFragment(R.id.edit_creation_fragment_container, editCreationFragment)
             }
         }
+
+        navigation_bottom_view.setOnNavigationItemSelectedListener { menuItem ->
+
+            when(menuItem.itemId){
+                R.id.action_starred -> {
+                    startNewActivity(FeaturedBooksPresenterActivity::class.java, listOf(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
+                }
+                R.id.action_search -> {}
+                R.id.action_reading_collection -> {}
+                R.id.action_my_books -> {}
+            }
+
+            false
+        }
+
+        val menuItem = navigation_bottom_view.menu.getItem(3)
+        menuItem.isChecked = true
 
         /*upload_button.setOnClickListener {
 

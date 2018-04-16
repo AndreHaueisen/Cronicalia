@@ -37,12 +37,15 @@ import java.io.File
 /**
  * Created by andre on 3/19/2018.
  */
-class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterActivity, EditTextDialog.BookChangesListener, DeleteBookAlertDialog.DeleteBookListener {
+class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterActivity, EditTextDialog.BookChangesListener,
+    DeleteBookAlertDialog.DeleteBookListener {
 
     private lateinit var mBookIsolated: Book
     private lateinit var mImageDestination: ImageDestination
     private lateinit var mPosterImageView: ImageView
     private lateinit var mCoverImageView: ImageView
+    private lateinit var mChangePosterButton: Button
+    private lateinit var mChangeCoverButton: Button
     private lateinit var mTitleTextView: TextView
     private lateinit var mSynopsisTextView: TextView
     private lateinit var mReadingsTextView: TextView
@@ -88,6 +91,8 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
 
         mPosterImageView = view.findViewById(R.id.poster_image_view)
         mCoverImageView = view.findViewById(R.id.cover_image_view)
+        mChangePosterButton = view.findViewById(R.id.change_poster_button)
+        mChangeCoverButton = view.findViewById(R.id.change_cover_button)
         mTitleTextView = view.findViewById(R.id.title_text_view)
         mSynopsisTextView = view.findViewById(R.id.synopsis_text_view)
         mReadingsTextView = view.findViewById(R.id.readings_text_view)
@@ -117,7 +122,6 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
 
         initiateTitleTextView()
         initiateSynopsisTextView()
-        initiateImageViews()
         initiateSpinners()
         initiateRecyclerView()
         initiateButtons()
@@ -136,51 +140,6 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
     private fun initiateSynopsisTextView() {
         mSynopsisTextView.setOnClickListener {
             EditTextDialog(this, EditTextDialog.ViewBeingEdited.SYNOPSIS_VIEW, mBookIsolated).show()
-        }
-    }
-
-    private fun initiateImageViews() {
-        mCoverImageView.setOnClickListener {
-            val file: File
-            val directoryName: String
-
-            if (mBookIsolated.localCoverUri != null) {
-                directoryName = mBookIsolated.localCoverUri!!.substringBeforeLast("/").substringAfterLast("/")
-                file = requireActivity()
-                    .cacheDir
-                    .createBookPictureDirectory(directoryName, FILE_NAME_BOOK_COVER)
-            } else {
-                file = requireContext().cacheDir.createBookPictureDirectory("book_0${mBookIsolated.bookPosition}", FILE_NAME_BOOK_COVER)
-            }
-
-            CropImage.activity()
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setActivityTitle(context!!.getString(R.string.cover))
-                .setOutputUri(Uri.fromFile(file))
-                .setAspectRatio(3, 4)
-                .start(requireContext(), this)
-
-            mImageDestination = ImageDestination.COVER
-
-        }
-
-        mPosterImageView.setOnClickListener {
-            val directoryName = mBookIsolated.localCoverUri?.substringBeforeLast("/")?.substringAfterLast("/")
-
-            if (directoryName != null) {
-                val file = requireActivity()
-                    .cacheDir
-                    .createBookPictureDirectory(directoryName, FILE_NAME_BOOK_POSTER)
-
-                CropImage.activity()
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .setActivityTitle(context!!.getString(R.string.poster))
-                    .setAspectRatio(16, 9)
-                    .setOutputUri(Uri.fromFile(file))
-                    .start(requireContext(), this)
-
-                mImageDestination = ImageDestination.POSTER
-            }
         }
     }
 
@@ -209,6 +168,56 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
     }
 
     private fun initiateButtons() {
+        mChangeCoverButton.setOnClickListener {
+            val file: File
+            val directoryName: String
+
+            if (mBookIsolated.localCoverUri != null) {
+                directoryName = mBookIsolated.localCoverUri!!.substringBeforeLast("/").substringAfterLast("/")
+                file = requireActivity()
+                    .cacheDir
+                    .createBookPictureDirectory(directoryName, FILE_NAME_BOOK_COVER)
+            } else {
+                file = requireContext().cacheDir.createBookPictureDirectory("book_0${mBookIsolated.bookPosition}", FILE_NAME_BOOK_COVER)
+            }
+
+            CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setActivityTitle(context!!.getString(R.string.cover))
+                .setOutputUri(Uri.fromFile(file))
+                .setAspectRatio(3, 4)
+                .start(requireContext(), this)
+
+            mImageDestination = ImageDestination.COVER
+
+        }
+
+        mChangePosterButton.setOnClickListener {
+
+            val file: File
+            val directoryName: String
+
+            if (mBookIsolated.localPosterUri != null) {
+                directoryName = mBookIsolated.localPosterUri!!.substringBeforeLast("/").substringAfterLast("/")
+                file = requireActivity()
+                    .cacheDir
+                    .createBookPictureDirectory(directoryName, FILE_NAME_BOOK_POSTER)
+            } else {
+                file = requireContext().cacheDir.createBookPictureDirectory("book_0${mBookIsolated.bookPosition}", FILE_NAME_BOOK_POSTER)
+            }
+
+            CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setActivityTitle(context!!.getString(R.string.poster))
+                .setAspectRatio(16, 9)
+                .setOutputUri(Uri.fromFile(file))
+                .start(requireContext(), this)
+
+            mImageDestination = ImageDestination.POSTER
+
+        }
+
+
         if (mBookIsolated.isLaunchedComplete) {
 
             mAddChapterFab.visibility = View.GONE
@@ -242,11 +251,13 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
                 launch(CommonPool) {
                     (requireActivity() as MyBooksPresenterActivity).updateBookPdfs(mBookIsolated, mFileUrisToBeDeleted)
                         .consumeEach { progress ->
-                            progress?.let { launch(UI) {
-                                uploadDialog.onUploadStateChanged(it)
-                                if(it == UPLOAD_STATUS_OK)
-                                    mSaveFileChangesButton.visibility = View.INVISIBLE
-                            } }
+                            progress?.let {
+                                launch(UI) {
+                                    uploadDialog.onUploadStateChanged(it)
+                                    if (it == UPLOAD_STATUS_OK)
+                                        mSaveFileChangesButton.visibility = View.INVISIBLE
+                                }
+                            }
                         }
                 }
             }
@@ -260,7 +271,7 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
     }
 
     override fun onDeletionConfirmed() {
-        if(activity != null && isAdded){
+        if (activity != null && isAdded) {
             (requireActivity() as MyBooksPresenterActivity).deleteBook(mBookIsolated)
             Toasty.success(requireContext(), getString(R.string.book_deleted)).show()
             fragmentManager?.popBackStackImmediate()

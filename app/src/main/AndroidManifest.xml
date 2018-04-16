@@ -44,6 +44,8 @@
 
         <activity android:name=".c_my_books.mvp.MyBooksPresenterActivity"/>
 
+        <activity android:name=".e_featured_books.mvp.FeaturedBooksPresenterActivity"/>
+
         <service
             android:name=".a_application.InstanceIdService">
             <intent-filter>
