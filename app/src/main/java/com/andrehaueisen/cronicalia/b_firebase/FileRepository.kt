@@ -266,6 +266,83 @@ class FileRepository(
         return mGlobalProgressReceiver
     }
 
+    suspend fun updateUserProfileImage(newLocalUri: String, dataRepository: DataRepository): SubscriptionReceiveChannel<Int?> {
+
+        val uploadTask: UploadTask
+
+        val locationReference = mStorageInstance.reference
+            .child(STORAGE_USERS)
+            .child(mUser.encodedEmail!!)
+
+
+            val metadata = StorageMetadata.Builder()
+                .setCustomMetadata(
+                    METADATA_TITLE_IMAGE_TYPE,
+                    METADATA_PROPERTY_IMAGE_TYPE_PROFILE
+                )
+                .build()
+
+            val filePath = Uri.parse(newLocalUri)
+            uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
+
+            uploadTask.addOnSuccessListener { taskSnapshot ->
+                launch {
+                    mUser.remoteProfilePictureUri = taskSnapshot.downloadUrl?.toString()
+                    dataRepository.updateUserProfilePictureReferences(newLocalUri, mUser.remoteProfilePictureUri!!)
+                    mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_OK)
+                }
+
+            }.addOnFailureListener { exception ->
+                launch {
+                    val errorCode = (exception as StorageException).errorCode
+                    when (errorCode) {
+                        StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(errorCode)
+                        else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                    }
+                }
+            }
+
+        return mGlobalProgressReceiver
+    }
+
+    suspend fun updateUserBackgroundImage(newLocalUri: String, dataRepository: DataRepository): SubscriptionReceiveChannel<Int?> {
+        val uploadTask: UploadTask
+
+        val locationReference = mStorageInstance.reference
+            .child(STORAGE_USERS)
+            .child(mUser.encodedEmail!!)
+
+
+        val metadata = StorageMetadata.Builder()
+            .setCustomMetadata(
+                METADATA_TITLE_IMAGE_TYPE,
+                METADATA_PROPERTY_IMAGE_TYPE_BACKGROUND
+            )
+            .build()
+
+        val filePath = Uri.parse(newLocalUri)
+        uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
+
+        uploadTask.addOnSuccessListener { taskSnapshot ->
+            launch {
+                mUser.remoteBackgroundPictureUri = taskSnapshot.downloadUrl?.toString()
+                dataRepository.updateUserBackgroundPictureReferences(newLocalUri, mUser.remoteBackgroundPictureUri!!)
+                mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_OK)
+            }
+
+        }.addOnFailureListener { exception ->
+            launch {
+                val errorCode = (exception as StorageException).errorCode
+                when (errorCode) {
+                    StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(errorCode)
+                    else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                }
+            }
+        }
+
+        return mGlobalProgressReceiver
+    }
+
     suspend fun updatePdfs(book: Book, dataRepository: DataRepository, filesToBeDeleted: ArraySet<String>): SubscriptionReceiveChannel<Int?> {
 
         deleteBookFiles(filesToBeDeleted)

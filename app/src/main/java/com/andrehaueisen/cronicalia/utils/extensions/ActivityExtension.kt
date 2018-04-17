@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -16,6 +17,8 @@ import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
 import com.andrehaueisen.cronicalia.SHARED_PREFERENCES
 import java.io.File
+
+
 
 /**
  * Created by andre on 2/19/2018.
@@ -50,6 +53,12 @@ fun Activity.getSmallestScreenWidth(): Float{
     val heightDp = metrics.heightPixels / scaleFactor
 
     return Math.min(widthDp, heightDp)
+}
+
+fun Context.isOnline(): Boolean {
+    val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val netInfo = connectivityManager.activeNetworkInfo
+    return netInfo != null && netInfo.isConnectedOrConnecting
 }
 
 fun <T : Activity> Context.startNewActivity(classToInit: Class<T>, flags: List<Int>? = null, extras: Bundle? = null, options: Bundle? = null) {

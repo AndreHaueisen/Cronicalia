@@ -18,16 +18,19 @@ const val STORAGE_ENGLISH_BOOKS = "english_books"
 const val STORAGE_PORTUGUESE_BOOKS = "portuguese_books"
 const val STORAGE_DEUTSCH_BOOKS = "deutsch_books"
       const val STORAGE_CHAPTERS_FILES = "chapters"
-const val STORAGE_USER_PHOTOS = "user_photos"
+const val STORAGE_USERS = "users"
 
 const val METADATA_TITLE_IMAGE_TYPE = "imageType"
 const val METADATA_PROPERTY_IMAGE_TYPE_COVER = "cover"
 const val METADATA_PROPERTY_IMAGE_TYPE_POSTER = "poster"
+const val METADATA_PROPERTY_IMAGE_TYPE_PROFILE = "profile"
+const val METADATA_PROPERTY_IMAGE_TYPE_BACKGROUND = "background"
 const val METADATA_CHAPTER_NUMBER = "chapter_number"
 
 const val FILE_NAME_BOOK_POSTER = "poster.jpg"
 const val FILE_NAME_BOOK_COVER = "cover.jpg"
-const val FILE_NAME_USER_PICTURE = "user_profile.jpg"
+const val FILE_NAME_PROFILE_PICTURE = "profile_picture.jpg"
+const val FILE_NAME_BACKGROUND_PICTURE = "background_picture.jpg"
 
 const val PDF_ADD_CODE = 400
 const val PDF_REQUEST_CODE = 500

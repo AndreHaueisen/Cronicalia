@@ -6,36 +6,25 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.andrehaueisen.cronicalia.LOGIN_REQUEST_CODE
 import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.a_application.BaseApplication
 import com.andrehaueisen.cronicalia.b_firebase.Authenticator
 import com.andrehaueisen.cronicalia.b_firebase.DataRepository
 import com.andrehaueisen.cronicalia.e_featured_books.mvp.FeaturedBooksPresenterActivity
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.startNewActivity
-import com.andrehaueisen.listadejanot.j_login.dagger.DaggerLoginActivityComponent
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import es.dmoral.toasty.Toasty
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 class LoginActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var mAuthenticator: Authenticator
+    private val mAuthenticator: Authenticator by inject()
+    private val mDatabaseInstance: DataRepository by inject()
 
-    @Inject
-    lateinit var mDatabaseInstance: DataRepository
-
-    @Inject
-    lateinit var mUser: User
+    val mUser: User by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        DaggerLoginActivityComponent.builder()
-            .applicationComponent(BaseApplication.get(this).getAppComponent())
-            .build()
-            .injectFirebaseAuthenticator(this)
 
         if (mAuthenticator.isUserLoggedIn()) {
             startCallingActivity()

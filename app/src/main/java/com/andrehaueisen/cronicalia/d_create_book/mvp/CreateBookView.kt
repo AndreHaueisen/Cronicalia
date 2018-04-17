@@ -18,7 +18,7 @@ import com.andrehaueisen.cronicalia.*
 import com.andrehaueisen.cronicalia.d_create_book.SelectedFilesAdapter
 import com.andrehaueisen.cronicalia.d_create_book.UploadProgressDialog
 import com.andrehaueisen.cronicalia.models.Book
-import com.andrehaueisen.cronicalia.utils.extensions.createBookPictureDirectory
+import com.andrehaueisen.cronicalia.utils.extensions.createUserDirectory
 import com.andrehaueisen.cronicalia.utils.extensions.getFileTitle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -86,7 +86,7 @@ class CreateBookView(
         mActivity.book_cover_image_view.setOnClickListener {
             val file = mActivity
                 .cacheDir
-                .createBookPictureDirectory("book_0$mUserBookCount", FILE_NAME_BOOK_COVER)
+                .createUserDirectory("book_0$mUserBookCount", FILE_NAME_BOOK_COVER)
 
             CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
@@ -101,7 +101,7 @@ class CreateBookView(
         mActivity.book_poster_image_view.setOnClickListener {
             val file = mActivity
                 .cacheDir
-                .createBookPictureDirectory("/book_0$mUserBookCount", FILE_NAME_BOOK_POSTER)
+                .createUserDirectory("/book_0$mUserBookCount", FILE_NAME_BOOK_POSTER)
 
             CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)

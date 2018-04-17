@@ -8,25 +8,21 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import com.andrehaueisen.cronicalia.PDF_REQUEST_CODE
 import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.a_application.BaseApplication
-import com.andrehaueisen.cronicalia.d_create_book.dagger.CreateBookModule
-import com.andrehaueisen.cronicalia.d_create_book.dagger.DaggerCreateBookComponent
+import com.andrehaueisen.cronicalia.b_firebase.DataRepository
+import com.andrehaueisen.cronicalia.b_firebase.FileRepository
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.User
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 
 class CreateBookActivity : AppCompatActivity() {
 
     private lateinit var mBookView: CreateBookView
 
-    @Inject
-    lateinit var mModel : CreateBookModel
-
-    @Inject
-    lateinit var mUser : User
+    private lateinit var mModel : CreateBookModel
+    private val mUser : User by inject()
 
     interface BookResources {
         fun onImageReady(pictureUri: Uri)
@@ -38,11 +34,9 @@ class CreateBookActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerCreateBookComponent.builder()
-            .applicationComponent(BaseApplication.get(this).getAppComponent())
-            .createBookModule(CreateBookModule())
-            .build()
-            .inject(this)
+        val fileRepository : FileRepository by inject()
+        val dataRepository : DataRepository by inject()
+        mModel = CreateBookModel(fileRepository, dataRepository)
 
         setSupportActionBar(findViewById<Toolbar>(R.id.create_book_app_bar))
         actionBar?.let {

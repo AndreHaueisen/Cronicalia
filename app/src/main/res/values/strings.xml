@@ -100,12 +100,23 @@
         <item>I\'m gonna launch an incomplete %1$s book written in %2$s. I intend to post a new chapter every %3$d days</item>
     </string-array>
 
-    <!--e_featured_books_activity-->
+    <!--e_featured_books strings-->
     <string name="starred">Starred</string>
     <string name="search">Search</string>
     <string name="my_books">My Books</string>
     <string name="collection">Collection</string>
     <string name="account">Account</string>
+
+    <!--f_manage_account strings-->
+    <string name="background_image">Background Image</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="user_name">User Name</string>
+    <string name="about_me">About Me</string>
+    <string name="artistic_name">Artistic Name</string>
+    <string name="updating_image">Updating Image</string>
+    <string name="update_begin_once_internet_available">Update will begin once you connect to the internet</string>
+    <string name="image_upload_successful">Image update complete</string>
+    <string name="image_upload_failed">Image update failed. Try again.</string>
 
     <!-- Login Strings -->
     <string name="facebook_application_id" translatable="false">284060812125351</string>

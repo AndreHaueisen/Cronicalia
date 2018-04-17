@@ -164,6 +164,40 @@ class DataRepository(
         batch.commit()
     }
 
+    fun updateUserProfilePictureReferences(localProfileImageUri: String, remoteProfileImageUri: String){
+        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
+        val valuesToUpdate = mutableMapOf<String, Any>()
+        valuesToUpdate["localProfilePictureUri"] = localProfileImageUri
+        valuesToUpdate["remoteProfilePictureUri"] = remoteProfileImageUri
+
+        userDataLocationReference.update(valuesToUpdate)
+    }
+
+    fun updateUserBackgroundPictureReferences(localBackgroundImageUri: String, remoteBackgroundImageUri: String){
+        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
+        val valuesToUpdate = mutableMapOf<String, Any>()
+        valuesToUpdate["localBackgroundPictureUri"] = localBackgroundImageUri
+        valuesToUpdate["remoteBackgroundPictureUri"] = remoteBackgroundImageUri
+
+        userDataLocationReference.update(valuesToUpdate)
+    }
+
+    fun updateUserName(newName: String){
+        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
+        userDataLocationReference.update("name", newName)
+    }
+
+    fun updateUserArtisticName(newArtisticName: String){
+        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
+        userDataLocationReference.update("artisticName", newArtisticName)
+    }
+
+    fun updateUserAboutMe(newAboutMe: String){
+        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
+        userDataLocationReference.update("aboutMe", newAboutMe)
+
+    }
+
     fun loadLoggingInUser(userEncodedEmail: String, activity: Activity) {
         mDatabaseInstance.collection(COLLECTION_USERS).document(userEncodedEmail).get()
             .addOnSuccessListener { taskSnapshot ->

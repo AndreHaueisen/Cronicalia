@@ -15,10 +15,6 @@ class MyBooksModel(private val mFileRepository: FileRepository, private val mDat
         TITLE, SYNOPSIS, PERIODICITY, GENRE
     }
 
-    fun updateBookOnDatabase(book: Book){
-        mDataRepository.setBookDocuments(book, sendProgressUpdate = false)
-    }
-
     fun updateBookPdfsReferences(book: Book){
         mDataRepository.updateBookPdfReferences(book, false)
     }

@@ -64,7 +64,7 @@ class EditTextDialog(
                 mGeneralTextBox.labelText = context.getString(R.string.book_synopsis)
                 mGeneralTextBox.maxCharacters = context.resources.getInteger(R.integer.synopsis_text_box_max_length)
                 mGeneralTextBox.general_extended_edit_text.inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-                mGeneralTextBox.general_extended_edit_text.text = SpannableStringBuilder(mBook.synopsis ?: "")
+                mGeneralTextBox.general_extended_edit_text.text = synopsis
                 mGeneralTextBox.general_extended_edit_text.setSelection(synopsis.length)
             }
         }

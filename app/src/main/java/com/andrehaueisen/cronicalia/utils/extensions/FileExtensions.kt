@@ -5,7 +5,7 @@ import java.io.File
 /**
  * Created by andre on 2/24/2018.
  */
-fun File.createBookPictureDirectory(directoryName: String, fileName: String): File{
+fun File.createUserDirectory(directoryName: String, fileName: String): File{
 
     val directory = File(this, directoryName)
     val file: File

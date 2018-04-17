@@ -8,10 +8,10 @@ import com.andrehaueisen.cronicalia.BACK_STACK_CREATIONS_TO_EDIT_TAG
 import com.andrehaueisen.cronicalia.FRAGMENT_EDIT_CREATION_TAG
 import com.andrehaueisen.cronicalia.PARCELABLE_BOOK
 import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.a_application.BaseApplication
-import com.andrehaueisen.cronicalia.c_my_books.dagger.DaggerMyBooksComponent
-import com.andrehaueisen.cronicalia.c_my_books.dagger.MyBooksModule
+import com.andrehaueisen.cronicalia.b_firebase.DataRepository
+import com.andrehaueisen.cronicalia.b_firebase.FileRepository
 import com.andrehaueisen.cronicalia.e_featured_books.mvp.FeaturedBooksPresenterActivity
+import com.andrehaueisen.cronicalia.f_manage_account.mvp.ManageAccountPresenterActivity
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.addFragment
@@ -20,7 +20,7 @@ import com.andrehaueisen.cronicalia.utils.extensions.replaceFragment
 import com.andrehaueisen.cronicalia.utils.extensions.startNewActivity
 import kotlinx.android.synthetic.main.c_activity_my_books.*
 import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 
 class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.CreationClickListener {
@@ -29,24 +29,19 @@ class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.Creati
         fun refreshFragmentData(book: Book)
     }
 
-    @Inject
-    lateinit var mUser: User
-
-    @Inject
-    lateinit var mModel: MyBooksModel
+    private lateinit var mModel: MyBooksModel
+    val mUser: User by inject()
 
     private val LOG_TAG = MyBooksPresenterActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerMyBooksComponent.builder()
-            .applicationComponent(BaseApplication.get(this).getAppComponent())
-            .myBooksModule(MyBooksModule())
-            .build()
-            .inject(this)
-
         setContentView(R.layout.c_activity_my_books)
+
+        val fileRepository : FileRepository by inject()
+        val dataRepository : DataRepository by inject()
+        mModel = MyBooksModel(fileRepository, dataRepository)
 
         if(savedInstanceState == null) {
             if (getSmallestScreenWidth() < 600) {
@@ -64,12 +59,15 @@ class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.Creati
         navigation_bottom_view.setOnNavigationItemSelectedListener { menuItem ->
 
             when(menuItem.itemId){
-                R.id.action_starred -> {
+                R.id.action_featured -> {
                     startNewActivity(FeaturedBooksPresenterActivity::class.java, listOf(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
                 }
                 R.id.action_search -> {}
                 R.id.action_reading_collection -> {}
                 R.id.action_my_books -> {}
+                R.id.action_account -> {
+                    startNewActivity(ManageAccountPresenterActivity::class.java, listOf(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
+                }
             }
 
             false

@@ -19,7 +19,7 @@ import com.andrehaueisen.cronicalia.c_my_books.EditTextDialog
 import com.andrehaueisen.cronicalia.c_my_books.EditionFilesAdapter
 import com.andrehaueisen.cronicalia.c_my_books.UploadProgressDialog
 import com.andrehaueisen.cronicalia.models.Book
-import com.andrehaueisen.cronicalia.utils.extensions.createBookPictureDirectory
+import com.andrehaueisen.cronicalia.utils.extensions.createUserDirectory
 import com.andrehaueisen.cronicalia.utils.extensions.getSmallestScreenWidth
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -176,9 +176,9 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
                 directoryName = mBookIsolated.localCoverUri!!.substringBeforeLast("/").substringAfterLast("/")
                 file = requireActivity()
                     .cacheDir
-                    .createBookPictureDirectory(directoryName, FILE_NAME_BOOK_COVER)
+                    .createUserDirectory(directoryName, FILE_NAME_BOOK_COVER)
             } else {
-                file = requireContext().cacheDir.createBookPictureDirectory("book_0${mBookIsolated.bookPosition}", FILE_NAME_BOOK_COVER)
+                file = requireContext().cacheDir.createUserDirectory("book_0${mBookIsolated.bookPosition}", FILE_NAME_BOOK_COVER)
             }
 
             CropImage.activity()
@@ -201,9 +201,9 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
                 directoryName = mBookIsolated.localPosterUri!!.substringBeforeLast("/").substringAfterLast("/")
                 file = requireActivity()
                     .cacheDir
-                    .createBookPictureDirectory(directoryName, FILE_NAME_BOOK_POSTER)
+                    .createUserDirectory(directoryName, FILE_NAME_BOOK_POSTER)
             } else {
-                file = requireContext().cacheDir.createBookPictureDirectory("book_0${mBookIsolated.bookPosition}", FILE_NAME_BOOK_POSTER)
+                file = requireContext().cacheDir.createUserDirectory("book_0${mBookIsolated.bookPosition}", FILE_NAME_BOOK_POSTER)
             }
 
             CropImage.activity()

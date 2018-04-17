@@ -19,6 +19,18 @@ fun String.isSynopsisValid(context: Context): Boolean {
     return !this.isNullOrBlank() && this.replace(" ", "").length <= context.resources.getInteger(R.integer.synopsis_text_box_max_length)
 }
 
+fun String.isUserNameValid(context: Context): Boolean {
+    return !this.isNullOrBlank() && this.replace(" ", "").length <= context.resources.getInteger(R.integer.title_text_box_max_length)
+}
+
+fun String.isArtisticNameValid(context: Context): Boolean {
+    return !this.isNullOrBlank() && this.replace(" ", "").length <= context.resources.getInteger(R.integer.title_text_box_max_length)
+}
+
+fun String.isAboutMeTextValid(context: Context): Boolean {
+    return !this.isNullOrBlank() && this.replace(" ", "").length <= context.resources.getInteger(R.integer.synopsis_text_box_max_length)
+}
+
 
 fun String.isUriFromFirebaseStorage(): Boolean{
     return this.startsWith("https://firebasestorage")

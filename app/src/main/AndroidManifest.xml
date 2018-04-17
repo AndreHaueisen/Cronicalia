@@ -45,6 +45,7 @@
         <activity android:name=".c_my_books.mvp.MyBooksPresenterActivity"/>
 
         <activity android:name=".e_featured_books.mvp.FeaturedBooksPresenterActivity"/>
+        <activity android:name=".f_manage_account.mvp.ManageAccountPresenterActivity"/>
 
         <service
             android:name=".a_application.InstanceIdService">

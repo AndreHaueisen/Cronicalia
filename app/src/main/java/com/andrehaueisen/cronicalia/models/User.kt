@@ -17,10 +17,14 @@ data class User(
     var name: String? = null,
     var encodedEmail: String? = null,
     var artisticName: String? = null,
-    var aboutSelf: String? = null,
-    var profilePictureUri: String? = null,
+    var aboutMe: String? = null,
+    var localProfilePictureUri: String? = null,
+    var remoteProfilePictureUri: String? = null,
+    var localBackgroundPictureUri: String? = null,
+    var remoteBackgroundPictureUri: String? = null,
     var fans: Int = 0,
-    var books: HashMap<String, Book> = hashMapOf()) : Parcelable {
+    var books: HashMap<String, Book> = hashMapOf()
+) : Parcelable {
 
     private val mUserDataUpdateBroadcastChannel = ArrayBroadcastChannel<Boolean>(capacity = 2)
     private val mUserUpdateSignalReceiver = mUserDataUpdateBroadcastChannel.openSubscription()
@@ -50,8 +54,11 @@ data class User(
         this.name = user.name
         this.encodedEmail = user.encodedEmail
         this.artisticName = user.artisticName
-        this.aboutSelf = user.aboutSelf
-        this.profilePictureUri = user.profilePictureUri
+        this.aboutMe = user.aboutMe
+        this.localProfilePictureUri = user.localProfilePictureUri
+        this.remoteProfilePictureUri = user.remoteProfilePictureUri
+        this.localBackgroundPictureUri = user.localBackgroundPictureUri
+        this.remoteBackgroundPictureUri = user.remoteBackgroundPictureUri
         this.fans = user.fans
         books.clear()
         books.putAll(user.books)
@@ -67,23 +74,34 @@ data class User(
         return name == that.name &&
                 encodedEmail == that.encodedEmail &&
                 artisticName == that.artisticName &&
-                aboutSelf == that.aboutSelf &&
-                profilePictureUri == that.profilePictureUri &&
+                aboutMe == that.aboutMe &&
+                localProfilePictureUri == that.localProfilePictureUri &&
+                remoteProfilePictureUri == that.remoteProfilePictureUri &&
+                localBackgroundPictureUri == that.localBackgroundPictureUri &&
+                remoteBackgroundPictureUri == that.remoteBackgroundPictureUri &&
                 fans == that.fans &&
                 books == books
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(name,
-                encodedEmail,
-                artisticName,
-                aboutSelf,
-                profilePictureUri,
-                fans,
-                books)
+        return Objects.hash(
+            name,
+            encodedEmail,
+            artisticName,
+            aboutMe,
+            localProfilePictureUri,
+            remoteProfilePictureUri,
+            localBackgroundPictureUri,
+            remoteBackgroundPictureUri,
+            fans,
+            books
+        )
     }
 
     constructor(source: Parcel) : this(
+        source.readString(),
+        source.readString(),
+        source.readString(),
         source.readString(),
         source.readString(),
         source.readString(),
@@ -99,8 +117,11 @@ data class User(
         writeString(name)
         writeString(encodedEmail)
         writeString(artisticName)
-        writeString(aboutSelf)
-        writeString(profilePictureUri)
+        writeString(aboutMe)
+        writeString(localProfilePictureUri)
+        writeString(remoteProfilePictureUri)
+        writeString(localBackgroundPictureUri)
+        writeString(remoteBackgroundPictureUri)
         writeInt(fans)
         writeSerializable(books)
     }
