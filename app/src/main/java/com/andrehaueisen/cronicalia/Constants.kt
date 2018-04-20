@@ -48,6 +48,7 @@ const val PARCELABLE_URI_KEYS = "parcelable_uri_keys"
 const val PARCELABLE_TITLE_VALUES = "parcelable_title_values"
 const val PARCELABLE_LAYOUT_MANAGER = "parcelable_layout_manager"
 const val PARCELABLE_BOOK_KEY = "parcelable_book_key"
+const val PARCELABLE_IMAGE_DESTINATION = "parcelable_image_destination"
 
 const val SHARED_PREFERENCES = "com_andre_haueisen_shared_pref"
 const val SHARED_MESSAGE_TOKEN = "message_token"

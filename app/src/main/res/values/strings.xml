@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Cronicalia</string>
 
-    <!--c_my_creations strings-->
+    <!--f_my_books strings-->
     <string name="simple_number_integer">%1$d</string>
     <string name="simple_number_float">%1$.2f</string>
     <string name="income_amount">\$%1$.2f</string>
@@ -25,7 +25,7 @@
     <string name="change_cover">Change Cover</string>
     <string name="change_poster">Change Poster</string>
 
-    <!--d_create_book strings -->
+    <!--f_create_book strings -->
     <string name="create_new_book">Create new book</string>
     <string name="book_is_complete">Book is complete</string>
     <string name="book_title">Book Title</string>
@@ -100,14 +100,14 @@
         <item>I\'m gonna launch an incomplete %1$s book written in %2$s. I intend to post a new chapter every %3$d days</item>
     </string-array>
 
-    <!--e_featured_books strings-->
+    <!--c_featured_books strings-->
     <string name="starred">Starred</string>
     <string name="search">Search</string>
     <string name="my_books">My Books</string>
     <string name="collection">Collection</string>
     <string name="account">Account</string>
 
-    <!--f_manage_account strings-->
+    <!--g_manage_account strings-->
     <string name="background_image">Background Image</string>
     <string name="profile_image">Profile Image</string>
     <string name="user_name">User Name</string>
@@ -117,6 +117,9 @@
     <string name="update_begin_once_internet_available">Update will begin once you connect to the internet</string>
     <string name="image_upload_successful">Image update complete</string>
     <string name="image_upload_failed">Image update failed. Try again.</string>
+    <string name="about_me_instructions">Click and tell your readers who are you</string>
+    <string name="artistic_name_instructions">Click and choose an artistic name</string>
+    <string name="image_invalid">Image invalid. Please try another one</string>
 
     <!-- Login Strings -->
     <string name="facebook_application_id" translatable="false">284060812125351</string>

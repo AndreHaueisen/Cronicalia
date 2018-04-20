@@ -1,20 +1,24 @@
-package com.andrehaueisen.cronicalia.f_manage_account
+package com.andrehaueisen.cronicalia.g_manage_account
 
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.text.Editable
 import android.text.InputType
 import android.text.SpannableStringBuilder
+import android.text.TextWatcher
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.f_manage_account.mvp.ManageAccountView
+import com.andrehaueisen.cronicalia.g_manage_account.mvp.ManageAccountView
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.isAboutMeTextValid
 import com.andrehaueisen.cronicalia.utils.extensions.isArtisticNameValid
 import com.andrehaueisen.cronicalia.utils.extensions.isUserNameValid
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.c_dialog_edit_text.view.*
+import kotlinx.android.synthetic.main.dialog_edit_text.view.*
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
 
 /**
@@ -27,6 +31,7 @@ class EditTextDialog(
     private val mUserIsolated: User
 ) : AlertDialog(context) {
 
+    private lateinit var mFullTextView: TextView
     private lateinit var mGeneralTextBox: TextFieldBoxes
     private lateinit var mOkButton: Button
     private lateinit var mCancelButton: Button
@@ -44,9 +49,10 @@ class EditTextDialog(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.c_dialog_edit_text)
+        setContentView(R.layout.dialog_edit_text)
         setCancelable(true)
 
+        mFullTextView = findViewById(R.id.full_text_view)!!
         mGeneralTextBox = findViewById(R.id.general_text_box)!!
         mOkButton = findViewById(R.id.ok_button)!!
         mCancelButton = findViewById(R.id.cancel_button)!!
@@ -56,6 +62,7 @@ class EditTextDialog(
         when(viewBeingEdited){
             ViewBeingEdited.NAME_VIEW -> {
                 val userName = SpannableStringBuilder(mUserIsolated.name ?: "")
+                mFullTextView.text = userName
                 mGeneralTextBox.labelText = context.getString(R.string.user_name)
                 mGeneralTextBox.maxCharacters = context.resources.getInteger(R.integer.title_text_box_max_length)
                 mGeneralTextBox.general_extended_edit_text.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
@@ -65,6 +72,7 @@ class EditTextDialog(
 
             ViewBeingEdited.ARTISTIC_NAME -> {
                 val artisticName = SpannableStringBuilder(mUserIsolated.artisticName ?: "")
+                mFullTextView.text = artisticName
                 mGeneralTextBox.labelText = context.getString(R.string.artistic_name)
                 mGeneralTextBox.maxCharacters = context.resources.getInteger(R.integer.title_text_box_max_length)
                 mGeneralTextBox.general_extended_edit_text.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
@@ -73,7 +81,9 @@ class EditTextDialog(
             }
 
             ViewBeingEdited.ABOUT_ME_VIEW -> {
+                mFullTextView.visibility = View.VISIBLE
                 val aboutMe = SpannableStringBuilder(mUserIsolated.aboutMe ?: "")
+                mFullTextView.text = aboutMe
                 mGeneralTextBox.labelText = context.getString(R.string.about_me)
                 mGeneralTextBox.maxCharacters = context.resources.getInteger(R.integer.synopsis_text_box_max_length)
                 mGeneralTextBox.general_extended_edit_text.inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
@@ -81,6 +91,16 @@ class EditTextDialog(
                 mGeneralTextBox.general_extended_edit_text.setSelection(aboutMe.length)
             }
         }
+
+        mGeneralTextBox.general_extended_edit_text.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(text: Editable?) {
+                mFullTextView.text = text!!.toString()
+            }
+
+            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        })
 
         mOkButton.setOnClickListener {
             when (viewBeingEdited) {

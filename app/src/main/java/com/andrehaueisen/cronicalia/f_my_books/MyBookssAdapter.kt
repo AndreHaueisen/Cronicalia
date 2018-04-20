@@ -1,4 +1,4 @@
-package com.andrehaueisen.cronicalia.c_my_books
+package com.andrehaueisen.cronicalia.f_my_books
 
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.c_my_books.mvp.MyBooksViewFragment
+import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBooksViewFragment
 import com.andrehaueisen.cronicalia.models.Book
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -79,23 +79,21 @@ class MyBookssAdapter(private val mFragment: MyBooksViewFragment, private val mM
 
             if (book.remoteCoverUri != null) {
                 val errorRequestOptions = RequestOptions.errorOf(R.drawable.cover_placeholder)
-                val placeHolderRequestOptions = RequestOptions.placeholderOf(R.drawable.cover_placeholder)
 
                 Glide.with(mFragment.context!!)
-                    .load(book.remoteCoverUri)
+                    .load(book.localCoverUri)
+                    .error(Glide.with(mFragment.context!!).load(book.remoteCoverUri))
                     .apply(errorRequestOptions)
-                    .apply(placeHolderRequestOptions)
                     .into(mBookCoverImageView)
             }
 
             if (book.remotePosterUri != null) {
                 val errorRequestOptions = RequestOptions.errorOf(R.drawable.cover_placeholder)
-                val placeHolderRequestOptions = RequestOptions.placeholderOf(R.drawable.cover_placeholder)
 
                 Glide.with(mFragment.context!!)
-                    .load(book.remotePosterUri)
+                    .load(book.localPosterUri)
+                    .error(Glide.with(mFragment.context!!).load(book.remotePosterUri))
                     .apply(errorRequestOptions)
-                    .apply(placeHolderRequestOptions)
                     .into(mBookPosterImageView)
             }
 

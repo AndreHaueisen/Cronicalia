@@ -36,7 +36,7 @@
                 android:id="@+id/container_card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="64dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="74dp"
@@ -92,27 +92,11 @@
                         android:maxLines="1"
                         android:textAlignment="center"
                         android:textColor="@color/colorAccent"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/change_profile_picture_button"
                         tools:text="Andre Haueisen"/>
-
-                    <TextView
-                        android:id="@+id/about_me_text_view"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:ellipsize="end"
-                        android:maxHeight="84dp"
-                        android:maxLines="5"
-                        android:textColor="@color/text_secondary"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/user_name_text_view"
-                        tools:text="Coming from NYC, I always believed that writing is the shortest way to go to haven. God wrote the bible for God sake"/>
 
                     <TextView
                         android:id="@+id/artistic_name_text_view"
@@ -120,34 +104,55 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:textAlignment="center"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/about_me_text_view"
+                        app:layout_constraintTop_toTopOf="@+id/guideline4"
                         tools:text="Pocahontas"/>
 
+                    <TextView
+                        android:id="@+id/about_me_text_view"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:ellipsize="end"
+                        android:maxHeight="84dp"
+                        android:maxLines="5"
+
+                        android:textColor="@color/text_secondary"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/artistic_name_text_view"
+                        tools:text="Coming from NYC, I always believed that writing is the shortest way to go to haven. God wrote the bible for God sake"/>
+
                     <ImageView
-                        android:id="@+id/fans_image_view"
+                        android:id="@+id/total_readings_image_view"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginBottom="4dp"
+                        android:layout_marginTop="16dp"
                         android:src="@drawable/ic_eye_24dp"
-                        app:layout_constraintBottom_toTopOf="@+id/fans_text_view"
-                        app:layout_constraintEnd_toEndOf="@+id/fans_text_view"
-                        app:layout_constraintStart_toStartOf="@+id/fans_text_view"/>
+                        app:layout_constraintBottom_toTopOf="@+id/total_readings_number_text_view"
+                        app:layout_constraintEnd_toStartOf="@+id/total_income_image_view"
+                        app:layout_constraintStart_toEndOf="@+id/books_number_image_view"
+                        app:layout_constraintTop_toBottomOf="@+id/about_me_text_view"/>
 
                     <TextView
                         android:id="@+id/fans_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:layout_marginStart="16dp"
                         android:textColor="@color/colorAccent"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/books_number_image_view"
+                        app:layout_constraintStart_toStartOf="@+id/books_number_image_view"
                         tools:text="10k"/>
 
                     <ImageView
@@ -155,25 +160,21 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginBottom="4dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginStart="24dp"
                         android:src="@drawable/ic_star_24dp"
-                        app:layout_constraintBottom_toTopOf="@+id/books_number_text_view"
-                        app:layout_constraintEnd_toEndOf="@+id/books_number_text_view"
-                        app:layout_constraintStart_toStartOf="@+id/books_number_text_view"
-                        app:layout_constraintTop_toBottomOf="@+id/artistic_name_text_view"/>
+                        app:layout_constraintBottom_toTopOf="@+id/fans_text_view"
+                        app:layout_constraintStart_toStartOf="parent"/>
 
                     <TextView
-                        android:id="@+id/books_number_text_view"
+                        android:id="@+id/total_readings_number_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="8dp"
                         android:textColor="@color/colorAccent"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/total_income_text_view"
-                        app:layout_constraintStart_toEndOf="@+id/fans_text_view"
+                        app:layout_constraintEnd_toEndOf="@+id/total_readings_image_view"
+                        app:layout_constraintStart_toStartOf="@+id/total_readings_image_view"
                         tools:text="9.5"/>
 
                     <ImageView
@@ -181,21 +182,21 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginBottom="4dp"
+                        android:layout_marginEnd="24dp"
                         android:src="@drawable/ic_money_24dp"
                         app:layout_constraintBottom_toTopOf="@+id/total_income_text_view"
-                        app:layout_constraintEnd_toEndOf="@+id/total_income_text_view"
-                        app:layout_constraintStart_toStartOf="@+id/total_income_text_view"/>
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
                     <TextView
                         android:id="@+id/total_income_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:layout_marginEnd="16dp"
                         android:textColor="@color/colorAccent"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/total_income_image_view"
+                        app:layout_constraintStart_toStartOf="@+id/total_income_image_view"
                         tools:text="$500"/>
 
                     <android.support.constraint.Guideline

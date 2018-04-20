@@ -1,4 +1,4 @@
-package com.andrehaueisen.cronicalia.c_my_books
+package com.andrehaueisen.cronicalia.f_my_books
 
 import android.content.Intent
 import android.net.Uri
@@ -15,7 +15,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.andrehaueisen.cronicalia.PDF_EDIT_CODE
 import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.c_my_books.mvp.MyBookEditViewFragment
+import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBookEditViewFragment
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.getFileTitle
 import es.dmoral.toasty.Toasty
@@ -180,7 +180,7 @@ class EditionFilesAdapter(
                 mTitleTextInput.labelText = mFragment.getString(R.string.book_title)
             } else {
                 mTitleTextInput.extended_edition_edit_text!!.setText( mBookIsolated.remoteChapterTitles[layoutPosition])
-                mTitleTextInput.labelText = mFragment.getString(R.string.chapter_number_hint, position + 1)
+                mTitleTextInput.labelText = mFragment.getString(R.string.chapter_number_hint, layoutPosition + 1)
             }
         }
 

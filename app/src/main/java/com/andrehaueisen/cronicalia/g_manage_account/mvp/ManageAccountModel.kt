@@ -1,4 +1,4 @@
-package com.andrehaueisen.cronicalia.f_manage_account.mvp
+package com.andrehaueisen.cronicalia.g_manage_account.mvp
 
 import com.andrehaueisen.cronicalia.b_firebase.DataRepository
 import com.andrehaueisen.cronicalia.b_firebase.FileRepository

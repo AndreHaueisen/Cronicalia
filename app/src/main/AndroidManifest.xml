@@ -36,16 +36,16 @@
 
         <activity android:name=".PDFActivity"/>
 
-        <activity android:name=".d_create_book.mvp.CreateBookActivity"
+        <activity android:name=".f_create_book.mvp.CreateBookActivity"
                   android:windowSoftInputMode="stateHidden"/>
 
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
                   android:theme="@style/Base.Theme.AppCompat"/>
 
-        <activity android:name=".c_my_books.mvp.MyBooksPresenterActivity"/>
+        <activity android:name=".f_my_books.mvp.MyBooksPresenterActivity"/>
 
-        <activity android:name=".e_featured_books.mvp.FeaturedBooksPresenterActivity"/>
-        <activity android:name=".f_manage_account.mvp.ManageAccountPresenterActivity"/>
+        <activity android:name=".c_featured_books.mvp.FeaturedBooksPresenterActivity"/>
+        <activity android:name=".g_manage_account.mvp.ManageAccountPresenterActivity"/>
 
         <service
             android:name=".a_application.InstanceIdService">

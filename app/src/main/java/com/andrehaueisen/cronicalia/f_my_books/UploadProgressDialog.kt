@@ -1,4 +1,4 @@
-package com.andrehaueisen.cronicalia.c_my_books
+package com.andrehaueisen.cronicalia.f_my_books
 
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.UPLOAD_STATUS_FAIL
 import com.andrehaueisen.cronicalia.UPLOAD_STATUS_OK
-import com.andrehaueisen.cronicalia.d_create_book.mvp.CreateBookView
+import com.andrehaueisen.cronicalia.f_create_book.mvp.CreateBookView
 import com.google.firebase.storage.StorageException
 import es.dmoral.toasty.Toasty
 

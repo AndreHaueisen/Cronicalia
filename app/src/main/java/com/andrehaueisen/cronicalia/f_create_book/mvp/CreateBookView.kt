@@ -1,4 +1,4 @@
-package com.andrehaueisen.cronicalia.d_create_book.mvp
+package com.andrehaueisen.cronicalia.f_create_book.mvp
 
 import android.app.Activity
 import android.content.Intent
@@ -15,8 +15,8 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
 import com.andrehaueisen.cronicalia.*
-import com.andrehaueisen.cronicalia.d_create_book.SelectedFilesAdapter
-import com.andrehaueisen.cronicalia.d_create_book.UploadProgressDialog
+import com.andrehaueisen.cronicalia.f_create_book.SelectedFilesAdapter
+import com.andrehaueisen.cronicalia.f_create_book.UploadProgressDialog
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.createUserDirectory
 import com.andrehaueisen.cronicalia.utils.extensions.getFileTitle

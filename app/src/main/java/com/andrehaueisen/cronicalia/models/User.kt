@@ -40,6 +40,28 @@ data class User(
     @Exclude
     fun getUserBookCount() = books.size
 
+    @Exclude
+    fun getTotalReadings(): Int{
+        var totalReadings = 0
+
+        books.forEach { (_, book) ->
+            totalReadings += book.readingNumber
+        }
+
+        return totalReadings
+    }
+
+    @Exclude
+    fun getTotalIncome(): Float{
+        var totalIncome = 0F
+
+        books.forEach { (_, book) ->
+            totalIncome += book.income
+        }
+
+        return totalIncome
+    }
+
     fun toSimpleMap(): Map<String, Any> {
 
         val simpleUserMap = HashMap<String, Any>()

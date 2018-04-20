@@ -1,18 +1,22 @@
-package com.andrehaueisen.cronicalia.c_my_books
+package com.andrehaueisen.cronicalia.f_my_books
 
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.text.Editable
 import android.text.InputType
 import android.text.SpannableStringBuilder
+import android.text.TextWatcher
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.c_my_books.mvp.MyBookEditViewFragment
+import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBookEditViewFragment
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.isBookTitleValid
 import com.andrehaueisen.cronicalia.utils.extensions.isSynopsisValid
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.c_dialog_edit_text.view.*
+import kotlinx.android.synthetic.main.dialog_edit_text.view.*
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
 
 /**
@@ -24,6 +28,7 @@ class EditTextDialog(
     private val mBook: Book
 ) : AlertDialog(fragment.context!!) {
 
+    private lateinit var mFullTextView: TextView
     private lateinit var mGeneralTextBox: TextFieldBoxes
     private lateinit var mOkButton: Button
     private lateinit var mCancelButton: Button
@@ -40,9 +45,10 @@ class EditTextDialog(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.c_dialog_edit_text)
+        setContentView(R.layout.dialog_edit_text)
         setCancelable(true)
 
+        mFullTextView = findViewById(R.id.full_text_view)!!
         mGeneralTextBox = findViewById(R.id.general_text_box)!!
         mOkButton = findViewById(R.id.ok_button)!!
         mCancelButton = findViewById(R.id.cancel_button)!!
@@ -52,6 +58,7 @@ class EditTextDialog(
         when(viewBeingEdited){
             ViewBeingEdited.TITLE_VIEW -> {
                 val title = SpannableStringBuilder(mBook.title ?: "")
+                mFullTextView.text = title
                 mGeneralTextBox.labelText = context.getString(R.string.book_title)
                 mGeneralTextBox.maxCharacters = context.resources.getInteger(R.integer.title_text_box_max_length)
                 mGeneralTextBox.general_extended_edit_text.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
@@ -60,7 +67,9 @@ class EditTextDialog(
             }
 
             ViewBeingEdited.SYNOPSIS_VIEW -> {
+                mFullTextView.visibility = View.VISIBLE
                 val synopsis = SpannableStringBuilder(mBook.synopsis ?: "")
+                mFullTextView.text = synopsis
                 mGeneralTextBox.labelText = context.getString(R.string.book_synopsis)
                 mGeneralTextBox.maxCharacters = context.resources.getInteger(R.integer.synopsis_text_box_max_length)
                 mGeneralTextBox.general_extended_edit_text.inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
@@ -68,6 +77,16 @@ class EditTextDialog(
                 mGeneralTextBox.general_extended_edit_text.setSelection(synopsis.length)
             }
         }
+
+        mGeneralTextBox.general_extended_edit_text.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(text: Editable?) {
+                mFullTextView.text = text!!.toString()
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        })
 
         mOkButton.setOnClickListener {
             when (viewBeingEdited) {

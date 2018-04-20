@@ -1,11 +1,11 @@
-package com.andrehaueisen.cronicalia.e_featured_books.mvp
+package com.andrehaueisen.cronicalia.c_featured_books.mvp
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.c_my_books.mvp.MyBooksPresenterActivity
-import com.andrehaueisen.cronicalia.f_manage_account.mvp.ManageAccountPresenterActivity
+import com.andrehaueisen.cronicalia.g_manage_account.mvp.ManageAccountPresenterActivity
+import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBooksPresenterActivity
 import com.andrehaueisen.cronicalia.utils.extensions.startNewActivity
 import kotlinx.android.synthetic.main.e_featured_books_activity.*
 

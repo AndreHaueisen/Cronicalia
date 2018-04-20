@@ -1,14 +1,16 @@
-package com.andrehaueisen.cronicalia.f_manage_account.mvp
+package com.andrehaueisen.cronicalia.g_manage_account.mvp
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.andrehaueisen.cronicalia.PARCELABLE_IMAGE_DESTINATION
+import com.andrehaueisen.cronicalia.PARCELABLE_USER
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.b_firebase.DataRepository
 import com.andrehaueisen.cronicalia.b_firebase.FileRepository
-import com.andrehaueisen.cronicalia.c_my_books.mvp.MyBooksPresenterActivity
-import com.andrehaueisen.cronicalia.e_featured_books.mvp.FeaturedBooksPresenterActivity
+import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBooksPresenterActivity
+import com.andrehaueisen.cronicalia.c_featured_books.mvp.FeaturedBooksPresenterActivity
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.startNewActivity
 import com.theartofdev.edmodo.cropper.CropImage
@@ -32,7 +34,16 @@ class ManageAccountPresenterActivity: AppCompatActivity() {
         val fileRepository: FileRepository by inject()
 
         mModel = ManageAccountModel(dataRepository, fileRepository)
-        mView = ManageAccountView(this, mUser)
+
+        mView = if (savedInstanceState != null && savedInstanceState.containsKey(PARCELABLE_USER)){
+
+            val savedUser = savedInstanceState.getParcelable<User>(PARCELABLE_USER)
+            val imageDestination = savedInstanceState.getString(PARCELABLE_IMAGE_DESTINATION)
+            ManageAccountView(this, savedUser, imageDestination)
+
+        } else {
+            ManageAccountView(this, mUser)
+        }
 
         navigation_bottom_view.setOnNavigationItemSelectedListener { menuItem ->
 
@@ -66,10 +77,18 @@ class ManageAccountPresenterActivity: AppCompatActivity() {
                     mView.onImageReady(result.uri)
 
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                    mView.onError()
+                    mView.onError(getString(R.string.image_invalid))
                 }
             }
 
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        if(outState != null) {
+            super.onSaveInstanceState(mView.onSaveInstanceState(outState))
+        } else {
+            super.onSaveInstanceState(outState)
         }
     }
 

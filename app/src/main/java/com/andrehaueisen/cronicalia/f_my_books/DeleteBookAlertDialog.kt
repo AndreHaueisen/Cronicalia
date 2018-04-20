@@ -1,11 +1,11 @@
-package com.andrehaueisen.cronicalia.c_my_books
+package com.andrehaueisen.cronicalia.f_my_books
 
 import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.c_my_books.mvp.MyBookEditViewFragment
+import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBookEditViewFragment
 
 class DeleteBookAlertDialog : DialogFragment() {
 

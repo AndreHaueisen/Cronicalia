@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context="com.andrehaueisen.cronicalia.d_create_book.mvp.CreateBookActivity">
+    tools:context="com.andrehaueisen.cronicalia.f_create_book.mvp.CreateBookActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/create_book_app_bar"

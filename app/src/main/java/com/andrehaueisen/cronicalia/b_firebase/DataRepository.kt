@@ -198,11 +198,15 @@ class DataRepository(
 
     }
 
-    fun loadLoggingInUser(userEncodedEmail: String, activity: Activity) {
+    fun loadLoggingInUser(userName: String, userEncodedEmail: String, activity: Activity) {
         mDatabaseInstance.collection(COLLECTION_USERS).document(userEncodedEmail).get()
             .addOnSuccessListener { taskSnapshot ->
                 val newUser = taskSnapshot.toObject(User::class.java)
-                mUser.refreshUser(newUser)
+                if(newUser == null){
+                    setInitialUserDocument(userName, userEncodedEmail)
+                } else {
+                    mUser.refreshUser(newUser)
+                }
 
                 if (activity is LoginActivity) {
                     activity.startCallingActivity()
@@ -212,7 +216,7 @@ class DataRepository(
             }
     }
 
-    fun setUserDocument(userName: String, userEncodedEmail: String) {
+    fun setInitialUserDocument(userName: String, userEncodedEmail: String) {
         mUser.name = userName
         mUser.encodedEmail = userEncodedEmail
 

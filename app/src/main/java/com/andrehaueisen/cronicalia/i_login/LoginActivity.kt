@@ -8,7 +8,7 @@ import com.andrehaueisen.cronicalia.LOGIN_REQUEST_CODE
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.b_firebase.Authenticator
 import com.andrehaueisen.cronicalia.b_firebase.DataRepository
-import com.andrehaueisen.cronicalia.e_featured_books.mvp.FeaturedBooksPresenterActivity
+import com.andrehaueisen.cronicalia.c_featured_books.mvp.FeaturedBooksPresenterActivity
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.startNewActivity
 import com.firebase.ui.auth.ErrorCodes
@@ -42,8 +42,7 @@ class LoginActivity : AppCompatActivity() {
             if (idpResponse != null) {
 
                 if (resultCode == Activity.RESULT_OK) {
-                    mDatabaseInstance.setUserDocument(mAuthenticator.getUserName()!!, mAuthenticator.getUserEncodedEmail()!!)
-                    mDatabaseInstance.loadLoggingInUser(mAuthenticator.getUserEncodedEmail()!!, this)
+                    mDatabaseInstance.loadLoggingInUser(mAuthenticator.getUserName()!!, mAuthenticator.getUserEncodedEmail()!!, this)
                     mAuthenticator.listenToUserChanges()
                     mAuthenticator.saveUserIdOnLogin()
                 } else {

@@ -74,7 +74,7 @@ class Authenticator(
 
             if (documentSnapshot != null && documentSnapshot.exists()) {
                 val newUser = documentSnapshot.toObject(User::class.java)
-                mUser.refreshUser(newUser)
+                newUser?.let { mUser.refreshUser(it) }
             }
         }
 

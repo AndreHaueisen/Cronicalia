@@ -38,7 +38,7 @@
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="18dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
@@ -54,11 +54,11 @@
             android:id="@+id/readings_image_view"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="28dp"
             android:src="@drawable/ic_eye_24dp"
             android:tint="@color/text_tertiary"
-            app:layout_constraintStart_toStartOf="@+id/book_cover_image_view"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/book_cover_image_view"/>
 
         <TextView
@@ -79,43 +79,41 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_star_24dp"
             android:tint="@color/text_tertiary"
-            app:layout_constraintEnd_toEndOf="@+id/rating_text_view"
-            app:layout_constraintStart_toStartOf="@+id/rating_text_view"
+            app:layout_constraintEnd_toStartOf="@+id/income_image_view"
+            app:layout_constraintStart_toEndOf="@+id/readings_image_view"
             app:layout_constraintTop_toTopOf="@+id/readings_image_view"/>
 
         <TextView
             android:id="@+id/rating_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:textColor="@color/colorAccent"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/income_text_view"
-            app:layout_constraintStart_toEndOf="@+id/readings_text_view"
+            app:layout_constraintEnd_toEndOf="@+id/rating_image_view"
+            app:layout_constraintStart_toStartOf="@+id/rating_image_view"
             app:layout_constraintTop_toBottomOf="@+id/rating_image_view"
             tools:text="9.5"/>
 
         <ImageView
             android:id="@+id/income_image_view"
-            android:layout_width="24dp"
+            android:layout_width="22dp"
             android:layout_height="24dp"
+            android:layout_marginEnd="32dp"
             android:src="@drawable/ic_money_24dp"
             android:tint="@color/text_tertiary"
-            app:layout_constraintEnd_toEndOf="@+id/income_text_view"
-            app:layout_constraintStart_toStartOf="@+id/income_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/readings_image_view"/>
 
         <TextView
             android:id="@+id/income_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginTop="4dp"
             android:textColor="@color/colorAccent"
             android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/income_image_view"
+            app:layout_constraintStart_toStartOf="@+id/income_image_view"
             app:layout_constraintTop_toBottomOf="@+id/income_image_view"
             tools:text="$500"/>
 
