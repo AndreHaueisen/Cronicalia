@@ -38,7 +38,7 @@ class SelectedFilesAdapter(
                 .inflate(R.layout.item_chapter_file, parent, false)
         } else {
             LayoutInflater.from(mContext)
-                .inflate(R.layout.item_book_file, parent, false)
+                .inflate(R.layout.item_my_book_file, parent, false)
         }
 
         return SelectedFileHolder(view)

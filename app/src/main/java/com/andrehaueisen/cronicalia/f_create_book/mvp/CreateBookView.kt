@@ -27,8 +27,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.d_activity_create_book.*
-import kotlinx.android.synthetic.main.d_activity_create_book.view.*
+import kotlinx.android.synthetic.main.f_activity_create_book.*
+import kotlinx.android.synthetic.main.f_activity_create_book.view.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.consumeEach

@@ -14,7 +14,7 @@ import com.andrehaueisen.cronicalia.c_featured_books.mvp.FeaturedBooksPresenterA
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.startNewActivity
 import com.theartofdev.edmodo.cropper.CropImage
-import kotlinx.android.synthetic.main.f_activity_manage_account.*
+import kotlinx.android.synthetic.main.g_activity_manage_account.*
 import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import org.koin.android.ext.android.inject
 
@@ -28,7 +28,7 @@ class ManageAccountPresenterActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.f_activity_manage_account)
+        setContentView(R.layout.g_activity_manage_account)
 
         val dataRepository: DataRepository by inject()
         val fileRepository: FileRepository by inject()

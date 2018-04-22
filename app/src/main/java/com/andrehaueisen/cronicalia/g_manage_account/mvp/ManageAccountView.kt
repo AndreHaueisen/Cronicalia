@@ -14,7 +14,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.f_activity_manage_account.*
+import kotlinx.android.synthetic.main.g_activity_manage_account.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.consumeEach

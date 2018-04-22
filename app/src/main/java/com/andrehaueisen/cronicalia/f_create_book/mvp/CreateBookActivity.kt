@@ -43,7 +43,7 @@ class CreateBookActivity : AppCompatActivity() {
             title = getString(R.string.create_new_book)
         }
 
-        setContentView(R.layout.d_activity_create_book)
+        setContentView(R.layout.f_activity_create_book)
 
         mBookView = CreateBookView(this, mUser.getUserBookCount(),  mUser.name!!,  mUser.encodedEmail!!, savedInstanceState)
     }

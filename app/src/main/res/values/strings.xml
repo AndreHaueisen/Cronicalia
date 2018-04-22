@@ -3,7 +3,7 @@
 
     <!--f_my_books strings-->
     <string name="simple_number_integer">%1$d</string>
-    <string name="simple_number_float">%1$.2f</string>
+    <string name="simple_number_float">%1$.1f</string>
     <string name="income_amount">\$%1$.2f</string>
     <string name="mark_book_as_completed">Book is finished</string>
     <string name="mark_book_as_incomplete">Still have chapter to launch</string>

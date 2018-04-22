@@ -39,15 +39,15 @@ data class Book(
     enum class BookGenre {
         UNDEFINED,
         ACTION,
-        FICTION,
-        ROMANCE,
+        ADVENTURE,
         COMEDY,
         DRAMA,
-        HORROR,
-        SATIRE,
         FANTASY,
+        FICTION,
+        HORROR,
         MYTHOLOGY,
-        ADVENTURE
+        ROMANCE,
+        SATIRE
     }
 
     enum class BookLanguage {
@@ -92,15 +92,15 @@ data class Book(
     fun convertGenreToPosition(): Int {
         return when (genre) {
             Book.BookGenre.ACTION -> 0
-            Book.BookGenre.FICTION -> 1
-            Book.BookGenre.ROMANCE -> 2
-            Book.BookGenre.COMEDY -> 3
-            Book.BookGenre.DRAMA -> 4
-            Book.BookGenre.HORROR -> 5
-            Book.BookGenre.SATIRE -> 6
-            Book.BookGenre.FANTASY -> 7
-            Book.BookGenre.MYTHOLOGY -> 8
-            Book.BookGenre.ADVENTURE -> 9
+            Book.BookGenre.ADVENTURE -> 1
+            Book.BookGenre.COMEDY -> 2
+            Book.BookGenre.DRAMA -> 3
+            Book.BookGenre.FANTASY -> 4
+            Book.BookGenre.FICTION -> 5
+            Book.BookGenre.HORROR -> 6
+            Book.BookGenre.MYTHOLOGY -> 7
+            Book.BookGenre.ROMANCE -> 8
+            Book.BookGenre.SATIRE -> 9
             else -> 0
         }
     }

@@ -29,7 +29,7 @@ class UploadProgressDialog(activity: Activity): AlertDialog(activity),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.d_dialog_upload_progress)
+        setContentView(R.layout.f_dialog_upload_progress)
         setCancelable(false)
 
         mTitleTextView = findViewById(R.id.dialog_title_text_view)!!

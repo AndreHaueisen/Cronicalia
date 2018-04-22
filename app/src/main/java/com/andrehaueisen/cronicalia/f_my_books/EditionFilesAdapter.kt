@@ -46,7 +46,7 @@ class EditionFilesAdapter(
                 .inflate(R.layout.item_chapter_file_edition, parent, false)
         } else {
             LayoutInflater.from(mFragment.context)
-                .inflate(R.layout.item_book_file_edition, parent, false)
+                .inflate(R.layout.item_my_book_file_edition, parent, false)
         }
 
         return SelectedFileHolder(view)

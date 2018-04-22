@@ -18,15 +18,15 @@ import com.bumptech.glide.request.RequestOptions
 /**
  * Created by andre on 2/21/2018.
  */
-class MyBookssAdapter(private val mFragment: MyBooksViewFragment, private val mMyBooks: ArrayList<Book>) :
-    RecyclerView.Adapter<MyBookssAdapter.BookHolder>() {
+class MyBooksAdapter(private val mFragment: MyBooksViewFragment, private val mMyBooks: ArrayList<Book>) :
+    RecyclerView.Adapter<MyBooksAdapter.BookHolder>() {
 
     interface CreationClickListener{
         fun onCreationClick(bookKey: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookHolder {
-        val creationView = LayoutInflater.from(mFragment.context).inflate(R.layout.item_book, parent, false)
+        val creationView = LayoutInflater.from(mFragment.context).inflate(R.layout.item_my_book, parent, false)
         return BookHolder(creationView)
     }
 
@@ -44,7 +44,7 @@ class MyBookssAdapter(private val mFragment: MyBooksViewFragment, private val mM
             mMyBooks.clear()
             mMyBooks.addAll(books)
             notifyDataSetChanged()
-            Log.d("MyBookssAdapter", "Data set changed")
+            Log.d("MyBooksAdapter", "Data set changed")
             return
         }
 
@@ -52,7 +52,7 @@ class MyBookssAdapter(private val mFragment: MyBooksViewFragment, private val mM
             if (book != books[index]) {
                 mMyBooks[index] = books[index]
                 notifyItemChanged(index)
-                Log.d("MyBookssAdapter", "Data changed at index $index")
+                Log.d("MyBooksAdapter", "Data changed at index $index")
             }
         }
     }

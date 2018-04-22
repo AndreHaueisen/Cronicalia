@@ -11,56 +11,49 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2d53dd53-7840-4f67-ae26-cd4b0226ad50" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksPresenterActivity.kt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/SelectedFilesAdapter.kt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/UploadProgressDialog.kt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/mvp/CreateBookActivity.kt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/mvp/CreateBookModel.kt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/mvp/CreateBookView.kt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/DeleteBookAlertDialog.kt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/EditTextDialog.kt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/EditionFilesAdapter.kt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/MyBookssAdapter.kt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/UploadProgressDialog.kt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/dialog_edit_text.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/BookAdapter.kt" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/FeaturedBooksAdapter.kt" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksFragment.kt" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksModel.kt" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/mvp/MyBookEditViewFragment.kt" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/mvp/MyBooksModel.kt" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/mvp/MyBooksPresenterActivity.kt" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/mvp/MyBooksViewFragment.kt" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout-sw600dp/c_featured_books_activity.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout-sw600dp/f_activity_my_books.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/c_featured_books_fragment.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/f_activity_my_books.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/f_fragment_my_book_edit.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_collection_featured_books.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_my_book.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/Constants.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/Constants.kt" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/Authenticator.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/Authenticator.kt" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/DataRepository.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/DataRepository.kt" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/DeleteBookAlertDialog.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/EditTextDialog.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/EditionFilesAdapter.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/MyBookssAdapter.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/UploadProgressDialog.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/mvp/MyBookEditViewFragment.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/mvp/MyBooksModel.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/mvp/MyBooksPresenterActivity.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/mvp/MyBooksViewFragment.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/d_create_book/SelectedFilesAdapter.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/d_create_book/UploadProgressDialog.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/d_create_book/mvp/CreateBookActivity.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/d_create_book/mvp/CreateBookModel.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/d_create_book/mvp/CreateBookView.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/e_featured_books/mvp/FeaturedBooksPresenterActivity.kt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_manage_account/EditTextDialog.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/g_manage_account/EditTextDialog.kt" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_manage_account/mvp/ManageAccountModel.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/g_manage_account/mvp/ManageAccountModel.kt" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_manage_account/mvp/ManageAccountPresenterActivity.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/g_manage_account/mvp/ManageAccountPresenterActivity.kt" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_manage_account/mvp/ManageAccountView.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/g_manage_account/mvp/ManageAccountView.kt" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/i_login/LoginActivity.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/i_login/LoginActivity.kt" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/models/User.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/models/User.kt" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/shape_content_screen.xml" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/shape_content_screen.xml" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout-sw600dp/c_activity_my_books.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout-sw600dp/c_activity_my_books.xml" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/c_activity_my_books.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/c_activity_my_books.xml" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/c_dialog_edit_text.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/c_fragment_my_books.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/c_fragment_my_books.xml" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/d_activity_create_book.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/d_activity_create_book.xml" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/f_activity_manage_account.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/f_activity_manage_account.xml" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksPresenterActivity.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksPresenterActivity.kt" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/SelectedFilesAdapter.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/SelectedFilesAdapter.kt" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/UploadProgressDialog.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/UploadProgressDialog.kt" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/mvp/CreateBookActivity.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/mvp/CreateBookActivity.kt" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/mvp/CreateBookView.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_create_book/mvp/CreateBookView.kt" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/EditionFilesAdapter.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/EditionFilesAdapter.kt" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/MyBookssAdapter.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/MyBooksAdapter.kt" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/UploadProgressDialog.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/UploadProgressDialog.kt" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/g_manage_account/mvp/ManageAccountPresenterActivity.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/g_manage_account/mvp/ManageAccountPresenterActivity.kt" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/g_manage_account/mvp/ManageAccountView.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/g_manage_account/mvp/ManageAccountView.kt" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/models/Book.kt" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/models/Book.kt" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/color/book_state_color.xml" afterPath="$PROJECT_DIR$/app/src/main/res/color/bottom_bar_state_color.xml" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout-sw600dp/c_activity_my_books.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/c_activity_my_books.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/c_fragment_my_book_edit.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/c_fragment_my_books.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/f_fragment_my_books.xml" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/d_activity_create_book.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/f_activity_create_book.xml" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/d_dialog_upload_progress.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/f_dialog_upload_progress.xml" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/e_featured_books_activity.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/c_featured_books_activity.xml" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/f_activity_manage_account.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/g_activity_manage_account.xml" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_book.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_book.xml" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_book_file.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_my_book_file.xml" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_book_file_edition.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_my_book_file_edition.xml" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -83,50 +76,116 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ManageAccountView.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/g_manage_account/mvp/ManageAccountView.kt">
+      <file leaf-file-name="f_activity_my_books.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_activity_my_books.xml">
+          <provider editor-type-id="android-designer2">
+            <state />
+          </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="264">
-              <caret line="30" column="40" lean-forward="false" selection-start-line="30" selection-start-column="40" selection-end-line="30" selection-end-column="40" />
+            <state relative-caret-position="600">
+              <caret line="25" column="57" lean-forward="false" selection-start-line="25" selection-start-column="57" selection-end-line="25" selection-end-column="57" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="f_activity_my_books.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-sw600dp/f_activity_my_books.xml">
+          <provider editor-type-id="android-designer2">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="864">
+              <caret line="36" column="57" lean-forward="false" selection-start-line="36" selection-start-column="57" selection-end-line="36" selection-end-column="57" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="f_dialog_upload_progress.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_dialog_upload_progress.xml">
+          <provider selected="true" editor-type-id="android-designer2">
+            <state />
+          </provider>
+          <provider editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="f_fragment_my_book_edit.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_fragment_my_book_edit.xml">
+          <provider selected="true" editor-type-id="android-designer2">
+            <state />
+          </provider>
+          <provider editor-type-id="text-editor">
+            <state relative-caret-position="1440">
+              <caret line="60" column="11" lean-forward="false" selection-start-line="60" selection-start-column="11" selection-end-line="60" selection-end-column="11" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FeaturedBooksFragment.kt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksFragment.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="600">
+              <caret line="36" column="0" lean-forward="false" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="f_fragment_my_books.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_fragment_my_books.xml">
+          <provider selected="true" editor-type-id="android-designer2">
+            <state />
+          </provider>
+          <provider editor-type-id="text-editor">
+            <state relative-caret-position="312">
+              <caret line="13" column="55" lean-forward="false" selection-start-line="13" selection-start-column="55" selection-end-line="13" selection-end-column="55" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="g_activity_manage_account.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/g_activity_manage_account.xml">
+          <provider editor-type-id="android-designer2">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1148">
+              <caret line="248" column="57" lean-forward="false" selection-start-line="248" selection-start-column="57" selection-end-line="248" selection-end-column="57" />
               <folding>
-                <element signature="e#59#1030#0" expanded="true" />
-                <element signature="e#1960#3736#0" expanded="false" />
-                <element signature="e#5213#6190#0" expanded="false" />
-                <element signature="e#6300#7244#0" expanded="false" />
-                <element signature="e#7971#8443#0" expanded="false" />
+                <element signature="e#1017#1057#0" expanded="true" />
+                <element signature="e#2610#2636#0" expanded="true" />
+                <element signature="e#3497#3520#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="f_activity_manage_account.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_activity_manage_account.xml">
-          <provider selected="true" editor-type-id="android-designer2">
+      <file leaf-file-name="bottom_bar_state_color.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/color/bottom_bar_state_color.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="5" column="50" lean-forward="false" selection-start-line="5" selection-start-column="50" selection-end-line="5" selection-end-column="50" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="item_my_book.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_my_book.xml">
+          <provider editor-type-id="android-designer2">
             <state />
           </provider>
-          <provider editor-type-id="text-editor">
-            <state relative-caret-position="3000">
-              <caret line="125" column="0" lean-forward="false" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FeaturedBooksPresenterActivity.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksPresenterActivity.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="696">
-              <caret line="36" column="33" lean-forward="false" selection-start-line="35" selection-start-column="8" selection-end-line="36" selection-end-column="33" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DeleteBookAlertDialog.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/DeleteBookAlertDialog.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="96">
-              <caret line="9" column="6" lean-forward="false" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
+            <state relative-caret-position="574">
+              <caret line="97" column="18" lean-forward="false" selection-start-line="97" selection-start-column="18" selection-end-line="97" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -135,58 +194,8 @@
       <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2616">
-              <caret line="109" column="9" lean-forward="false" selection-start-line="109" selection-start-column="9" selection-end-line="109" selection-end-column="9" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Constants.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/Constants.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1200">
-              <caret line="50" column="58" lean-forward="false" selection-start-line="50" selection-start-column="58" selection-end-line="50" selection-end-column="58" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MyBookssAdapter.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/MyBookssAdapter.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1848">
-              <caret line="90" column="94" lean-forward="false" selection-start-line="90" selection-start-column="94" selection-end-line="90" selection-end-column="94" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="984">
-              <caret line="41" column="30" lean-forward="false" selection-start-line="41" selection-start-column="30" selection-end-line="41" selection-end-column="30" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="6" column="17" lean-forward="false" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ManageAccountPresenterActivity.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/g_manage_account/mvp/ManageAccountPresenterActivity.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="504">
-              <caret line="37" column="9" lean-forward="false" selection-start-line="37" selection-start-column="9" selection-end-line="37" selection-end-column="9" />
+            <state relative-caret-position="120">
+              <caret line="5" column="44" lean-forward="false" selection-start-line="5" selection-start-column="44" selection-end-line="5" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -198,8 +207,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="resourceFile" />
-        <option value="layoutResourceFile" />
+        <option value="valueResourceFile" />
         <option value="Kotlin Class" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
@@ -229,6 +239,10 @@
       <find>mReadingsTextView</find>
       <find>mTitleTextView</find>
       <find>view</find>
+      <find>image update fail</find>
+      <find>image update failed</find>
+      <find>async(</find>
+      <find>coroutine</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -2416,24 +2430,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/dagger/MyBooksComponent.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/background_gradient_primary.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/background_gradient_light.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/background_content_screem.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/shape_content_screem.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/e_enter_activity/mvp/EnterActivityPresenter.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_search_24dp.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_books_24dp.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_collections_24dp.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/c_activity_my_books.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout-sw600dp/c_activity_my_books.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/e_enter_activity.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/e_enter_activity/mvp/EnterPresenterActivity.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/shape_rounded_button.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_account_box_24dp.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/menu/navigation_menu.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/mvp/MyBooksModule.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/a_application/BaseApplication.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/d_create_book/mvp/CreateBookActivity.kt" />
@@ -2448,25 +2444,43 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/FileRepository.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_manage_account/mvp/ManageAccountModel.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/Authenticator.kt" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/EditionFilesAdapter.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/models/User.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_book.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/dialog_edit_text.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_manage_account/EditTextDialog.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/EditTextDialog.kt" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/c_fragment_my_books.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/shape_content_screen.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/i_login/LoginActivity.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/DataRepository.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/MyBookssAdapter.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/Constants.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_manage_account/mvp/ManageAccountPresenterActivity.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_manage_account/mvp/ManageAccountView.kt" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/f_activity_manage_account.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksPresenterActivity.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/c_featured_books_fragment.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/FeaturedBooksAdapter.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/DataRepository.kt" />
         <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/MyBooksAdapter.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksModel.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksPresenterActivity.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/models/Book.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksFragment.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/BookAdapter.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_collection_featured_books.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/FeaturedBooksAdapter.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/menu/navigation_menu.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_book.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/color/book_state_color.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/c_featured_books_activity.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout-sw600dp/c_featured_books_activity.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/f_activity_my_books.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout-sw600dp/f_activity_my_books.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/g_activity_manage_account.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/color/bottom_bar_state_color.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_my_book.xml" />
       </list>
     </option>
   </component>
@@ -2491,6 +2505,10 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="ProjectPane" />
+      <pane id="Scope" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -2526,16 +2544,116 @@
             </path>
             <path>
               <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="andrehaueisen" type="462c0819:PsiDirectoryNode" />
+              <item name="cronicalia" type="462c0819:PsiDirectoryNode" />
+              <item name="b_firebase" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="andrehaueisen" type="462c0819:PsiDirectoryNode" />
+              <item name="cronicalia" type="462c0819:PsiDirectoryNode" />
+              <item name="c_featured_books" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="andrehaueisen" type="462c0819:PsiDirectoryNode" />
+              <item name="cronicalia" type="462c0819:PsiDirectoryNode" />
+              <item name="c_featured_books" type="462c0819:PsiDirectoryNode" />
+              <item name="mvp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="andrehaueisen" type="462c0819:PsiDirectoryNode" />
+              <item name="cronicalia" type="462c0819:PsiDirectoryNode" />
+              <item name="f_my_books" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="andrehaueisen" type="462c0819:PsiDirectoryNode" />
+              <item name="cronicalia" type="462c0819:PsiDirectoryNode" />
+              <item name="f_my_books" type="462c0819:PsiDirectoryNode" />
+              <item name="mvp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="andrehaueisen" type="462c0819:PsiDirectoryNode" />
+              <item name="cronicalia" type="462c0819:PsiDirectoryNode" />
+              <item name="g_manage_account" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="andrehaueisen" type="462c0819:PsiDirectoryNode" />
+              <item name="cronicalia" type="462c0819:PsiDirectoryNode" />
+              <item name="g_manage_account" type="462c0819:PsiDirectoryNode" />
+              <item name="mvp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="andrehaueisen" type="462c0819:PsiDirectoryNode" />
+              <item name="cronicalia" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="color" type="ddeffd01:AndroidResFolderTypeNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="layout" type="ddeffd01:AndroidResFolderTypeNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="menu" type="ddeffd01:AndroidResFolderTypeNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="values" type="ddeffd01:AndroidResFolderTypeNode" />
+            </path>
+            <path>
+              <item name="Cronicalia" type="1abcf292:AndroidViewProjectNode" />
               <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="Scratches" />
-      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -2764,7 +2882,14 @@
       <option name="project" value="LOCAL" />
       <updated>1524003034998</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="account management improvements&#10;files reordering">
+      <created>1524258198584</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1524258198584</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TodoView">
@@ -2780,27 +2905,29 @@
     <frame x="58" y="-8" width="2510" height="1456" extended-state="6" />
     <layout>
       <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.43330765" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299923" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Flutter Outline" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5057826" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4070933" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Device File Explorer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3901311" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299923" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299923" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Flutter Outline" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4695451" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18040816" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4070933" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.08635312" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Device File Explorer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3924441" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Flutter Inspector" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -2810,19 +2937,20 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.08635312" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="layout changes&#10;book files can now be edited" />
     <MESSAGE value="books can now be deleted" />
     <MESSAGE value="commit before changing to koin" />
     <MESSAGE value="koin is my new hero&#10;begin adding account management" />
-    <option name="LAST_COMMIT_MESSAGE" value="koin is my new hero&#10;begin adding account management" />
+    <MESSAGE value="account management improvements&#10;files reordering" />
+    <option name="LAST_COMMIT_MESSAGE" value="account management improvements&#10;files reordering" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2942,101 +3070,44 @@
           <option name="timeStamp" value="79" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/DataRepository.kt</url>
-          <line>203</line>
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/FeaturedBooksAdapter.kt</url>
+          <line>75</line>
           <properties />
-          <option name="timeStamp" value="81" />
+          <option name="timeStamp" value="92" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/FeaturedBooksAdapter.kt</url>
+          <line>78</line>
+          <properties />
+          <option name="timeStamp" value="93" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/FeaturedBooksAdapter.kt</url>
+          <line>82</line>
+          <properties />
+          <option name="timeStamp" value="94" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/FeaturedBooksAdapter.kt</url>
+          <line>85</line>
+          <properties />
+          <option name="timeStamp" value="95" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="84" />
+      <option name="time" value="100" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/a_application/dagger/ContextModule.kt" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/a_application/dagger/ApplicationScope.kt" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/dagger/MyBooksModule.kt" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/dagger/MyBooksComponent.kt" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/d_create_book/dagger/CreateBookComponent.kt" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/i_login/dagger/LoginActivityComponent.kt" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_my_books/mvp/MyBooksModule.kt" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/a_application/BaseApplication.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25">
-          <caret line="20" column="39" lean-forward="false" selection-start-line="20" selection-start-column="39" selection-end-line="20" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.koin/koin-android/0.9.2/b0fc7cb3e010e504643e183cd4ba97b97b6a356e/koin-android-0.9.2-sources.jar!/org/koin/android/ext/android/AndroidExt.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1078">
-          <caret line="168" column="0" lean-forward="false" selection-start-line="168" selection-start-column="0" selection-end-line="168" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/mvp/MyBooksViewFragment.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="47" column="57" lean-forward="false" selection-start-line="47" selection-start-column="57" selection-end-line="47" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/c_fragment_my_book_edit.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="60" column="11" lean-forward="false" selection-start-line="60" selection-start-column="11" selection-end-line="60" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/poster_placeholder.jpg">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/cover_placeholder.jpg">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider editor-type-id="android-manifest">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="788">
-          <caret line="42" column="63" lean-forward="false" selection-start-line="42" selection-start-column="63" selection-end-line="42" selection-end-column="63" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/utils/extensions/FileExtensions.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="7" column="19" lean-forward="false" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/models/Book.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="13" column="11" lean-forward="false" selection-start-line="13" selection-start-column="11" selection-end-line="13" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/utils/extensions/StringExtensions.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="600">
           <caret line="26" column="33" lean-forward="false" selection-start-line="26" selection-start-column="33" selection-end-line="26" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/mvp/MyBooksModel.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="744">
-          <caret line="35" column="78" lean-forward="false" selection-start-line="35" selection-start-column="44" selection-end-line="35" selection-end-column="78" />
+          <folding>
+            <element signature="e#774#839#0" expanded="false" />
+            <element signature="e#971#1036#0" expanded="false" />
+            <element signature="e#1167#1235#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -3044,27 +3115,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="864">
           <caret line="62" column="0" lean-forward="true" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/c_activity_my_books.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="18" column="4" lean-forward="true" selection-start-line="18" selection-start-column="4" selection-end-line="29" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/navigation_menu.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#56#649#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -3072,6 +3125,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7728">
           <caret line="354" column="13" lean-forward="false" selection-start-line="350" selection-start-column="12" selection-end-line="354" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3090,6 +3144,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="600">
           <caret line="27" column="86" lean-forward="false" selection-start-line="27" selection-start-column="86" selection-end-line="27" selection-end-column="86" />
+          <folding>
+            <element signature="e#59#257#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -3097,57 +3154,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1032">
           <caret line="57" column="33" lean-forward="false" selection-start-line="57" selection-start-column="33" selection-end-line="57" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/models/User.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="696">
-          <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/mvp/MyBooksPresenterActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="424">
-          <caret line="126" column="0" lean-forward="false" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/mvp/MyBookEditViewFragment.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="134" column="22" lean-forward="false" selection-start-line="134" selection-start-column="8" selection-end-line="134" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_book_file.xml">
-      <provider selected="true" editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/e_featured_books_activity.xml">
-      <provider selected="true" editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="16" column="53" lean-forward="false" selection-start-line="16" selection-start-column="53" selection-end-line="16" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_book.xml">
-      <provider selected="true" editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="1536">
-          <caret line="64" column="31" lean-forward="false" selection-start-line="64" selection-start-column="31" selection-end-line="64" selection-end-column="31" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3158,6 +3165,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="432">
           <caret line="18" column="32" lean-forward="false" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3165,6 +3173,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1248">
           <caret line="69" column="55" lean-forward="false" selection-start-line="69" selection-start-column="55" selection-end-line="69" selection-end-column="55" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3172,16 +3181,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1488">
           <caret line="81" column="0" lean-forward="false" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/c_fragment_my_books.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="13" column="55" lean-forward="false" selection-start-line="13" selection-start-column="55" selection-end-line="13" selection-end-column="55" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3189,13 +3189,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
           <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/EditionFilesAdapter.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3888">
-          <caret line="182" column="108" lean-forward="false" selection-start-line="182" selection-start-column="108" selection-end-line="182" selection-end-column="108" />
           <folding />
         </state>
       </provider>
@@ -3207,43 +3200,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/Authenticator.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1080">
-          <caret line="55" column="8" lean-forward="false" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/i_login/LoginActivity.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="768">
           <caret line="46" column="54" lean-forward="false" selection-start-line="46" selection-start-column="54" selection-end-line="46" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/DataRepository.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3072">
-          <caret line="201" column="80" lean-forward="false" selection-start-line="201" selection-start-column="80" selection-end-line="201" selection-end-column="80" />
-          <folding>
-            <element signature="e#1856#2768#0" expanded="false" />
-            <element signature="e#2850#4747#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/MyBookssAdapter.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1848">
-          <caret line="90" column="94" lean-forward="false" selection-start-line="90" selection-start-column="94" selection-end-line="90" selection-end-column="94" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="984">
-          <caret line="41" column="30" lean-forward="false" selection-start-line="41" selection-start-column="30" selection-end-line="41" selection-end-column="30" />
           <folding />
         </state>
       </provider>
@@ -3264,39 +3224,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/g_manage_account/mvp/ManageAccountView.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="30" column="40" lean-forward="false" selection-start-line="30" selection-start-column="40" selection-end-line="30" selection-end-column="40" />
-          <folding>
-            <element signature="e#59#1030#0" expanded="true" />
-            <element signature="e#1960#3736#0" expanded="false" />
-            <element signature="e#5213#6190#0" expanded="false" />
-            <element signature="e#6300#7244#0" expanded="false" />
-            <element signature="e#7971#8443#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_activity_manage_account.xml">
-      <provider selected="true" editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="3000">
-          <caret line="125" column="0" lean-forward="false" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksPresenterActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="696">
-          <caret line="36" column="33" lean-forward="false" selection-start-line="35" selection-start-column="8" selection-end-line="36" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/DeleteBookAlertDialog.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="96">
@@ -3305,18 +3232,376 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/Authenticator.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2616">
-          <caret line="109" column="9" lean-forward="false" selection-start-line="109" selection-start-column="9" selection-end-line="109" selection-end-column="9" />
+        <state relative-caret-position="1033">
+          <caret line="55" column="8" lean-forward="false" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/FeaturedBooksAdapter.xml" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/EditionFilesAdapter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3768">
+          <caret line="182" column="108" lean-forward="false" selection-start-line="182" selection-start-column="108" selection-end-line="182" selection-end-column="108" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/mvp/MyBooksModel.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="744">
+          <caret line="35" column="78" lean-forward="false" selection-start-line="35" selection-start-column="44" selection-end-line="35" selection-end-column="78" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/models/User.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="864">
+          <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="6" column="17" lean-forward="false" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
+        <state relative-caret-position="792">
+          <caret line="33" column="1" lean-forward="false" selection-start-line="33" selection-start-column="1" selection-end-line="33" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1536">
+          <caret line="84" column="56" lean-forward="false" selection-start-line="84" selection-start-column="56" selection-end-line="84" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_my_book_file.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_my_book_file_edition.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/MyBooksAdapter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1080">
+          <caret line="113" column="91" lean-forward="true" selection-start-line="112" selection-start-column="12" selection-end-line="113" selection-end-column="91" />
+          <folding>
+            <element signature="e#4110#4181#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/mvp/MyBooksPresenterActivity.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="624">
+          <caret line="56" column="9" lean-forward="false" selection-start-line="45" selection-start-column="8" selection-end-line="56" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/models/Book.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="41" column="18" lean-forward="false" selection-start-line="41" selection-start-column="18" selection-end-line="41" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/g_manage_account/mvp/ManageAccountView.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2088">
+          <caret line="175" column="69" lean-forward="false" selection-start-line="175" selection-start-column="69" selection-end-line="175" selection-end-column="69" />
+          <folding>
+            <element signature="e#1960#3736#0" expanded="false" />
+            <element signature="e#5213#6190#0" expanded="false" />
+            <element signature="e#7971#8443#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/f_my_books/mvp/MyBookEditViewFragment.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4710">
+          <caret line="31" column="15" lean-forward="false" selection-start-line="31" selection-start-column="15" selection-end-line="31" selection-end-column="15" />
+          <folding>
+            <element signature="e#9001#9064#1" expanded="false" />
+            <element signature="e#12506#15041#0" expanded="false" />
+            <element signature="e#15127#16029#0" expanded="false" />
+            <element signature="e#16077#16462#0" expanded="false" />
+            <element signature="e#16507#17722#0" expanded="false" />
+            <element signature="e#17768#18988#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksModel.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="8" column="62" lean-forward="false" selection-start-line="8" selection-start-column="62" selection-end-line="8" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/b_firebase/DataRepository.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="154" column="13" lean-forward="false" selection-start-line="154" selection-start-column="13" selection-end-line="154" selection-end-column="13" />
+          <folding>
+            <element signature="e#1381#2293#0" expanded="false" />
+            <element signature="e#2375#4272#0" expanded="false" />
+            <element signature="e#4361#4808#0" expanded="false" />
+            <element signature="e#4903#5361#0" expanded="false" />
+            <element signature="e#5450#5896#0" expanded="false" />
+            <element signature="e#5997#6467#0" expanded="false" />
+            <element signature="e#7926#9197#0" expanded="false" />
+            <element signature="e#9292#10563#0" expanded="false" />
+            <element signature="e#10657#11924#0" expanded="false" />
+            <element signature="e#12017#13280#0" expanded="false" />
+            <element signature="e#13374#14641#0" expanded="false" />
+            <element signature="e#14735#16002#0" expanded="false" />
+            <element signature="e#16097#17368#0" expanded="false" />
+            <element signature="e#17465#18744#0" expanded="false" />
+            <element signature="e#18841#20120#0" expanded="false" />
+            <element signature="e#20564#21167#0" expanded="false" />
+            <element signature="e#21292#21678#0" expanded="false" />
+            <element signature="e#21792#22190#0" expanded="false" />
+            <element signature="e#22231#22414#0" expanded="false" />
+            <element signature="e#22471#22670#0" expanded="false" />
+            <element signature="e#22717#22907#0" expanded="false" />
+            <element signature="e#22999#23692#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_collection_featured_books.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="24">
+          <caret line="1" column="44" lean-forward="false" selection-start-line="1" selection-start-column="44" selection-end-line="1" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksPresenterActivity.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="370">
+          <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/FeaturedBooksAdapter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="69" column="0" lean-forward="false" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+          <folding>
+            <element signature="e#55#391#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/BookAdapter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="936">
+          <caret line="49" column="73" lean-forward="false" selection-start-line="49" selection-start-column="73" selection-end-line="49" selection-end-column="73" />
+          <folding>
+            <element signature="e#2089#2158#0" expanded="false" />
+            <element signature="e#2290#2344#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/navigation_menu.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="22" column="42" lean-forward="false" selection-start-line="22" selection-start-column="42" selection-end-line="22" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_book.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="310">
+          <caret line="61" column="32" lean-forward="true" selection-start-line="61" selection-start-column="32" selection-end-line="61" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/c_featured_books_activity.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="22" column="57" lean-forward="false" selection-start-line="21" selection-start-column="8" selection-end-line="22" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-sw600dp/c_featured_books_activity.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="864">
+          <caret line="36" column="57" lean-forward="false" selection-start-line="36" selection-start-column="57" selection-end-line="36" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/c_featured_books_fragment.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="10" column="46" lean-forward="false" selection-start-line="10" selection-start-column="46" selection-end-line="10" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_activity_create_book.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_activity_my_books.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="600">
+          <caret line="25" column="57" lean-forward="false" selection-start-line="25" selection-start-column="57" selection-end-line="25" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-sw600dp/f_activity_my_books.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="864">
+          <caret line="36" column="57" lean-forward="false" selection-start-line="36" selection-start-column="57" selection-end-line="36" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_dialog_upload_progress.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_fragment_my_book_edit.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="1440">
+          <caret line="60" column="11" lean-forward="false" selection-start-line="60" selection-start-column="11" selection-end-line="60" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/f_fragment_my_books.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="13" column="55" lean-forward="false" selection-start-line="13" selection-start-column="55" selection-end-line="13" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/g_activity_manage_account.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1148">
+          <caret line="248" column="57" lean-forward="false" selection-start-line="248" selection-start-column="57" selection-end-line="248" selection-end-column="57" />
+          <folding>
+            <element signature="e#1017#1057#0" expanded="true" />
+            <element signature="e#2610#2636#0" expanded="true" />
+            <element signature="e#3497#3520#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/color/bottom_bar_state_color.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="5" column="50" lean-forward="false" selection-start-line="5" selection-start-column="50" selection-end-line="5" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_my_book.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="574">
+          <caret line="97" column="18" lean-forward="false" selection-start-line="97" selection-start-column="18" selection-end-line="97" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="5" column="44" lean-forward="false" selection-start-line="5" selection-start-column="44" selection-end-line="5" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrehaueisen/cronicalia/c_featured_books/mvp/FeaturedBooksFragment.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="600">
+          <caret line="36" column="0" lean-forward="false" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
           <folding />
         </state>
       </provider>

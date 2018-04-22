@@ -2,10 +2,7 @@ package com.andrehaueisen.cronicalia.b_firebase
 
 import android.app.Activity
 import android.util.Log
-import com.andrehaueisen.cronicalia.COLLECTION_USERS
-import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.UPLOAD_STATUS_FAIL
-import com.andrehaueisen.cronicalia.UPLOAD_STATUS_OK
+import com.andrehaueisen.cronicalia.*
 import com.andrehaueisen.cronicalia.i_login.LoginActivity
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.User
@@ -13,10 +10,13 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.channels.ArrayBroadcastChannel
 import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import kotlinx.coroutines.experimental.launch
+import kotlin.coroutines.experimental.suspendCoroutine
 
 
 /**
@@ -29,16 +29,7 @@ class DataRepository(
     private val mUser: User
 ) {
 
-    /*fun createUser(user: User, uid: String){
-        val batch = mDatabaseInstance.batch()
-
-        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(user.encodedEmail!!)
-        val uidDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(DOCUMENT_EMAIL_UID)
-
-        batch.set(userDataLocationReference, user)
-        batch.set(uidDataLocationReference, Pair(user.encodedEmail, uid))
-        batch.commit()
-    }*/
+    //Manage books
 
     /**
      * Updates full book on user collection and on book collection. Creates if book does not exists
@@ -149,6 +140,336 @@ class DataRepository(
         batch.commit()
     }
 
+    suspend fun queryFeaturedActionBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+
+        val featuredActionsBooks = mutableListOf<Book>()
+
+        return async(CommonPool) {
+            suspendCoroutine<MutableList<Book>> { continuation ->
+                mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
+                    .whereEqualTo("genre", Book.BookGenre.ACTION.toString())
+                    .whereGreaterThan("rating", 8.0)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val documentSnapshot = task.result
+                            if (!documentSnapshot.isEmpty) {
+                                documentSnapshot.forEach { document ->
+                                    val book = document.toObject(Book::class.java)
+                                    featuredActionsBooks.add(book)
+                                }
+                            }
+                            continuation.resume(featuredActionsBooks)
+
+                        } else {
+                            task.exception?.let{
+                                continuation.resumeWithException(task.exception!!)
+                            }
+                        }
+                    }
+            }
+        }.await()
+
+    }
+
+    suspend fun queryFeaturedFictionBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+
+        val featuredFictionBooks = mutableListOf<Book>()
+
+        return async(CommonPool) {
+            suspendCoroutine<MutableList<Book>> { continuation ->
+                mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
+                    .whereEqualTo("genre", Book.BookGenre.FICTION.toString())
+                    .whereGreaterThan("rating", 8.0)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val documentSnapshot = task.result
+                            if (!documentSnapshot.isEmpty) {
+                                documentSnapshot.forEach { document ->
+                                    val book = document.toObject(Book::class.java)
+                                    featuredFictionBooks.add(book)
+                                }
+                            }
+                            continuation.resume(featuredFictionBooks)
+
+                        } else {
+                            task.exception?.let{
+                                continuation.resumeWithException(task.exception!!)
+                            }
+                        }
+                    }
+            }
+        }.await()
+
+    }
+
+    suspend fun queryFeaturedRomanceBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+
+        val featuredRomanceBooks = mutableListOf<Book>()
+
+        return async(CommonPool) {
+            suspendCoroutine<MutableList<Book>> { continuation ->
+                mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
+                    .whereEqualTo("genre", Book.BookGenre.ROMANCE.toString())
+                    .whereGreaterThan("rating", 8.0)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val documentSnapshot = task.result
+                            if (!documentSnapshot.isEmpty) {
+                                documentSnapshot.forEach { document ->
+                                    val book = document.toObject(Book::class.java)
+                                    featuredRomanceBooks.add(book)
+                                }
+                            }
+                            continuation.resume(featuredRomanceBooks)
+
+                        } else {
+                            task.exception?.let{
+                                continuation.resumeWithException(task.exception!!)
+                            }
+                        }
+                    }
+            }
+        }.await()
+
+    }
+
+    suspend fun queryFeaturedComedyBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+
+        val featuredComedyBooks = mutableListOf<Book>()
+
+        return async(CommonPool) {
+            suspendCoroutine<MutableList<Book>> { continuation ->
+                mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
+                    .whereEqualTo("genre", Book.BookGenre.COMEDY.toString())
+                    .whereGreaterThan("rating", 8.0)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val documentSnapshot = task.result
+                            if (!documentSnapshot.isEmpty) {
+                                documentSnapshot.forEach { document ->
+                                    val book = document.toObject(Book::class.java)
+                                    featuredComedyBooks.add(book)
+                                }
+                            }
+                            continuation.resume(featuredComedyBooks)
+
+                        } else {
+                            task.exception?.let{
+                                continuation.resumeWithException(task.exception!!)
+                            }
+                        }
+                    }
+            }
+        }.await()
+
+    }
+
+    suspend fun queryFeaturedDramaBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+
+        val featuredDramaBooks = mutableListOf<Book>()
+
+        return async(CommonPool) {
+            suspendCoroutine<MutableList<Book>> { continuation ->
+                mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
+                    .whereEqualTo("genre", Book.BookGenre.DRAMA.toString())
+                    .whereGreaterThan("rating", 8.0)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val documentSnapshot = task.result
+                            if (!documentSnapshot.isEmpty) {
+                                documentSnapshot.forEach { document ->
+                                    val book = document.toObject(Book::class.java)
+                                    featuredDramaBooks.add(book)
+                                }
+                            }
+                            continuation.resume(featuredDramaBooks)
+
+                        } else {
+                            task.exception?.let{
+                                continuation.resumeWithException(task.exception!!)
+                            }
+                        }
+                    }
+            }
+        }.await()
+
+    }
+
+    suspend fun queryFeaturedHorrorBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+
+        val featuredHorrorBooks = mutableListOf<Book>()
+
+        return async(CommonPool) {
+            suspendCoroutine<MutableList<Book>> { continuation ->
+                mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
+                    .whereEqualTo("genre", Book.BookGenre.HORROR.toString())
+                    .whereGreaterThan("rating", 8.0)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val documentSnapshot = task.result
+                            if (!documentSnapshot.isEmpty) {
+                                documentSnapshot.forEach { document ->
+                                    val book = document.toObject(Book::class.java)
+                                    featuredHorrorBooks.add(book)
+                                }
+                            }
+                            continuation.resume(featuredHorrorBooks)
+
+                        } else {
+                            task.exception?.let{
+                                continuation.resumeWithException(task.exception!!)
+                            }
+                        }
+                    }
+            }
+        }.await()
+
+    }
+
+    suspend fun queryFeaturedSatireBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+
+        val featuredSatireBooks = mutableListOf<Book>()
+
+        return async(CommonPool) {
+            suspendCoroutine<MutableList<Book>> { continuation ->
+                mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
+                    .whereEqualTo("genre", Book.BookGenre.SATIRE.toString())
+                    .whereGreaterThan("rating", 8.0)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val documentSnapshot = task.result
+                            if (!documentSnapshot.isEmpty) {
+                                documentSnapshot.forEach { document ->
+                                    val book = document.toObject(Book::class.java)
+                                    featuredSatireBooks.add(book)
+                                }
+                            }
+                            continuation.resume(featuredSatireBooks)
+
+                        } else {
+                            task.exception?.let{
+                                continuation.resumeWithException(task.exception!!)
+                            }
+                        }
+                    }
+            }
+        }.await()
+
+    }
+
+    suspend fun queryFeaturedFantasyBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+
+        val featuredFantasyBooks = mutableListOf<Book>()
+
+        return async(CommonPool) {
+            suspendCoroutine<MutableList<Book>> { continuation ->
+                mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
+                    .whereEqualTo("genre", Book.BookGenre.FANTASY.toString())
+                    .whereGreaterThan("rating", 8.0)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val documentSnapshot = task.result
+                            if (!documentSnapshot.isEmpty) {
+                                documentSnapshot.forEach { document ->
+                                    val book = document.toObject(Book::class.java)
+                                    featuredFantasyBooks.add(book)
+                                }
+                            }
+                            continuation.resume(featuredFantasyBooks)
+
+                        } else {
+                            task.exception?.let{
+                                continuation.resumeWithException(task.exception!!)
+                            }
+                        }
+                    }
+            }
+        }.await()
+
+    }
+
+    suspend fun queryFeaturedMythologyBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+
+        val featuredMythologyBooks = mutableListOf<Book>()
+
+        return async(CommonPool) {
+            suspendCoroutine<MutableList<Book>> { continuation ->
+                mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
+                    .whereEqualTo("genre", Book.BookGenre.MYTHOLOGY.toString())
+                    .whereGreaterThan("rating", 8.0)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val documentSnapshot = task.result
+                            if (!documentSnapshot.isEmpty) {
+                                documentSnapshot.forEach { document ->
+                                    val book = document.toObject(Book::class.java)
+                                    featuredMythologyBooks.add(book)
+                                }
+                            }
+                            continuation.resume(featuredMythologyBooks)
+
+                        } else {
+                            task.exception?.let{
+                                continuation.resumeWithException(task.exception!!)
+                            }
+                        }
+                    }
+            }
+        }.await()
+
+    }
+
+    suspend fun queryFeaturedAdventureBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+
+        val featuredAdventureBooks = mutableListOf<Book>()
+
+        return async(CommonPool) {
+            suspendCoroutine<MutableList<Book>> { continuation ->
+                mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
+                    .whereEqualTo("genre", Book.BookGenre.ADVENTURE.toString())
+                    .whereGreaterThan("rating", 8.0)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val documentSnapshot = task.result
+                            if (!documentSnapshot.isEmpty) {
+                                documentSnapshot.forEach { document ->
+                                    val book = document.toObject(Book::class.java)
+                                    featuredAdventureBooks.add(book)
+                                }
+                            }
+                            continuation.resume(featuredAdventureBooks)
+
+                        } else {
+                            task.exception?.let{
+                                continuation.resumeWithException(task.exception!!)
+                            }
+                        }
+                    }
+            }
+        }.await()
+
+    }
+
+    private fun getBookCollectionRepository(bookLanguage: Book.BookLanguage): String{
+
+        return when(bookLanguage) {
+            Book.BookLanguage.ENGLISH -> COLLECTION_BOOKS_ENGLISH
+            Book.BookLanguage.PORTUGUESE -> COLLECTION_BOOKS_PORTUGUESE
+            Book.BookLanguage.DEUTSCH -> COLLECTION_BOOKS_DEUTSCH
+            Book.BookLanguage.UNDEFINED -> COLLECTION_BOOKS_ENGLISH
+        }
+    }
+
     fun deleteBook(book: Book){
         val batch = mDatabaseInstance.batch()
 
@@ -163,6 +484,8 @@ class DataRepository(
         batch.delete(booksLocationReference)
         batch.commit()
     }
+
+    //Manage Users
 
     fun updateUserProfilePictureReferences(localProfileImageUri: String, remoteProfileImageUri: String){
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)

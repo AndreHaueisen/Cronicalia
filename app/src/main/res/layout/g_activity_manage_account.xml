@@ -245,8 +245,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/colorAccent"
-        app:itemTextColor="@color/text_primary"
+        app:itemIconTint="@color/bottom_bar_state_color"
+        app:itemTextColor="@color/bottom_bar_state_color"
         app:menu="@menu/navigation_menu"/>
 
 </FrameLayout>
