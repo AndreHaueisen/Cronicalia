@@ -14,8 +14,8 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.channels.ArrayBroadcastChannel
-import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import kotlinx.coroutines.experimental.launch
+import kotlin.coroutines.experimental.Continuation
 import kotlin.coroutines.experimental.suspendCoroutine
 
 
@@ -24,8 +24,6 @@ import kotlin.coroutines.experimental.suspendCoroutine
  */
 class DataRepository(
     private val mDatabaseInstance: FirebaseFirestore,
-    private val mGlobalProgressBroadcastChannel: ArrayBroadcastChannel<Int?>,
-    private val mGlobalProgressReceiver: SubscriptionReceiveChannel<Int?>,
     private val mUser: User
 ) {
 
@@ -34,7 +32,7 @@ class DataRepository(
     /**
      * Updates full book on user collection and on book collection. Creates if book does not exists
      */
-    fun setBookDocuments(book: Book, sendProgressUpdate: Boolean = true) {
+    fun setBookDocuments(book: Book, continuation: Continuation<Int>? = null, progressBroadcastChannel: ArrayBroadcastChannel<Int>? = null) {
         val batch = mDatabaseInstance.batch()
         mUser.books[book.generateBookKey()] = book
 
@@ -47,17 +45,17 @@ class DataRepository(
         batch
             .commit()
             .addOnSuccessListener { _ ->
-                if (sendProgressUpdate)
-                    launch(UI) { mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_OK) }
+                continuation?.resume(UPLOAD_STATUS_OK)
+                progressBroadcastChannel?.let { launch(UI) { it.send(UPLOAD_STATUS_OK) } }
             }
             .addOnFailureListener({ _ ->
-                if (sendProgressUpdate)
-                    launch(UI) { mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL) }
+                continuation?.resume(UPLOAD_STATUS_FAIL)
+                progressBroadcastChannel?.let { launch(UI) { it.send(UPLOAD_STATUS_FAIL) } }
             })
 
     }
 
-    fun updateBookPdfReferences(book: Book, sendProgressUpdate: Boolean = true) {
+    suspend fun updateBookPdfReferences(book: Book): Int {
 
         val batch = mDatabaseInstance.batch()
 
@@ -83,16 +81,19 @@ class DataRepository(
         batch.update(userDataLocationReference, valuesToUpdateOnUserMap)
         batch.update(booksLocationReference, valuesToUpdateOnBooksLocationMap)
 
-        batch
-            .commit()
-            .addOnSuccessListener { _ ->
-            if (sendProgressUpdate)
-                launch(UI) { mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_OK) }
+        return async(CommonPool) {
+            suspendCoroutine<Int> { continuation ->
+
+                batch
+                    .commit()
+                    .addOnSuccessListener { _ ->
+                        continuation.resume(UPLOAD_STATUS_OK)
+                    }
+                    .addOnFailureListener({ _ ->
+                        continuation.resume(UPLOAD_STATUS_FAIL)
+                    })
             }
-            .addOnFailureListener({ _ ->
-                if (sendProgressUpdate)
-                    launch(UI) { mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL) }
-            })
+        }.await()
     }
 
     fun updateBookTitle(newTitle: String, collectionLocation: String, bookKey: String) {
@@ -140,7 +141,7 @@ class DataRepository(
         batch.commit()
     }
 
-    suspend fun queryFeaturedActionBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+    suspend fun queryFeaturedActionBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
 
         val featuredActionsBooks = mutableListOf<Book>()
 
@@ -162,7 +163,7 @@ class DataRepository(
                             continuation.resume(featuredActionsBooks)
 
                         } else {
-                            task.exception?.let{
+                            task.exception?.let {
                                 continuation.resumeWithException(task.exception!!)
                             }
                         }
@@ -172,7 +173,7 @@ class DataRepository(
 
     }
 
-    suspend fun queryFeaturedFictionBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+    suspend fun queryFeaturedFictionBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
 
         val featuredFictionBooks = mutableListOf<Book>()
 
@@ -194,7 +195,7 @@ class DataRepository(
                             continuation.resume(featuredFictionBooks)
 
                         } else {
-                            task.exception?.let{
+                            task.exception?.let {
                                 continuation.resumeWithException(task.exception!!)
                             }
                         }
@@ -204,7 +205,7 @@ class DataRepository(
 
     }
 
-    suspend fun queryFeaturedRomanceBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+    suspend fun queryFeaturedRomanceBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
 
         val featuredRomanceBooks = mutableListOf<Book>()
 
@@ -226,7 +227,7 @@ class DataRepository(
                             continuation.resume(featuredRomanceBooks)
 
                         } else {
-                            task.exception?.let{
+                            task.exception?.let {
                                 continuation.resumeWithException(task.exception!!)
                             }
                         }
@@ -236,7 +237,7 @@ class DataRepository(
 
     }
 
-    suspend fun queryFeaturedComedyBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+    suspend fun queryFeaturedComedyBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
 
         val featuredComedyBooks = mutableListOf<Book>()
 
@@ -258,7 +259,7 @@ class DataRepository(
                             continuation.resume(featuredComedyBooks)
 
                         } else {
-                            task.exception?.let{
+                            task.exception?.let {
                                 continuation.resumeWithException(task.exception!!)
                             }
                         }
@@ -268,7 +269,7 @@ class DataRepository(
 
     }
 
-    suspend fun queryFeaturedDramaBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+    suspend fun queryFeaturedDramaBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
 
         val featuredDramaBooks = mutableListOf<Book>()
 
@@ -290,7 +291,7 @@ class DataRepository(
                             continuation.resume(featuredDramaBooks)
 
                         } else {
-                            task.exception?.let{
+                            task.exception?.let {
                                 continuation.resumeWithException(task.exception!!)
                             }
                         }
@@ -300,7 +301,7 @@ class DataRepository(
 
     }
 
-    suspend fun queryFeaturedHorrorBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+    suspend fun queryFeaturedHorrorBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
 
         val featuredHorrorBooks = mutableListOf<Book>()
 
@@ -322,7 +323,7 @@ class DataRepository(
                             continuation.resume(featuredHorrorBooks)
 
                         } else {
-                            task.exception?.let{
+                            task.exception?.let {
                                 continuation.resumeWithException(task.exception!!)
                             }
                         }
@@ -332,7 +333,7 @@ class DataRepository(
 
     }
 
-    suspend fun queryFeaturedSatireBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+    suspend fun queryFeaturedSatireBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
 
         val featuredSatireBooks = mutableListOf<Book>()
 
@@ -354,7 +355,7 @@ class DataRepository(
                             continuation.resume(featuredSatireBooks)
 
                         } else {
-                            task.exception?.let{
+                            task.exception?.let {
                                 continuation.resumeWithException(task.exception!!)
                             }
                         }
@@ -364,7 +365,7 @@ class DataRepository(
 
     }
 
-    suspend fun queryFeaturedFantasyBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+    suspend fun queryFeaturedFantasyBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
 
         val featuredFantasyBooks = mutableListOf<Book>()
 
@@ -386,7 +387,7 @@ class DataRepository(
                             continuation.resume(featuredFantasyBooks)
 
                         } else {
-                            task.exception?.let{
+                            task.exception?.let {
                                 continuation.resumeWithException(task.exception!!)
                             }
                         }
@@ -396,7 +397,7 @@ class DataRepository(
 
     }
 
-    suspend fun queryFeaturedMythologyBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+    suspend fun queryFeaturedMythologyBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
 
         val featuredMythologyBooks = mutableListOf<Book>()
 
@@ -418,7 +419,7 @@ class DataRepository(
                             continuation.resume(featuredMythologyBooks)
 
                         } else {
-                            task.exception?.let{
+                            task.exception?.let {
                                 continuation.resumeWithException(task.exception!!)
                             }
                         }
@@ -428,7 +429,7 @@ class DataRepository(
 
     }
 
-    suspend fun queryFeaturedAdventureBooks(bookLanguage: Book.BookLanguage): MutableList<Book>{
+    suspend fun queryFeaturedAdventureBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
 
         val featuredAdventureBooks = mutableListOf<Book>()
 
@@ -450,7 +451,7 @@ class DataRepository(
                             continuation.resume(featuredAdventureBooks)
 
                         } else {
-                            task.exception?.let{
+                            task.exception?.let {
                                 continuation.resumeWithException(task.exception!!)
                             }
                         }
@@ -460,9 +461,9 @@ class DataRepository(
 
     }
 
-    private fun getBookCollectionRepository(bookLanguage: Book.BookLanguage): String{
+    private fun getBookCollectionRepository(bookLanguage: Book.BookLanguage): String {
 
-        return when(bookLanguage) {
+        return when (bookLanguage) {
             Book.BookLanguage.ENGLISH -> COLLECTION_BOOKS_ENGLISH
             Book.BookLanguage.PORTUGUESE -> COLLECTION_BOOKS_PORTUGUESE
             Book.BookLanguage.DEUTSCH -> COLLECTION_BOOKS_DEUTSCH
@@ -470,7 +471,7 @@ class DataRepository(
         }
     }
 
-    fun deleteBook(book: Book){
+    fun deleteBook(book: Book) {
         val batch = mDatabaseInstance.batch()
 
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
@@ -487,7 +488,7 @@ class DataRepository(
 
     //Manage Users
 
-    fun updateUserProfilePictureReferences(localProfileImageUri: String, remoteProfileImageUri: String){
+    fun updateUserProfilePictureReferences(localProfileImageUri: String, remoteProfileImageUri: String) {
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
         val valuesToUpdate = mutableMapOf<String, Any>()
         valuesToUpdate["localProfilePictureUri"] = localProfileImageUri
@@ -496,7 +497,7 @@ class DataRepository(
         userDataLocationReference.update(valuesToUpdate)
     }
 
-    fun updateUserBackgroundPictureReferences(localBackgroundImageUri: String, remoteBackgroundImageUri: String){
+    fun updateUserBackgroundPictureReferences(localBackgroundImageUri: String, remoteBackgroundImageUri: String) {
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
         val valuesToUpdate = mutableMapOf<String, Any>()
         valuesToUpdate["localBackgroundPictureUri"] = localBackgroundImageUri
@@ -505,17 +506,17 @@ class DataRepository(
         userDataLocationReference.update(valuesToUpdate)
     }
 
-    fun updateUserName(newName: String){
+    fun updateUserName(newName: String) {
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
         userDataLocationReference.update("name", newName)
     }
 
-    fun updateUserArtisticName(newArtisticName: String){
+    fun updateUserArtisticName(newArtisticName: String) {
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
         userDataLocationReference.update("artisticName", newArtisticName)
     }
 
-    fun updateUserAboutMe(newAboutMe: String){
+    fun updateUserAboutMe(newAboutMe: String) {
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
         userDataLocationReference.update("aboutMe", newAboutMe)
 
@@ -525,7 +526,7 @@ class DataRepository(
         mDatabaseInstance.collection(COLLECTION_USERS).document(userEncodedEmail).get()
             .addOnSuccessListener { taskSnapshot ->
                 val newUser = taskSnapshot.toObject(User::class.java)
-                if(newUser == null){
+                if (newUser == null) {
                     setInitialUserDocument(userName, userEncodedEmail)
                 } else {
                     mUser.refreshUser(newUser)

@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.f_activity_create_book.*
 import kotlinx.android.synthetic.main.f_activity_create_book.view.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
 
@@ -56,7 +57,7 @@ class CreateBookView(
     private val mBookIsolated: Book
 
     interface UploadState {
-        fun onUploadStateChanged(progress: Int)
+        fun onUploadStateChanged(progress: Int, subscriptionChannel: SubscriptionReceiveChannel<Int>)
     }
 
     init {
@@ -349,8 +350,11 @@ class CreateBookView(
             uploadDialog.show()
 
             launch(CommonPool) {
-                (mActivity as CreateBookActivity).uploadBookFiles(mBookIsolated).consumeEach { progress ->
-                    progress?.let { launch(UI) { uploadDialog.onUploadStateChanged(it) } }
+                val subscriptionChannel = (mActivity as CreateBookActivity).uploadBookFiles(mBookIsolated)
+                    subscriptionChannel.consumeEach { progress ->
+                    if (uploadDialog.isShowing) {
+                        progress.let { launch(UI) { uploadDialog.onUploadStateChanged(it, subscriptionChannel) } }
+                    }
                 }
             }
         }

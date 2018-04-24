@@ -15,8 +15,8 @@ class MyBooksModel(private val mFileRepository: FileRepository, private val mDat
         TITLE, SYNOPSIS, PERIODICITY, GENRE
     }
 
-    fun updateBookPdfsReferences(book: Book){
-        mDataRepository.updateBookPdfReferences(book, false)
+    suspend fun updateBookPdfsReferences(book: Book): Int{
+        return mDataRepository.updateBookPdfReferences(book)
     }
 
     fun deleteBook(book: Book){
@@ -33,15 +33,15 @@ class MyBooksModel(private val mFileRepository: FileRepository, private val mDat
         }
     }
 
-    suspend fun updateBookPoster(book: Book): SubscriptionReceiveChannel<Int?> {
+    suspend fun updateBookPoster(book: Book): Int {
         return mFileRepository.updateBookPoster(book, mDataRepository)
     }
 
-    suspend fun updateBookCover(book: Book): SubscriptionReceiveChannel<Int?>{
+    suspend fun updateBookCover(book: Book): Int{
         return mFileRepository.updateBookCover(book, mDataRepository)
     }
 
-    suspend fun updateBookPdfs(book: Book, filesToBeDeleted: ArraySet<String>): SubscriptionReceiveChannel<Int?>{
+    suspend fun updateBookPdfs(book: Book, filesToBeDeleted: ArraySet<String>): SubscriptionReceiveChannel<Int>{
         return mFileRepository.updatePdfs(book, mDataRepository,  filesToBeDeleted)
     }
 }

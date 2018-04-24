@@ -9,13 +9,12 @@ import com.andrehaueisen.cronicalia.PARCELABLE_USER
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.b_firebase.DataRepository
 import com.andrehaueisen.cronicalia.b_firebase.FileRepository
-import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBooksPresenterActivity
 import com.andrehaueisen.cronicalia.c_featured_books.mvp.FeaturedBooksPresenterActivity
+import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBooksPresenterActivity
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.startNewActivity
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.g_activity_manage_account.*
-import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import org.koin.android.ext.android.inject
 
 class ManageAccountPresenterActivity: AppCompatActivity() {
@@ -96,11 +95,11 @@ class ManageAccountPresenterActivity: AppCompatActivity() {
         mModel.simpleUpdateBook(textUpdate, variableBeingUpdated)
     }
 
-    suspend fun notifyProfileImageUpdate(newLocalUri: String): SubscriptionReceiveChannel<Int?>{
+    suspend fun requestProfileImageUpdate(newLocalUri: String): Int{
         return mModel.updateUserProfileImage(newLocalUri)
     }
 
-    suspend fun notifyBackgroundImageUpdate(newLocalUri: String): SubscriptionReceiveChannel<Int?> {
+    suspend fun requestBackgroundImageUpdate(newLocalUri: String): Int {
         return mModel.updateUserBackgroundImage(newLocalUri)
     }
 }

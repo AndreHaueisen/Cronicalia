@@ -10,8 +10,9 @@ import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.UPLOAD_STATUS_FAIL
 import com.andrehaueisen.cronicalia.UPLOAD_STATUS_OK
 import com.andrehaueisen.cronicalia.f_create_book.mvp.CreateBookView
+import com.andrehaueisen.cronicalia.utils.extensions.showRequestFeedback
 import com.google.firebase.storage.StorageException
-import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 
 
 /**
@@ -42,21 +43,19 @@ class UploadProgressDialog(activity: Activity): AlertDialog(activity),
         }
     }
 
-    override fun onUploadStateChanged(progress: Int) {
+    override fun onUploadStateChanged(progress: Int, subscriptionChannel: SubscriptionReceiveChannel<Int>) {
+
+        progress.showRequestFeedback(context, R.string.book_created, R.string.progress_dialog_fail)
 
         when (progress) {
             UPLOAD_STATUS_OK -> {
                 mLoadingProgressBar.progress = progress
-                Toasty.success(context, context.getString(R.string.book_created)).show()
+                subscriptionChannel.close()
                 this.dismiss()
                 mActivity.finish()
             }
-            UPLOAD_STATUS_FAIL -> {
-                Toasty.error(context, context.getString(R.string.progress_dialog_fail)).show()
-                this.dismiss()
-            }
-            StorageException.ERROR_UNKNOWN ->{
-                Toasty.error(context, context.getString(R.string.check_internet_connection)).show()
+            UPLOAD_STATUS_FAIL or StorageException.ERROR_UNKNOWN -> {
+                subscriptionChannel.close()
                 this.dismiss()
             }
 

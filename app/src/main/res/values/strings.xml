@@ -16,6 +16,7 @@
     <string name="one_file_selected_warning">There must be at least one file selected</string>
     <string name="save_file_changes">Save Files Changes</string>
     <string name="book_updated">Book Updated</string>
+    <string name="update_fail">Update failed. Try again</string>
     <string name="add_chapter">Add Chapter</string>
     <string name="delete_book">Delete Book</string>
     <string name="delete">Delete</string>

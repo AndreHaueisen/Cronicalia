@@ -11,10 +11,13 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageException
 import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.UploadTask
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.channels.ArrayBroadcastChannel
 import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import kotlinx.coroutines.experimental.launch
+import kotlin.coroutines.experimental.suspendCoroutine
 
 
 /**
@@ -22,14 +25,15 @@ import kotlinx.coroutines.experimental.launch
  */
 class FileRepository(
     private val mStorageInstance: FirebaseStorage,
-    private val mGlobalProgressBroadcastChannel: ArrayBroadcastChannel<Int?>,
-    private val mGlobalProgressReceiver: SubscriptionReceiveChannel<Int?>,
     private val mUser: User
 ) {
 
     private var mTasksReadyCounter = 0
 
-    suspend fun createBook(book: Book, dataRepository: DataRepository): SubscriptionReceiveChannel<Int?> {
+    suspend fun createBook(book: Book, dataRepository: DataRepository): SubscriptionReceiveChannel<Int> {
+
+        val progressBroadcastChannel = ArrayBroadcastChannel<Int>(4)
+        val progressReceiver = progressBroadcastChannel.openSubscription()
 
         var uploadTask: UploadTask
         val progressCap = getProgressCapForCreation(book)
@@ -50,22 +54,23 @@ class FileRepository(
                     launch {
                         currentProgress += (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount) / progressCap
                         if (currentProgress < 99)
-                            mGlobalProgressBroadcastChannel.send(currentProgress.toInt())
+                            progressBroadcastChannel.send(currentProgress.toInt())
                         else
-                            mGlobalProgressBroadcastChannel.send(99)
+                            progressBroadcastChannel.send(99)
                     }
 
                 }.addOnSuccessListener { taskSnapshot ->
                     book.remoteFullBookUri = taskSnapshot.downloadUrl?.toString()
-                    saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository)
+                    saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel)
+
                 }.addOnFailureListener { exception ->
                     launch {
                         val errorCode = (exception as StorageException).errorCode
                         when (errorCode) {
-                            StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(
+                            StorageException.ERROR_UNKNOWN -> progressBroadcastChannel.send(
                                 errorCode
                             )
-                            else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                            else -> progressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
                         }
 
                     }
@@ -75,16 +80,17 @@ class FileRepository(
                 book.remoteChapterUris.forEachIndexed { index, key ->
 
                     val filePath = Uri.parse(key)
-                    val chapterNumberMetadata = StorageMetadata.Builder().setCustomMetadata(METADATA_CHAPTER_NUMBER, index.toString()).build()
+                    val chapterNumberMetadata =
+                        StorageMetadata.Builder().setCustomMetadata(METADATA_CHAPTER_NUMBER, index.toString()).build()
                     val chapterTitle = book.remoteChapterTitles[index]
                     uploadTask = locationReference.child("$chapterTitle.pdf").putFile(filePath, chapterNumberMetadata)
                     uploadTask.addOnProgressListener { taskSnapshot ->
                         launch(UI) {
                             currentProgress += (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount) / progressCap
                             if (currentProgress < 99)
-                                mGlobalProgressBroadcastChannel.send(currentProgress.toInt())
+                                progressBroadcastChannel.send(currentProgress.toInt())
                             else
-                                mGlobalProgressBroadcastChannel.send(99)
+                                progressBroadcastChannel.send(99)
 
                         }
                     }.addOnSuccessListener { taskSnapshot ->
@@ -93,15 +99,15 @@ class FileRepository(
                             book.remoteChapterTitles.set(index, chapterTitle)
                             book.remoteChapterUris.set(index, it.toString())
                         }
-                        saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository)
+                        saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel)
                     }.addOnFailureListener { exception ->
                         launch {
                             val errorCode = (exception as StorageException).errorCode
                             when (errorCode) {
-                                StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(
+                                StorageException.ERROR_UNKNOWN -> progressBroadcastChannel.send(
                                     errorCode
                                 )
-                                else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                                else -> progressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
                             }
 
                         }
@@ -128,19 +134,19 @@ class FileRepository(
                     launch(UI) {
                         currentProgress += (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount) / progressCap
                         if (currentProgress < 99)
-                            mGlobalProgressBroadcastChannel.send(currentProgress.toInt())
+                            progressBroadcastChannel.send(currentProgress.toInt())
                         else
-                            mGlobalProgressBroadcastChannel.send(99)
+                            progressBroadcastChannel.send(99)
                     }
                 }.addOnSuccessListener { taskSnapshot ->
                     book.remoteCoverUri = taskSnapshot.downloadUrl?.toString()
-                    saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository)
+                    saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel)
                 }.addOnFailureListener { exception ->
                     launch {
                         val errorCode = (exception as StorageException).errorCode
                         when (errorCode) {
-                            StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(errorCode)
-                            else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                            StorageException.ERROR_UNKNOWN -> progressBroadcastChannel.send(errorCode)
+                            else -> progressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
                         }
                     }
                 }
@@ -161,21 +167,21 @@ class FileRepository(
                     launch(UI) {
                         currentProgress += (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount) / progressCap
                         if (currentProgress < 99)
-                            mGlobalProgressBroadcastChannel.send(currentProgress.toInt())
+                            progressBroadcastChannel.send(currentProgress.toInt())
                         else
-                            mGlobalProgressBroadcastChannel.send(99)
+                            progressBroadcastChannel.send(99)
                     }
                 }.addOnSuccessListener { taskSnapshot ->
                     book.remotePosterUri = taskSnapshot.downloadUrl?.toString()
-                    saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository)
+                    saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel)
                 }.addOnFailureListener { exception ->
                     launch {
                         val errorCode = (exception as StorageException).errorCode
                         when (errorCode) {
-                            StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(
+                            StorageException.ERROR_UNKNOWN -> progressBroadcastChannel.send(
                                 errorCode
                             )
-                            else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                            else -> progressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
                         }
                     }
                 }
@@ -185,10 +191,10 @@ class FileRepository(
         uploadPdfs()
         uploadImages()
 
-        return mGlobalProgressReceiver
+        return progressReceiver
     }
 
-    suspend fun updateBookCover(book: Book, dataRepository: DataRepository): SubscriptionReceiveChannel<Int?> {
+    suspend fun updateBookCover(book: Book, dataRepository: DataRepository): Int {
 
         var uploadTask: UploadTask
 
@@ -197,38 +203,43 @@ class FileRepository(
             .child(mUser.encodedEmail!!)
             .child(book.generateBookKey())
 
-        book.localCoverUri?.let { coverUri ->
-            val metadata = StorageMetadata.Builder()
-                .setCustomMetadata(
-                    METADATA_TITLE_IMAGE_TYPE,
-                    METADATA_PROPERTY_IMAGE_TYPE_COVER
-                )
-                .build()
+        return async(CommonPool) {
+            suspendCoroutine<Int> { continuation ->
 
-            val filePath = Uri.parse(coverUri)
-            uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
+                if (book.localCoverUri != null) {
 
-            uploadTask.addOnSuccessListener { taskSnapshot ->
-                launch {
-                    book.remoteCoverUri = taskSnapshot.downloadUrl?.toString()
-                    dataRepository.setBookDocuments(book)
-                }
+                    val metadata = StorageMetadata.Builder()
+                        .setCustomMetadata(
+                            METADATA_TITLE_IMAGE_TYPE,
+                            METADATA_PROPERTY_IMAGE_TYPE_COVER
+                        )
+                        .build()
 
-            }.addOnFailureListener { exception ->
-                launch {
-                    val errorCode = (exception as StorageException).errorCode
-                    when (errorCode) {
-                        StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(errorCode)
-                        else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                    val filePath = Uri.parse(book.localCoverUri)
+                    uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
+
+                    uploadTask.addOnSuccessListener { taskSnapshot ->
+                        book.remoteCoverUri = taskSnapshot.downloadUrl?.toString()
+                        dataRepository.setBookDocuments(book, continuation)
+
+                    }.addOnFailureListener { exception ->
+
+                        val errorCode = (exception as StorageException).errorCode
+                        when (errorCode) {
+                            StorageException.ERROR_UNKNOWN -> continuation.resume(errorCode)
+                            else -> continuation.resume(UPLOAD_STATUS_FAIL)
+                        }
                     }
+                } else {
+                    continuation.resume(UPLOAD_STATUS_FAIL)
                 }
             }
-        }
+        }.await()
 
-        return mGlobalProgressReceiver
+
     }
 
-    suspend fun updateBookPoster(book: Book, dataRepository: DataRepository): SubscriptionReceiveChannel<Int?> {
+    suspend fun updateBookPoster(book: Book, dataRepository: DataRepository): Int {
 
         var uploadTask: UploadTask
 
@@ -237,36 +248,38 @@ class FileRepository(
             .child(mUser.encodedEmail!!)
             .child(book.generateBookKey())
 
-        book.localPosterUri?.let { posterUri ->
-            val metadata = StorageMetadata.Builder()
-                .setCustomMetadata(
-                    METADATA_TITLE_IMAGE_TYPE,
-                    METADATA_PROPERTY_IMAGE_TYPE_POSTER
-                )
-                .build()
+        return async(CommonPool) {
+            suspendCoroutine<Int> { continuation ->
+                if (book.localPosterUri != null) {
+                    val metadata = StorageMetadata.Builder()
+                        .setCustomMetadata(
+                            METADATA_TITLE_IMAGE_TYPE,
+                            METADATA_PROPERTY_IMAGE_TYPE_POSTER
+                        )
+                        .build()
 
-            val filePath = Uri.parse(posterUri)
-            uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
+                    val filePath = Uri.parse(book.localPosterUri)
+                    uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
 
-            uploadTask.addOnSuccessListener { taskSnapshot ->
-                book.remotePosterUri = taskSnapshot.downloadUrl?.toString()
-                dataRepository.setBookDocuments(book)
+                    uploadTask.addOnSuccessListener { taskSnapshot ->
+                        book.remotePosterUri = taskSnapshot.downloadUrl?.toString()
+                        dataRepository.setBookDocuments(book, continuation = continuation)
 
-            }.addOnFailureListener { exception ->
-                launch {
-                    val errorCode = (exception as StorageException).errorCode
-                    when (errorCode) {
-                        StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(errorCode)
-                        else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                    }.addOnFailureListener { exception ->
+                        val errorCode = (exception as StorageException).errorCode
+                        when (errorCode) {
+                            StorageException.ERROR_UNKNOWN -> continuation.resume(errorCode)
+                            else -> continuation.resume(UPLOAD_STATUS_FAIL)
+                        }
                     }
+                } else {
+                    continuation.resume(UPLOAD_STATUS_FAIL)
                 }
             }
-        }
-
-        return mGlobalProgressReceiver
+        }.await()
     }
 
-    suspend fun updateUserProfileImage(newLocalUri: String, dataRepository: DataRepository): SubscriptionReceiveChannel<Int?> {
+    suspend fun updateUserProfileImage(newLocalUri: String, dataRepository: DataRepository): Int {
 
         val uploadTask: UploadTask
 
@@ -275,37 +288,37 @@ class FileRepository(
             .child(mUser.encodedEmail!!)
 
 
-            val metadata = StorageMetadata.Builder()
-                .setCustomMetadata(
-                    METADATA_TITLE_IMAGE_TYPE,
-                    METADATA_PROPERTY_IMAGE_TYPE_PROFILE
-                )
-                .build()
+        val metadata = StorageMetadata.Builder()
+            .setCustomMetadata(
+                METADATA_TITLE_IMAGE_TYPE,
+                METADATA_PROPERTY_IMAGE_TYPE_PROFILE
+            )
+            .build()
 
-            val filePath = Uri.parse(newLocalUri)
-            uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
+        val filePath = Uri.parse(newLocalUri)
+        uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
 
-            uploadTask.addOnSuccessListener { taskSnapshot ->
-                launch {
+        return async(CommonPool) {
+            suspendCoroutine<Int> { continuation ->
+                uploadTask.addOnSuccessListener { taskSnapshot ->
                     mUser.remoteProfilePictureUri = taskSnapshot.downloadUrl?.toString()
                     dataRepository.updateUserProfilePictureReferences(newLocalUri, mUser.remoteProfilePictureUri!!)
-                    mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_OK)
-                }
+                    continuation.resume(UPLOAD_STATUS_OK)
 
-            }.addOnFailureListener { exception ->
-                launch {
+                }.addOnFailureListener { exception ->
                     val errorCode = (exception as StorageException).errorCode
                     when (errorCode) {
-                        StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(errorCode)
-                        else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                        StorageException.ERROR_UNKNOWN -> continuation.resume(errorCode)
+                        else -> continuation.resume(UPLOAD_STATUS_FAIL)
                     }
+
                 }
             }
+        }.await()
 
-        return mGlobalProgressReceiver
     }
 
-    suspend fun updateUserBackgroundImage(newLocalUri: String, dataRepository: DataRepository): SubscriptionReceiveChannel<Int?> {
+    suspend fun updateUserBackgroundImage(newLocalUri: String, dataRepository: DataRepository): Int {
         val uploadTask: UploadTask
 
         val locationReference = mStorageInstance.reference
@@ -323,27 +336,35 @@ class FileRepository(
         val filePath = Uri.parse(newLocalUri)
         uploadTask = locationReference.child(filePath.lastPathSegment).putFile(filePath, metadata)
 
-        uploadTask.addOnSuccessListener { taskSnapshot ->
-            launch {
-                mUser.remoteBackgroundPictureUri = taskSnapshot.downloadUrl?.toString()
-                dataRepository.updateUserBackgroundPictureReferences(newLocalUri, mUser.remoteBackgroundPictureUri!!)
-                mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_OK)
-            }
+        return async(CommonPool) {
+            suspendCoroutine<Int> { continuation ->
+                uploadTask.addOnSuccessListener { taskSnapshot ->
 
-        }.addOnFailureListener { exception ->
-            launch {
-                val errorCode = (exception as StorageException).errorCode
-                when (errorCode) {
-                    StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(errorCode)
-                    else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                    mUser.remoteBackgroundPictureUri = taskSnapshot.downloadUrl?.toString()
+                    dataRepository.updateUserBackgroundPictureReferences(newLocalUri, mUser.remoteBackgroundPictureUri!!)
+                    continuation.resume(UPLOAD_STATUS_OK)
+
+                }.addOnFailureListener { exception ->
+
+                    val errorCode = (exception as StorageException).errorCode
+                    when (errorCode) {
+                        StorageException.ERROR_UNKNOWN -> continuation.resume(errorCode)
+                        else -> continuation.resume(UPLOAD_STATUS_FAIL)
+                    }
                 }
             }
-        }
+        }.await()
 
-        return mGlobalProgressReceiver
     }
 
-    suspend fun updatePdfs(book: Book, dataRepository: DataRepository, filesToBeDeleted: ArraySet<String>): SubscriptionReceiveChannel<Int?> {
+    suspend fun updatePdfs(
+        book: Book,
+        dataRepository: DataRepository,
+        filesToBeDeleted: ArraySet<String>
+    ): SubscriptionReceiveChannel<Int> {
+
+        val progressBroadcastChannel = ArrayBroadcastChannel<Int>(4)
+        val progressReceiver = progressBroadcastChannel.openSubscription()
 
         deleteBookFiles(filesToBeDeleted)
 
@@ -357,7 +378,7 @@ class FileRepository(
             .child(mUser.encodedEmail!!)
             .child(book.generateBookKey())
 
-        if (book.isLaunchedComplete){
+        if (book.isLaunchedComplete) {
 
             val filePath = Uri.parse(book.localFullBookUri!!)
             uploadTask = locationReference.child("${book.originalImmutableTitle}.pdf".replace(" ", ""))
@@ -366,22 +387,22 @@ class FileRepository(
                 launch {
                     currentProgress += (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount) / progressCap
                     if (currentProgress < 99)
-                        mGlobalProgressBroadcastChannel.send(currentProgress.toInt())
+                        progressBroadcastChannel.send(currentProgress.toInt())
                     else
-                        mGlobalProgressBroadcastChannel.send(99)
+                        progressBroadcastChannel.send(99)
                 }
 
             }.addOnSuccessListener { taskSnapshot ->
                 book.remoteFullBookUri = taskSnapshot.downloadUrl?.toString()
-                saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository)
+                saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel)
             }.addOnFailureListener { exception ->
                 launch {
                     val errorCode = (exception as StorageException).errorCode
                     when (errorCode) {
-                        StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(
+                        StorageException.ERROR_UNKNOWN -> progressBroadcastChannel.send(
                             errorCode
                         )
-                        else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                        else -> progressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
                     }
 
                 }
@@ -396,7 +417,8 @@ class FileRepository(
                     editionFound = true
 
                     val filePath = Uri.parse(key)
-                    val chapterNumberMetadata = StorageMetadata.Builder().setCustomMetadata(METADATA_CHAPTER_NUMBER, index.toString()).build()
+                    val chapterNumberMetadata =
+                        StorageMetadata.Builder().setCustomMetadata(METADATA_CHAPTER_NUMBER, index.toString()).build()
                     val chapterTitle = book.remoteChapterTitles[index]
 
                     uploadTask = locationReference.child("$chapterTitle.pdf").putFile(filePath, chapterNumberMetadata)
@@ -404,9 +426,9 @@ class FileRepository(
                         launch(UI) {
                             currentProgress += (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount) / progressCap
                             if (currentProgress < 99)
-                                mGlobalProgressBroadcastChannel.send(currentProgress.toInt())
+                                progressBroadcastChannel.send(currentProgress.toInt())
                             else
-                                mGlobalProgressBroadcastChannel.send(99)
+                                progressBroadcastChannel.send(99)
 
                         }
                     }.addOnSuccessListener { taskSnapshot ->
@@ -415,15 +437,15 @@ class FileRepository(
                             book.remoteChapterTitles.set(index, chapterTitle)
                             book.remoteChapterUris.set(index, it.toString())
                         }
-                        saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository)
+                        saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel)
                     }.addOnFailureListener { exception ->
                         launch {
                             val errorCode = (exception as StorageException).errorCode
                             when (errorCode) {
-                                StorageException.ERROR_UNKNOWN -> mGlobalProgressBroadcastChannel.send(
+                                StorageException.ERROR_UNKNOWN -> progressBroadcastChannel.send(
                                     errorCode
                                 )
-                                else -> mGlobalProgressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
+                                else -> progressBroadcastChannel.send(UPLOAD_STATUS_FAIL)
                             }
 
                         }
@@ -431,25 +453,25 @@ class FileRepository(
                 }
             }
 
-            if (!editionFound){
-                saveBookOnDatabaseIfAllFilesUploaded(1, book, dataRepository)
+            if (!editionFound) {
+                saveBookOnDatabaseIfAllFilesUploaded(1, book, dataRepository, progressBroadcastChannel)
             }
         }
 
-        return mGlobalProgressReceiver
+        return progressReceiver
     }
 
-    fun deleteFullBook(book: Book, dataRepository: DataRepository){
+    fun deleteFullBook(book: Book, dataRepository: DataRepository) {
         val filesToBeDeleted = ArraySet<String>()
 
-        book.remoteCoverUri?.let{
+        book.remoteCoverUri?.let {
             filesToBeDeleted.add(book.remoteCoverUri!!)
         }
         book.remotePosterUri?.let {
             filesToBeDeleted.add(book.remotePosterUri!!)
         }
 
-        if(book.isLaunchedComplete){
+        if (book.isLaunchedComplete) {
             filesToBeDeleted.add(book.remoteFullBookUri!!)
 
         } else {
@@ -460,8 +482,8 @@ class FileRepository(
         dataRepository.deleteBook(book)
     }
 
-    private fun deleteBookFiles(filesToBeDeleted: ArraySet<String>){
-        filesToBeDeleted.forEach {fileUri ->
+    private fun deleteBookFiles(filesToBeDeleted: ArraySet<String>) {
+        filesToBeDeleted.forEach { fileUri ->
             mStorageInstance.getReferenceFromUrl(fileUri).delete()
         }
     }
@@ -483,12 +505,12 @@ class FileRepository(
     private fun getProgressCapForEdition(book: Book): Double {
         var progressCap = 0.0
 
-        if (book.isLaunchedComplete){
+        if (book.isLaunchedComplete) {
             progressCap += 1
         } else {
             book.remoteChapterUris.forEach { uri ->
-                if (!uri.isUriFromFirebaseStorage()){
-                    progressCap +=1
+                if (!uri.isUriFromFirebaseStorage()) {
+                    progressCap += 1
                 }
             }
         }
@@ -496,16 +518,20 @@ class FileRepository(
         return progressCap
     }
 
-    private fun saveBookOnDatabaseIfAllFilesUploaded(maxTasksNumber: Int, book: Book, dataRepository: DataRepository) {
+    private fun saveBookOnDatabaseIfAllFilesUploaded(
+        maxTasksNumber: Int,
+        book: Book,
+        dataRepository: DataRepository,
+        progressBroadcastChannel: ArrayBroadcastChannel<Int>?
+    ) {
+
         mTasksReadyCounter++
 
         Log.i("FileRepository", "Tasks counter: $mTasksReadyCounter Max Tasks: $maxTasksNumber")
         if (mTasksReadyCounter == maxTasksNumber) {
-            dataRepository.setBookDocuments(book)
+            dataRepository.setBookDocuments(book, progressBroadcastChannel = progressBroadcastChannel)
             mTasksReadyCounter = 0
         }
 
     }
-
-    fun getGlobalReceiver() = mGlobalProgressReceiver
 }

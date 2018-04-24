@@ -11,7 +11,7 @@ import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 class CreateBookModel(private val fileRepository: FileRepository, private val dataRepository: DataRepository) {
 
 
-    suspend fun uploadBookFiles(book: Book): SubscriptionReceiveChannel<Int?> {
+    suspend fun uploadBookFiles(book: Book): SubscriptionReceiveChannel<Int> {
 
         return fileRepository.createBook(book, dataRepository)
     }

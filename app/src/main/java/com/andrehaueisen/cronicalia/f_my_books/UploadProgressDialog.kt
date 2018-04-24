@@ -9,11 +9,12 @@ import android.widget.TextView
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.UPLOAD_STATUS_FAIL
 import com.andrehaueisen.cronicalia.UPLOAD_STATUS_OK
-import com.andrehaueisen.cronicalia.f_create_book.mvp.CreateBookView
+import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBookEditViewFragment
+import com.andrehaueisen.cronicalia.utils.extensions.showRequestFeedback
 import com.google.firebase.storage.StorageException
-import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 
-class UploadProgressDialog(private val fragmentActivity: FragmentActivity, private val isSmallScreen: Boolean): AlertDialog(fragmentActivity), CreateBookView.UploadState {
+class UploadProgressDialog(private val fragmentActivity: FragmentActivity, private val isSmallScreen: Boolean): AlertDialog(fragmentActivity), MyBookEditViewFragment.UploadState {
 
     private lateinit var mTitleTextView: TextView
     private lateinit var mLoadingProgressBar: ProgressBar
@@ -36,23 +37,20 @@ class UploadProgressDialog(private val fragmentActivity: FragmentActivity, priva
         }
     }
 
-    override fun onUploadStateChanged(progress: Int) {
+    override fun onUploadStateChanged(progress: Int, subscriptionChannel: SubscriptionReceiveChannel<Int>) {
+
+        progress.showRequestFeedback(context, R.string.book_updated, R.string.progress_dialog_fail)
 
         when (progress) {
             UPLOAD_STATUS_OK -> {
-
                 mLoadingProgressBar.progress = progress
-                Toasty.success(context, context.getString(R.string.book_updated)).show()
                 //TODO show confirmation animation on dialog
+                subscriptionChannel.close()
                 dismiss()
+            }
 
-            }
-            UPLOAD_STATUS_FAIL -> {
-                Toasty.error(context, context.getString(R.string.progress_dialog_fail)).show()
-                dismiss()
-            }
-            StorageException.ERROR_UNKNOWN ->{
-                Toasty.error(context, context.getString(R.string.check_internet_connection)).show()
+            UPLOAD_STATUS_FAIL or StorageException.ERROR_UNKNOWN -> {
+                subscriptionChannel.close()
                 dismiss()
             }
 
@@ -61,4 +59,5 @@ class UploadProgressDialog(private val fragmentActivity: FragmentActivity, priva
             }
         }
     }
+
 }

@@ -21,6 +21,7 @@ import com.andrehaueisen.cronicalia.f_my_books.UploadProgressDialog
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.createUserDirectory
 import com.andrehaueisen.cronicalia.utils.extensions.getSmallestScreenWidth
+import com.andrehaueisen.cronicalia.utils.extensions.showRequestFeedback
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -28,8 +29,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
 import java.io.File
@@ -75,6 +77,10 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
 
             return fragment
         }
+    }
+
+    interface UploadState {
+        fun onUploadStateChanged(progress: Int, subscriptionChannel: SubscriptionReceiveChannel<Int>)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -239,7 +245,10 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
 
         mSaveFileChangesButton.setOnClickListener {
             if (isChangeOnlyInFileOrder()) {
-                (requireActivity() as MyBooksPresenterActivity).updateBookPdfsReferences(mBookIsolated)
+                async(UI) {
+                    val result = (requireActivity() as MyBooksPresenterActivity).updateBookPdfsReferences(mBookIsolated)
+                    result.showRequestFeedback(requireContext(), R.string.book_updated, R.string.update_fail)
+                }
 
             } else {
                 val uploadDialog = UploadProgressDialog(
@@ -248,12 +257,12 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
                 )
                 uploadDialog.show()
 
-                launch(CommonPool) {
-                    (requireActivity() as MyBooksPresenterActivity).updateBookPdfs(mBookIsolated, mFileUrisToBeDeleted)
-                        .consumeEach { progress ->
-                            progress?.let {
+                launch(UI) {
+                    val receiveChannel = (requireActivity() as MyBooksPresenterActivity).updateBookPdfs(mBookIsolated, mFileUrisToBeDeleted)
+                        receiveChannel.consumeEach { progress ->
+                            progress.let {
                                 launch(UI) {
-                                    uploadDialog.onUploadStateChanged(it)
+                                    uploadDialog.onUploadStateChanged(it, receiveChannel)
                                     if (it == UPLOAD_STATUS_OK)
                                         mSaveFileChangesButton.visibility = View.INVISIBLE
                                 }
@@ -414,21 +423,13 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
                 .transition(transitionOptions)
                 .into(mCoverImageView)
 
-            launch(CommonPool) {
-                (activity as? MyBooksPresenterActivity)?.updateBookCover(mBookIsolated)?.consumeEach { progress ->
-                    progress?.let {
-                        launch(UI) {
-                            if (activity != null && isAdded) {
-                                if (progress == UPLOAD_STATUS_FAIL)
-                                    Toasty.error(requireContext(), getString(R.string.cover_update_fail)).show()
-                                else
-                                    Toasty.success(requireContext(), getString(R.string.cover_updated)).show()
-                            }
-                        }
-                    }
+            launch(UI) {
+                if (activity != null && isAdded) {
+                    val result = (activity as MyBooksPresenterActivity).updateBookCover(mBookIsolated)
+                    result.showRequestFeedback(activity!!, R.string.cover_updated, R.string.cover_update_fail)
                 }
-            }
 
+            }
         }
     }
 
@@ -444,18 +445,10 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
                 .transition(transitionOptions)
                 .into(mPosterImageView)
 
-            launch(CommonPool) {
-                (activity as? MyBooksPresenterActivity)?.updateBookPoster(mBookIsolated)?.consumeEach { progress ->
-                    progress?.let {
-                        launch(UI) {
-                            if (activity != null && isAdded) {
-                                if (progress == UPLOAD_STATUS_FAIL)
-                                    Toasty.error(requireContext(), getString(R.string.poster_update_fail)).show()
-                                else
-                                    Toasty.success(requireContext(), getString(R.string.poster_updated)).show()
-                            }
-                        }
-                    }
+            launch(UI) {
+                if (activity != null && isAdded) {
+                    val result = (activity as MyBooksPresenterActivity).updateBookPoster(mBookIsolated)
+                    result.showRequestFeedback(activity!!, R.string.poster_updated, R.string.poster_update_fail)
                 }
             }
         }

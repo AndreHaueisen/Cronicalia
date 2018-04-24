@@ -42,8 +42,8 @@ class BaseApplication : Application() {
 
         val applicationModule: Module = org.koin.dsl.module.applicationContext {
 
-            bean { FileRepository(storageInstance, globalProgressBroadcastChannel, globalProgressReceiver, globalUser) }
-            bean { DataRepository(databaseInstance, globalProgressBroadcastChannel, globalProgressReceiver, globalUser) }
+            bean { FileRepository(storageInstance, globalUser) }
+            bean { DataRepository(databaseInstance, globalUser) }
             bean { Authenticator(get(), databaseInstance, FirebaseAuth.getInstance(), globalUser) }
             bean { globalUser }
 

@@ -127,20 +127,20 @@ class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.Creati
         mModel.simpleUpdateBook(newTitle, collectionLocation, bookKey, variableToUpdate)
     }
 
-    suspend fun updateBookPoster(book: Book): SubscriptionReceiveChannel<Int?> {
+    suspend fun updateBookPoster(book: Book): Int {
         return mModel.updateBookPoster(book)
     }
 
-    suspend fun updateBookCover(book: Book): SubscriptionReceiveChannel<Int?>{
+    suspend fun updateBookCover(book: Book): Int{
         return mModel.updateBookCover(book)
     }
 
-    suspend fun updateBookPdfs(book: Book, filesToBeDeleted: ArraySet<String>): SubscriptionReceiveChannel<Int?>{
+    suspend fun updateBookPdfs(book: Book, filesToBeDeleted: ArraySet<String>): SubscriptionReceiveChannel<Int>{
         return mModel.updateBookPdfs(book, filesToBeDeleted)
     }
 
-    fun updateBookPdfsReferences(book: Book){
-        mModel.updateBookPdfsReferences(book)
+    suspend fun updateBookPdfsReferences(book: Book): Int{
+        return mModel.updateBookPdfsReferences(book)
     }
 
     fun deleteBook(book: Book){

@@ -2,7 +2,6 @@ package com.andrehaueisen.cronicalia.g_manage_account.mvp
 
 import com.andrehaueisen.cronicalia.b_firebase.DataRepository
 import com.andrehaueisen.cronicalia.b_firebase.FileRepository
-import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 
 class ManageAccountModel(private val mDataRepository: DataRepository, private val mFileRepository: FileRepository) {
 
@@ -20,11 +19,11 @@ class ManageAccountModel(private val mDataRepository: DataRepository, private va
         }
     }
 
-    suspend fun updateUserProfileImage(newLocalUri: String): SubscriptionReceiveChannel<Int?> {
+    suspend fun updateUserProfileImage(newLocalUri: String): Int {
         return mFileRepository.updateUserProfileImage(newLocalUri, mDataRepository)
     }
 
-    suspend fun updateUserBackgroundImage(newLocalUri: String): SubscriptionReceiveChannel<Int?>{
+    suspend fun updateUserBackgroundImage(newLocalUri: String): Int{
         return mFileRepository.updateUserBackgroundImage(newLocalUri, mDataRepository)
     }
 }

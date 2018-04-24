@@ -7,6 +7,7 @@ import com.andrehaueisen.cronicalia.g_manage_account.EditTextDialog
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.createUserDirectory
 import com.andrehaueisen.cronicalia.utils.extensions.isOnline
+import com.andrehaueisen.cronicalia.utils.extensions.showRequestFeedback
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -15,9 +16,7 @@ import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.g_activity_manage_account.*
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
 import java.io.File
 
@@ -157,27 +156,17 @@ class ManageAccountView(private val mActivity: ManageAccountPresenterActivity, u
     private fun notifyImageUpdateAndListenToResult(newLocalUri: String, imageDestination: ImageDestination) {
 
         with(mActivity) {
-            launch(CommonPool) {
-                val receiveChannel = when (imageDestination) {
+            launch(UI) {
+                val result = when (imageDestination) {
                     ImageDestination.BACKGROUND -> {
-                        notifyBackgroundImageUpdate(newLocalUri)
+                        requestBackgroundImageUpdate(newLocalUri)
                     }
                     ImageDestination.PROFILE -> {
-                        notifyProfileImageUpdate(newLocalUri)
+                        requestProfileImageUpdate(newLocalUri)
                     }
                 }
 
-                receiveChannel.consumeEach { progress ->
-                    progress?.let {
-                        launch(UI) {
-                            if (it == UPLOAD_STATUS_OK)
-                                Toasty.success(this@with, this@with.getString(R.string.image_upload_successful)).show()
-                            else
-                                onError(this@with.getString(R.string.image_upload_failed))
-                        }
-                    }
-                }
-
+                result.showRequestFeedback(mActivity, R.string.image_upload_successful, R.string.image_upload_failed)
             }
         }
     }
