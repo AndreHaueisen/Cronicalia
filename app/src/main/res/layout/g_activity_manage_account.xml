@@ -85,12 +85,12 @@
                         android:id="@+id/user_name_text_view"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="36dp"
+                        android:layout_marginStart="36dp"
                         android:layout_marginTop="24dp"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         android:textColor="@color/colorAccent"
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -99,17 +99,14 @@
                         tools:text="Andre Haueisen"/>
 
                     <TextView
-                        android:id="@+id/artistic_name_text_view"
+                        android:id="@+id/twitter_locator_text_view"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:textAlignment="center"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/user_name_text_view"
                         app:layout_constraintTop_toTopOf="@+id/guideline4"
                         tools:text="Pocahontas"/>
 
@@ -117,18 +114,16 @@
                         android:id="@+id/about_me_text_view"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="36dp"
                         android:layout_marginTop="16dp"
                         android:ellipsize="end"
+
                         android:maxHeight="84dp"
                         android:maxLines="5"
-
                         android:textColor="@color/text_secondary"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="1.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/artistic_name_text_view"
+                        app:layout_constraintStart_toStartOf="@+id/twitter_locator_text_view"
+                        app:layout_constraintTop_toBottomOf="@+id/twitter_locator_text_view"
                         tools:text="Coming from NYC, I always believed that writing is the shortest way to go to haven. God wrote the bible for God sake"/>
 
                     <ImageView
@@ -140,7 +135,7 @@
                         android:src="@drawable/ic_eye_24dp"
                         app:layout_constraintBottom_toTopOf="@+id/total_readings_number_text_view"
                         app:layout_constraintEnd_toStartOf="@+id/total_income_image_view"
-                        app:layout_constraintStart_toEndOf="@+id/books_number_image_view"
+                        app:layout_constraintStart_toEndOf="@+id/total_fans_image_view"
                         app:layout_constraintTop_toBottomOf="@+id/about_me_text_view"/>
 
                     <TextView
@@ -151,17 +146,17 @@
                         android:textColor="@color/colorAccent"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="@+id/books_number_image_view"
-                        app:layout_constraintStart_toStartOf="@+id/books_number_image_view"
+                        app:layout_constraintEnd_toEndOf="@+id/total_fans_image_view"
+                        app:layout_constraintStart_toStartOf="@+id/total_fans_image_view"
                         tools:text="10k"/>
 
                     <ImageView
-                        android:id="@+id/books_number_image_view"
+                        android:id="@+id/total_fans_image_view"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginBottom="4dp"
                         android:layout_marginStart="24dp"
-                        android:src="@drawable/ic_star_24dp"
+                        android:src="@drawable/ic_fan_24dp"
                         app:layout_constraintBottom_toTopOf="@+id/fans_text_view"
                         app:layout_constraintStart_toStartOf="parent"/>
 

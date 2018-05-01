@@ -21,8 +21,8 @@ import com.bumptech.glide.request.RequestOptions
 class MyBooksAdapter(private val mFragment: MyBooksViewFragment, private val mMyBooks: ArrayList<Book>) :
     RecyclerView.Adapter<MyBooksAdapter.BookHolder>() {
 
-    interface CreationClickListener{
-        fun onCreationClick(bookKey: String)
+    interface BookClickListener{
+        fun onBookClick(bookKey: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookHolder {
@@ -74,7 +74,7 @@ class MyBooksAdapter(private val mFragment: MyBooksViewFragment, private val mMy
         fun bindBooksToViews(book: Book) {
 
             mEditButton.setOnClickListener {
-                mFragment.onCreationClick(bookKey = book.generateBookKey())
+                mFragment.onBookClick(bookKey = book.generateBookKey())
             }
 
             if (book.remoteCoverUri != null) {
@@ -97,7 +97,7 @@ class MyBooksAdapter(private val mFragment: MyBooksViewFragment, private val mMy
                     .into(mBookPosterImageView)
             }
 
-            mReadingsTextView.text = mFragment.getString(R.string.simple_number_integer, book.readingNumber)
+            mReadingsTextView.text = mFragment.getString(R.string.simple_number_integer, book.readingsNumber)
             mBookTitleTextView.text = book.title
             mBookSynopsisTextView.text = book.synopsis
             if (book.isLaunchedComplete) {

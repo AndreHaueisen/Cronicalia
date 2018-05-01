@@ -4,7 +4,8 @@
     <!--f_my_books strings-->
     <string name="simple_number_integer">%1$d</string>
     <string name="simple_number_float">%1$.1f</string>
-    <string name="income_amount">\$%1$.2f</string>
+    <string name="income_amount">%1$.2f</string>
+    <string name="twitter_account">\@%1$s</string>
     <string name="mark_book_as_completed">Book is finished</string>
     <string name="mark_book_as_incomplete">Still have chapter to launch</string>
     <string name="cover_updated">Cover updated</string>
@@ -13,7 +14,7 @@
     <string name="poster_update_fail">Poster update failed</string>
     <string name="remove">Remove</string>
     <string name="change">Change</string>
-    <string name="one_file_selected_warning">There must be at least one file selected</string>
+    <string name="one_file_selected_warning">There must be at least one file selectedBookFragment</string>
     <string name="save_file_changes">Save Files Changes</string>
     <string name="book_updated">Book Updated</string>
     <string name="update_fail">Update failed. Try again</string>
@@ -113,13 +114,13 @@
     <string name="profile_image">Profile Image</string>
     <string name="user_name">User Name</string>
     <string name="about_me">About Me</string>
-    <string name="artistic_name">Artistic Name</string>
+    <string name="twitter_profile">Twitter Profile</string>
     <string name="updating_image">Updating Image</string>
     <string name="update_begin_once_internet_available">Update will begin once you connect to the internet</string>
     <string name="image_upload_successful">Image update complete</string>
     <string name="image_upload_failed">Image update failed. Try again.</string>
     <string name="about_me_instructions">Click and tell your readers who are you</string>
-    <string name="artistic_name_instructions">Click and choose an artistic name</string>
+    <string name="twitter_profile_instructions">Click and add your twitter profile</string>
     <string name="image_invalid">Image invalid. Please try another one</string>
 
     <!-- Login Strings -->

@@ -16,12 +16,13 @@ data class Book(
     var originalImmutableTitle: String? = null,
     var authorName: String? = null,
     var authorEmailId: String? = null,
+    var authorTwitterAccount: String? = null,
     var genre: BookGenre = BookGenre.UNDEFINED,
     var bookPosition: Int = 0,
     var rating: Float = 0F,
-    var voteCounter: Int = 0,
+    var ratingCounter: Int = 0,
     var income: Float = 0F,
-    var readingNumber: Int = 0,
+    var readingsNumber: Int = 0,
     var language: BookLanguage = BookLanguage.UNDEFINED,
     var localFullBookUri: String? = null,
     var remoteFullBookUri: String? = null,
@@ -125,12 +126,13 @@ data class Book(
                 originalImmutableTitle == that.originalImmutableTitle &&
                 authorName == that.authorName &&
                 authorEmailId == that.authorEmailId &&
+                authorTwitterAccount == that.authorTwitterAccount &&
                 genre == that.genre &&
                 bookPosition == that.bookPosition &&
                 rating == that.rating &&
-                voteCounter == that.voteCounter &&
+                ratingCounter == that.ratingCounter &&
                 income == that.income &&
-                readingNumber == that.readingNumber &&
+                readingsNumber == that.readingsNumber &&
                 language == that.language &&
                 localFullBookUri == that.localFullBookUri &&
                 remoteFullBookUri == that.remoteFullBookUri &&
@@ -151,12 +153,13 @@ data class Book(
             originalImmutableTitle,
             authorName,
             authorEmailId,
+            authorTwitterAccount,
             genre,
             bookPosition,
             rating,
-            voteCounter,
+            ratingCounter,
             income,
-            readingNumber,
+            readingsNumber,
             language,
             localFullBookUri,
             remoteFullBookUri,
@@ -184,6 +187,7 @@ data class Book(
     }
 
     constructor(source: Parcel) : this(
+        source.readString(),
         source.readString(),
         source.readString(),
         source.readString(),
@@ -225,12 +229,13 @@ data class Book(
         writeString(originalImmutableTitle)
         writeString(authorName)
         writeString(authorEmailId)
+        writeString(authorTwitterAccount)
         writeInt(genre.ordinal)
         writeInt(bookPosition)
         writeFloat(rating)
-        writeInt(voteCounter)
+        writeInt(ratingCounter)
         writeFloat(income)
-        writeInt(readingNumber)
+        writeInt(readingsNumber)
         writeInt(language.ordinal)
         writeString(localFullBookUri)
         writeString(remoteFullBookUri)

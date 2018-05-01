@@ -23,9 +23,9 @@ import java.io.File
 /**
  * Created by andre on 2/19/2018.
  */
-fun AppCompatActivity.addFragment(containerId: Int, fragment: Fragment){
+fun AppCompatActivity.addFragment(containerId: Int, fragment: Fragment, tag: String? = null){
 
-    this.supportFragmentManager.beginTransaction().add(containerId, fragment).commit()
+    this.supportFragmentManager.beginTransaction().add(containerId, fragment, tag).commit()
 }
 
 fun AppCompatActivity.replaceFragment(containerId: Int, fragment: Fragment, fragmentTag: String? = null, stackTag : String? = null){

@@ -15,7 +15,7 @@ import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.g_manage_account.mvp.ManageAccountView
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.isAboutMeTextValid
-import com.andrehaueisen.cronicalia.utils.extensions.isArtisticNameValid
+import com.andrehaueisen.cronicalia.utils.extensions.isTwitterProfileValid
 import com.andrehaueisen.cronicalia.utils.extensions.isUserNameValid
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_edit_text.view.*
@@ -38,12 +38,12 @@ class EditTextDialog(
 
     interface UserChangesListener {
         fun notifyNameChange(name: String)
-        fun notifyArtisticNameChange(artisticName: String)
+        fun notifyTwitterProfileChange(twitterProfile: String)
         fun notifyAboutMeChange(aboutMe: String)
     }
 
     enum class ViewBeingEdited {
-        NAME_VIEW, ARTISTIC_NAME, ABOUT_ME_VIEW
+        NAME_VIEW, TWITTER_LOCATOR, ABOUT_ME_VIEW
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,14 +70,14 @@ class EditTextDialog(
                 mGeneralTextBox.general_extended_edit_text.setSelection(userName.length)
             }
 
-            ViewBeingEdited.ARTISTIC_NAME -> {
-                val artisticName = SpannableStringBuilder(mUserIsolated.artisticName ?: "")
-                mFullTextView.text = artisticName
-                mGeneralTextBox.labelText = context.getString(R.string.artistic_name)
+            ViewBeingEdited.TWITTER_LOCATOR -> {
+                val twitterProfile = SpannableStringBuilder("@${mUserIsolated.twitterProfile}" ?: "")
+                mFullTextView.text = twitterProfile
+                mGeneralTextBox.labelText = context.getString(R.string.twitter_profile)
                 mGeneralTextBox.maxCharacters = context.resources.getInteger(R.integer.title_text_box_max_length)
                 mGeneralTextBox.general_extended_edit_text.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
-                mGeneralTextBox.general_extended_edit_text.text = artisticName
-                mGeneralTextBox.general_extended_edit_text.setSelection(artisticName.length)
+                mGeneralTextBox.general_extended_edit_text.text = twitterProfile
+                mGeneralTextBox.general_extended_edit_text.setSelection(twitterProfile.length)
             }
 
             ViewBeingEdited.ABOUT_ME_VIEW -> {
@@ -116,11 +116,11 @@ class EditTextDialog(
 
                 }
 
-                ViewBeingEdited.ARTISTIC_NAME -> {
-                    val newArtisticName = mGeneralTextBox.general_extended_edit_text.text.toString()
-                    if(newArtisticName.isArtisticNameValid(context)){
-                        mUserIsolated.artisticName = newArtisticName
-                        view.notifyArtisticNameChange(newArtisticName)
+                ViewBeingEdited.TWITTER_LOCATOR -> {
+                    val twitterLocator = mGeneralTextBox.general_extended_edit_text.text.toString()
+                    if(twitterLocator.isTwitterProfileValid(context)){
+                        mUserIsolated.twitterProfile = twitterLocator
+                        view.notifyTwitterProfileChange(twitterLocator)
                         dismiss()
                     } else {
                         Toasty.error(context, context.getString(R.string.invalid_text_detected)).show()

@@ -7,18 +7,18 @@
 
     <fragment
         android:id="@+id/featured_books_fragment"
-        android:name=""
+        android:name="com.andrehaueisen.cronicalia.c_featured_books.mvp.FeaturedBooksFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHorizontal_weight="3"
         app:layout_constraintBottom_toTopOf="@+id/navigation_bottom_view"
-        app:layout_constraintEnd_toStartOf="@+id/book_summary_frame"
+        app:layout_constraintEnd_toStartOf="@+id/selected_book_fragment_container"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <FrameLayout
-        android:id="@+id/book_summary_frame"
+        android:id="@+id/selected_book_fragment_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHorizontal_weight="2"

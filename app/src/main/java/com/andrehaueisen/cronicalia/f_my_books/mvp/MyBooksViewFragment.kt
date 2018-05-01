@@ -10,8 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.andrehaueisen.cronicalia.R
-import com.andrehaueisen.cronicalia.f_my_books.MyBooksAdapter
 import com.andrehaueisen.cronicalia.f_create_book.mvp.CreateBookActivity
+import com.andrehaueisen.cronicalia.f_my_books.MyBooksAdapter
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.User
 import kotlinx.coroutines.experimental.android.UI
@@ -21,10 +21,10 @@ import kotlinx.coroutines.experimental.launch
 /**
  * Created by andre on 2/19/2018.
  */
-class MyBooksViewFragment : Fragment(), MyBooksAdapter.CreationClickListener {
+class MyBooksViewFragment : Fragment(), MyBooksAdapter.BookClickListener {
 
-    interface CreationClickListener {
-        fun onCreationClick(bookKey: String)
+    interface BookClickListener {
+        fun onBookClick(bookKey: String)
     }
 
     private lateinit var mMyCreationsRecyclerView: RecyclerView
@@ -90,11 +90,11 @@ class MyBooksViewFragment : Fragment(), MyBooksAdapter.CreationClickListener {
     }
 
 
-    override fun onCreationClick(bookKey: String) {
+    override fun onBookClick(bookKey: String) {
         try {
-            (activity as? MyBooksPresenterActivity)?.onCreationClick(bookKey)
+            (activity as? MyBooksPresenterActivity)?.onBookClick(bookKey)
         } catch (e: ClassCastException) {
-            throw ClassCastException(activity.toString() + " must implement CreationClickListener")
+            throw ClassCastException(activity.toString() + " must implement BookClickListener")
         }
     }
 }

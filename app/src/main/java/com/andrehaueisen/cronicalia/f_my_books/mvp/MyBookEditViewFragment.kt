@@ -315,7 +315,7 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
 
         mTitleTextView.text = mBookIsolated.title
         mSynopsisTextView.text = mBookIsolated.synopsis
-        mReadingsTextView.text = getString(R.string.simple_number_integer, mBookIsolated.readingNumber)
+        mReadingsTextView.text = getString(R.string.simple_number_integer, mBookIsolated.readingsNumber)
         mRatingTextView.text = getString(R.string.simple_number_float, mBookIsolated.rating)
         mIncomeTextView.text = getString(R.string.income_amount, mBookIsolated.income)
         mGenreSpinner.setSelection(mBookIsolated.convertGenreToPosition())

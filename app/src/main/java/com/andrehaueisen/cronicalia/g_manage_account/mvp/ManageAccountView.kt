@@ -34,7 +34,7 @@ class ManageAccountView(private val mActivity: ManageAccountPresenterActivity, u
         initiateImageViews()
         initiateButtons()
         initiateNameTextView()
-        initiateArtisticNameView()
+        initiateTwitterProfileView()
         initiateAboutMeTextView()
         initiateExtraInfoTextViews()
     }
@@ -104,10 +104,15 @@ class ManageAccountView(private val mActivity: ManageAccountPresenterActivity, u
         }
     }
 
-    private fun initiateArtisticNameView() {
-        mActivity.artistic_name_text_view.text = mUserIsolated.artisticName ?: mActivity.getString(R.string.artistic_name_instructions)
-        mActivity.artistic_name_text_view.setOnClickListener {
-            EditTextDialog(mActivity, this, EditTextDialog.ViewBeingEdited.ARTISTIC_NAME, mUserIsolated).show()
+    private fun initiateTwitterProfileView() {
+        mActivity.twitter_locator_text_view.text =
+                if(mUserIsolated.twitterProfile != null)
+                    "@${mUserIsolated.twitterProfile}"
+                else
+                    mActivity.getString(R.string.twitter_profile_instructions)
+
+        mActivity.twitter_locator_text_view.setOnClickListener {
+            EditTextDialog(mActivity, this, EditTextDialog.ViewBeingEdited.TWITTER_LOCATOR, mUserIsolated).show()
         }
     }
 
@@ -208,9 +213,9 @@ class ManageAccountView(private val mActivity: ManageAccountPresenterActivity, u
         mActivity.notifySimpleUpdate(name, ManageAccountModel.SimpleUserUpdateVariable.NAME)
     }
 
-    override fun notifyArtisticNameChange(artisticName: String) {
-        mActivity.artistic_name_text_view.text = artisticName
-        mActivity.notifySimpleUpdate(artisticName, ManageAccountModel.SimpleUserUpdateVariable.ARTISTIC_NAME)
+    override fun notifyTwitterProfileChange(twitterProfile: String) {
+        mActivity.twitter_locator_text_view.text = twitterProfile
+        mActivity.notifySimpleUpdate(twitterProfile, ManageAccountModel.SimpleUserUpdateVariable.TWITTER_PROFILE)
     }
 
     override fun notifyAboutMeChange(aboutMe: String) {

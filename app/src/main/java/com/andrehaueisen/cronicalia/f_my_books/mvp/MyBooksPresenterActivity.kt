@@ -23,7 +23,7 @@ import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
 import org.koin.android.ext.android.inject
 
 
-class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.CreationClickListener {
+class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.BookClickListener {
 
     interface PresenterActivity {
         fun refreshFragmentData(book: Book)
@@ -147,7 +147,7 @@ class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.Creati
         mModel.deleteBook(book)
     }
 
-    override fun onCreationClick(bookKey: String) {
+    override fun onBookClick(bookKey: String) {
 
         if(getSmallestScreenWidth() >= 600){
             val editCreationFragment = (supportFragmentManager.findFragmentById(R.id.edit_creation_fragment_container) as? MyBookEditViewFragment)

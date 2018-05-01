@@ -16,7 +16,7 @@ import java.util.*
 data class User(
     var name: String? = null,
     var encodedEmail: String? = null,
-    var artisticName: String? = null,
+    var twitterProfile: String? = null,
     var aboutMe: String? = null,
     var localProfilePictureUri: String? = null,
     var remoteProfilePictureUri: String? = null,
@@ -45,7 +45,7 @@ data class User(
         var totalReadings = 0
 
         books.forEach { (_, book) ->
-            totalReadings += book.readingNumber
+            totalReadings += book.readingsNumber
         }
 
         return totalReadings
@@ -75,7 +75,7 @@ data class User(
     fun refreshUser(user: User) {
         this.name = user.name
         this.encodedEmail = user.encodedEmail
-        this.artisticName = user.artisticName
+        this.twitterProfile = user.twitterProfile
         this.aboutMe = user.aboutMe
         this.localProfilePictureUri = user.localProfilePictureUri
         this.remoteProfilePictureUri = user.remoteProfilePictureUri
@@ -95,7 +95,7 @@ data class User(
 
         return name == that.name &&
                 encodedEmail == that.encodedEmail &&
-                artisticName == that.artisticName &&
+                twitterProfile == that.twitterProfile &&
                 aboutMe == that.aboutMe &&
                 localProfilePictureUri == that.localProfilePictureUri &&
                 remoteProfilePictureUri == that.remoteProfilePictureUri &&
@@ -109,7 +109,7 @@ data class User(
         return Objects.hash(
             name,
             encodedEmail,
-            artisticName,
+            twitterProfile,
             aboutMe,
             localProfilePictureUri,
             remoteProfilePictureUri,
@@ -138,7 +138,7 @@ data class User(
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(name)
         writeString(encodedEmail)
-        writeString(artisticName)
+        writeString(twitterProfile)
         writeString(aboutMe)
         writeString(localProfilePictureUri)
         writeString(remoteProfilePictureUri)

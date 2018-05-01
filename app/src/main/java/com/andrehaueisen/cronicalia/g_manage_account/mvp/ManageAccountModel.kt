@@ -6,14 +6,14 @@ import com.andrehaueisen.cronicalia.b_firebase.FileRepository
 class ManageAccountModel(private val mDataRepository: DataRepository, private val mFileRepository: FileRepository) {
 
     enum class SimpleUserUpdateVariable{
-        NAME, ARTISTIC_NAME, ABOUT_ME
+        NAME, TWITTER_PROFILE, ABOUT_ME
     }
 
     fun simpleUpdateBook(textUpdate: String, variableToUpdate: SimpleUserUpdateVariable){
 
         when(variableToUpdate){
             SimpleUserUpdateVariable.NAME -> mDataRepository.updateUserName(newName = textUpdate)
-            SimpleUserUpdateVariable.ARTISTIC_NAME -> mDataRepository.updateUserArtisticName(newArtisticName = textUpdate)
+            SimpleUserUpdateVariable.TWITTER_PROFILE -> mDataRepository.updateUserTwitterProfile(twitterProfile = textUpdate)
             SimpleUserUpdateVariable.ABOUT_ME -> mDataRepository.updateUserAboutMe(newAboutMe = textUpdate)
 
         }

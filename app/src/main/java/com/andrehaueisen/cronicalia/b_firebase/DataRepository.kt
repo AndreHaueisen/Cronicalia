@@ -5,12 +5,14 @@ import android.util.Log
 import com.andrehaueisen.cronicalia.*
 import com.andrehaueisen.cronicalia.i_login.LoginActivity
 import com.andrehaueisen.cronicalia.models.Book
+import com.andrehaueisen.cronicalia.models.BookOpinion
 import com.andrehaueisen.cronicalia.models.User
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.channels.ArrayBroadcastChannel
@@ -32,7 +34,11 @@ class DataRepository(
     /**
      * Updates full book on user collection and on book collection. Creates if book does not exists
      */
-    fun setBookDocuments(book: Book, continuation: Continuation<Int>? = null, progressBroadcastChannel: ArrayBroadcastChannel<Int>? = null) {
+    fun setBookDocuments(
+        book: Book,
+        continuation: Continuation<Int>? = null,
+        progressBroadcastChannel: ArrayBroadcastChannel<Int>? = null
+    ) {
         val batch = mDatabaseInstance.batch()
         mUser.books[book.generateBookKey()] = book
 
@@ -53,6 +59,15 @@ class DataRepository(
                 progressBroadcastChannel?.let { launch(UI) { it.send(UPLOAD_STATUS_FAIL) } }
             })
 
+    }
+
+    fun setBookOpinion(bookKey: String, userEncodedEmail: String, bookOpinion: BookOpinion) {
+
+        mDatabaseInstance.collection(COLLECTION_BOOK_OPINIONS)
+            .document(bookKey)
+            .collection(COLLECTION_USER_OPINIONS)
+            .document(userEncodedEmail)
+            .set(bookOpinion)
     }
 
     suspend fun updateBookPdfReferences(book: Book): Int {
@@ -141,12 +156,64 @@ class DataRepository(
         batch.commit()
     }
 
-    suspend fun queryFeaturedActionBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
-
-        val featuredActionsBooks = mutableListOf<Book>()
+    suspend fun getBook(bookKey: String, bookLanguage: Book.BookLanguage): Book {
 
         return async(CommonPool) {
-            suspendCoroutine<MutableList<Book>> { continuation ->
+            suspendCoroutine<Book> { continuation ->
+                mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
+                    .document(bookKey)
+                    .get()
+                    .addOnSuccessListener { documentSnapshot ->
+                        val book = documentSnapshot.toObject(Book::class.java)
+                        continuation.resume(book!!)
+
+                    }
+                    .addOnFailureListener { exception ->
+                        continuation.resumeWithException(exception)
+                    }
+
+            }
+        }.await()
+    }
+
+    suspend fun getBooksOpinion(bookKey: String): Deferred<ArrayList<BookOpinion>> {
+
+        return async(CommonPool) {
+            suspendCoroutine<ArrayList<BookOpinion>> { continuation ->
+                mDatabaseInstance.collection(COLLECTION_BOOK_OPINIONS)
+                    .document(bookKey)
+                    .collection(COLLECTION_USER_OPINIONS)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val opinions = arrayListOf<BookOpinion>()
+
+                            val documentSnapshot = task.result
+                            if (!documentSnapshot.isEmpty) {
+                                documentSnapshot.forEach { document ->
+                                    val bookOpinion = document.toObject(BookOpinion::class.java)
+                                    opinions.add(bookOpinion)
+                                }
+                            }
+                            continuation.resume(opinions)
+
+                        } else {
+                            task.exception?.let {
+                                continuation.resumeWithException(task.exception!!)
+                            }
+                        }
+                    }
+
+            }
+        }
+    }
+
+    suspend fun queryFeaturedActionBooks(bookLanguage: Book.BookLanguage): Deferred<ArrayList<Book>> {
+
+        val featuredActionsBooks = ArrayList<Book>()
+
+        return async(CommonPool) {
+            suspendCoroutine<ArrayList<Book>> { continuation ->
                 mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
                     .whereEqualTo("genre", Book.BookGenre.ACTION.toString())
                     .whereGreaterThan("rating", 8.0)
@@ -169,16 +236,16 @@ class DataRepository(
                         }
                     }
             }
-        }.await()
+        }
 
     }
 
-    suspend fun queryFeaturedFictionBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
+    suspend fun queryFeaturedFictionBooks(bookLanguage: Book.BookLanguage): Deferred<ArrayList<Book>> {
 
-        val featuredFictionBooks = mutableListOf<Book>()
+        val featuredFictionBooks = ArrayList<Book>()
 
         return async(CommonPool) {
-            suspendCoroutine<MutableList<Book>> { continuation ->
+            suspendCoroutine<ArrayList<Book>> { continuation ->
                 mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
                     .whereEqualTo("genre", Book.BookGenre.FICTION.toString())
                     .whereGreaterThan("rating", 8.0)
@@ -201,16 +268,16 @@ class DataRepository(
                         }
                     }
             }
-        }.await()
+        }
 
     }
 
-    suspend fun queryFeaturedRomanceBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
+    suspend fun queryFeaturedRomanceBooks(bookLanguage: Book.BookLanguage): Deferred<ArrayList<Book>> {
 
-        val featuredRomanceBooks = mutableListOf<Book>()
+        val featuredRomanceBooks = ArrayList<Book>()
 
         return async(CommonPool) {
-            suspendCoroutine<MutableList<Book>> { continuation ->
+            suspendCoroutine<ArrayList<Book>> { continuation ->
                 mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
                     .whereEqualTo("genre", Book.BookGenre.ROMANCE.toString())
                     .whereGreaterThan("rating", 8.0)
@@ -233,16 +300,16 @@ class DataRepository(
                         }
                     }
             }
-        }.await()
+        }
 
     }
 
-    suspend fun queryFeaturedComedyBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
+    suspend fun queryFeaturedComedyBooks(bookLanguage: Book.BookLanguage): Deferred<ArrayList<Book>> {
 
-        val featuredComedyBooks = mutableListOf<Book>()
+        val featuredComedyBooks = ArrayList<Book>()
 
         return async(CommonPool) {
-            suspendCoroutine<MutableList<Book>> { continuation ->
+            suspendCoroutine<ArrayList<Book>> { continuation ->
                 mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
                     .whereEqualTo("genre", Book.BookGenre.COMEDY.toString())
                     .whereGreaterThan("rating", 8.0)
@@ -265,16 +332,16 @@ class DataRepository(
                         }
                     }
             }
-        }.await()
+        }
 
     }
 
-    suspend fun queryFeaturedDramaBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
+    suspend fun queryFeaturedDramaBooks(bookLanguage: Book.BookLanguage): Deferred<ArrayList<Book>> {
 
-        val featuredDramaBooks = mutableListOf<Book>()
+        val featuredDramaBooks = ArrayList<Book>()
 
         return async(CommonPool) {
-            suspendCoroutine<MutableList<Book>> { continuation ->
+            suspendCoroutine<ArrayList<Book>> { continuation ->
                 mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
                     .whereEqualTo("genre", Book.BookGenre.DRAMA.toString())
                     .whereGreaterThan("rating", 8.0)
@@ -297,16 +364,16 @@ class DataRepository(
                         }
                     }
             }
-        }.await()
+        }
 
     }
 
-    suspend fun queryFeaturedHorrorBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
+    suspend fun queryFeaturedHorrorBooks(bookLanguage: Book.BookLanguage): Deferred<ArrayList<Book>> {
 
-        val featuredHorrorBooks = mutableListOf<Book>()
+        val featuredHorrorBooks = ArrayList<Book>()
 
         return async(CommonPool) {
-            suspendCoroutine<MutableList<Book>> { continuation ->
+            suspendCoroutine<ArrayList<Book>> { continuation ->
                 mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
                     .whereEqualTo("genre", Book.BookGenre.HORROR.toString())
                     .whereGreaterThan("rating", 8.0)
@@ -329,16 +396,16 @@ class DataRepository(
                         }
                     }
             }
-        }.await()
+        }
 
     }
 
-    suspend fun queryFeaturedSatireBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
+    suspend fun queryFeaturedSatireBooks(bookLanguage: Book.BookLanguage): Deferred<ArrayList<Book>> {
 
-        val featuredSatireBooks = mutableListOf<Book>()
+        val featuredSatireBooks = ArrayList<Book>()
 
         return async(CommonPool) {
-            suspendCoroutine<MutableList<Book>> { continuation ->
+            suspendCoroutine<ArrayList<Book>> { continuation ->
                 mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
                     .whereEqualTo("genre", Book.BookGenre.SATIRE.toString())
                     .whereGreaterThan("rating", 8.0)
@@ -361,16 +428,16 @@ class DataRepository(
                         }
                     }
             }
-        }.await()
+        }
 
     }
 
-    suspend fun queryFeaturedFantasyBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
+    suspend fun queryFeaturedFantasyBooks(bookLanguage: Book.BookLanguage): Deferred<ArrayList<Book>> {
 
-        val featuredFantasyBooks = mutableListOf<Book>()
+        val featuredFantasyBooks = ArrayList<Book>()
 
         return async(CommonPool) {
-            suspendCoroutine<MutableList<Book>> { continuation ->
+            suspendCoroutine<ArrayList<Book>> { continuation ->
                 mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
                     .whereEqualTo("genre", Book.BookGenre.FANTASY.toString())
                     .whereGreaterThan("rating", 8.0)
@@ -393,16 +460,16 @@ class DataRepository(
                         }
                     }
             }
-        }.await()
+        }
 
     }
 
-    suspend fun queryFeaturedMythologyBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
+    suspend fun queryFeaturedMythologyBooks(bookLanguage: Book.BookLanguage): Deferred<ArrayList<Book>> {
 
-        val featuredMythologyBooks = mutableListOf<Book>()
+        val featuredMythologyBooks = ArrayList<Book>()
 
         return async(CommonPool) {
-            suspendCoroutine<MutableList<Book>> { continuation ->
+            suspendCoroutine<ArrayList<Book>> { continuation ->
                 mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
                     .whereEqualTo("genre", Book.BookGenre.MYTHOLOGY.toString())
                     .whereGreaterThan("rating", 8.0)
@@ -425,16 +492,16 @@ class DataRepository(
                         }
                     }
             }
-        }.await()
+        }
 
     }
 
-    suspend fun queryFeaturedAdventureBooks(bookLanguage: Book.BookLanguage): MutableList<Book> {
+    suspend fun queryFeaturedAdventureBooks(bookLanguage: Book.BookLanguage): Deferred<ArrayList<Book>> {
 
-        val featuredAdventureBooks = mutableListOf<Book>()
+        val featuredAdventureBooks = ArrayList<Book>()
 
         return async(CommonPool) {
-            suspendCoroutine<MutableList<Book>> { continuation ->
+            suspendCoroutine<ArrayList<Book>> { continuation ->
                 mDatabaseInstance.collection(getBookCollectionRepository(bookLanguage))
                     .whereEqualTo("genre", Book.BookGenre.ADVENTURE.toString())
                     .whereGreaterThan("rating", 8.0)
@@ -457,7 +524,7 @@ class DataRepository(
                         }
                     }
             }
-        }.await()
+        }
 
     }
 
@@ -511,9 +578,9 @@ class DataRepository(
         userDataLocationReference.update("name", newName)
     }
 
-    fun updateUserArtisticName(newArtisticName: String) {
+    fun updateUserTwitterProfile(twitterProfile: String) {
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
-        userDataLocationReference.update("artisticName", newArtisticName)
+        userDataLocationReference.update("twitterProfile", twitterProfile)
     }
 
     fun updateUserAboutMe(newAboutMe: String) {
