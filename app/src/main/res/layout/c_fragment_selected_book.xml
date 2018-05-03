@@ -96,6 +96,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/book_title_text_view"
                 tools:text="Action"/>
 
+            <TextView
+                android:id="@+id/publication_date_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rating_image_view"
+                tools:text="Publication - 10/04/1991"/>
+
             <View
                 android:id="@+id/separator_view"
                 android:layout_width="0dp"
@@ -205,17 +218,29 @@
                 android:id="@+id/synopsis_text_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
+                app:layout_goneMarginTop="16dp"
                 android:textColor="@color/text_secondary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/publication_date_text_view"
+                tools:text="Em 1 de setembro de 2017, a Google Inc. anunciou seus planos de reestruturação como uma companhia de responsabilidade limitada, para Google LLC, como uma subsidiária integral da XXVI Holdings Inc., que é formada como uma subsidiária da Alphabet Inc. para deter o patrimônio de sua empresa outras subsidiárias, incluindo o Google LLC e outras apostas"/>
+
+            <TextView
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rating_image_view"
-                tools:text="Em 1 de setembro de 2017, a Google Inc. anunciou seus planos de reestruturação como uma companhia de responsabilidade limitada, para Google LLC, como uma subsidiária integral da XXVI Holdings Inc., que é formada como uma subsidiária da Alphabet Inc. para deter o patrimônio de sua empresa outras subsidiárias, incluindo o Google LLC e outras apostas"/>
-
+                app:layout_constraintTop_toBottomOf="@id/synopsis_text_view"
+                tools:text="Book has 4 chapters and a new on comes out every 30 days."/>
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>

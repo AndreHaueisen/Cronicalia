@@ -8,15 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.andrehaueisen.cronicalia.PARCELABLE_BOOK
 import com.andrehaueisen.cronicalia.PARCELABLE_BOOK_OPINIONS
+import com.andrehaueisen.cronicalia.PARCELABLE_SELECTED_BOOK
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.BookOpinion
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import java.util.*
 
-class SelectedBookFragment : Fragment() {
+
+class SelectedBookFragment : Fragment(), FeaturedBooksPresenterActivity.FeaturedBooksPresenterInterface {
 
     private lateinit var mBookPosterImageView: ImageView
     private lateinit var mBookCoverImageView: ImageView
@@ -24,6 +26,7 @@ class SelectedBookFragment : Fragment() {
     private lateinit var mBookGenreTextView: TextView
     private lateinit var mAuthorNameTextView: TextView
     private lateinit var mTwitterAccountTextView: TextView
+    private lateinit var mPublicationDateTextView: TextView
     private lateinit var mRatingTextView: TextView
     private lateinit var mReadingsTextView: TextView
     private lateinit var mIncomeTextView: TextView
@@ -40,9 +43,16 @@ class SelectedBookFragment : Fragment() {
             bundle?.let {
                 fragment.arguments = bundle
             }
-
             return fragment
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+
+        outState.putParcelable(PARCELABLE_SELECTED_BOOK, mSelectedBook)
+        outState.putParcelableArrayList(PARCELABLE_BOOK_OPINIONS, mBookOpinions)
+
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -55,14 +65,17 @@ class SelectedBookFragment : Fragment() {
         mBookGenreTextView = view.findViewById(R.id.genre_text_view)
         mAuthorNameTextView = view.findViewById(R.id.author_name_text_view)
         mTwitterAccountTextView = view.findViewById(R.id.twitter_account_text_view)
+        mPublicationDateTextView = view.findViewById(R.id.publication_date_text_view)
         mRatingTextView = view.findViewById(R.id.rating_text_view)
         mReadingsTextView = view.findViewById(R.id.readings_text_view)
         mIncomeTextView = view.findViewById(R.id.income_text_view)
         mSynopsisTextView = view.findViewById(R.id.synopsis_text_view)
 
-        mSelectedBook = arguments!!.getParcelable(PARCELABLE_BOOK)
-        if (arguments!!.containsKey(PARCELABLE_BOOK_OPINIONS))
-            mBookOpinions.addAll(arguments!!.getParcelableArrayList(PARCELABLE_BOOK_OPINIONS))
+        if(savedInstanceState != null){
+            mSelectedBook = savedInstanceState.getParcelable(PARCELABLE_SELECTED_BOOK)
+            mBookOpinions.clear()
+            mBookOpinions.addAll(savedInstanceState.getParcelableArrayList(PARCELABLE_BOOK_OPINIONS))
+        }
 
         initializeImages()
         initializeTexts()
@@ -105,9 +118,18 @@ class SelectedBookFragment : Fragment() {
         mIncomeTextView.text = getString(R.string.income_amount, mSelectedBook.income)
         mSynopsisTextView.text = mSelectedBook.synopsis
 
+        if(mSelectedBook.publicationDate != 0L) {
+            mPublicationDateTextView.text = getString(R.string.publication_date, mSelectedBook.convertRawDateToString(resources))
+        }
     }
 
-    fun refreshFragmentData(selectedBook: Book, newBookOpinions: ArrayList<BookOpinion>) {
+    override fun setInitialData(selectedBook: Book, newBookOpinions: ArrayList<BookOpinion>){
+        mSelectedBook = selectedBook
+        mBookOpinions.clear()
+        mBookOpinions.addAll(newBookOpinions)
+    }
+
+    override fun refreshFragmentData(selectedBook: Book, newBookOpinions: ArrayList<BookOpinion>) {
         mSelectedBook = selectedBook
         mBookOpinions.clear()
         mBookOpinions.addAll(newBookOpinions)

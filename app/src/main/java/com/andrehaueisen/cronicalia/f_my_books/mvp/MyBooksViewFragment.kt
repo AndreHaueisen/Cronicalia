@@ -61,7 +61,7 @@ class MyBooksViewFragment : Fragment(), MyBooksAdapter.BookClickListener {
 
         mMyCreationsRecyclerView.setHasFixedSize(true)
         mMyCreationsRecyclerView.adapter = MyBooksAdapter(this, getListOfBooks())
-        mMyCreationsRecyclerView.layoutManager = LinearLayoutManager(context)
+        mMyCreationsRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         launch(UI) {
             mUser.subscribeToUserUpdate().consumeEach {

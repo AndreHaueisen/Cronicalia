@@ -53,7 +53,6 @@ class FeaturedBooksAdapter(
         notifyItemInserted(layoutPosition)
     }
 
-
     override fun onBindViewHolder(holder: FeaturedBooksHolder, position: Int) {
         holder.bindCollectionsToView()
     }

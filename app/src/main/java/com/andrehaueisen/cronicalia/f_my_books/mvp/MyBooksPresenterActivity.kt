@@ -6,7 +6,6 @@ import android.support.v4.util.ArraySet
 import android.support.v7.app.AppCompatActivity
 import com.andrehaueisen.cronicalia.BACK_STACK_CREATIONS_TO_EDIT_TAG
 import com.andrehaueisen.cronicalia.FRAGMENT_EDIT_CREATION_TAG
-import com.andrehaueisen.cronicalia.PARCELABLE_BOOK
 import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.b_firebase.DataRepository
 import com.andrehaueisen.cronicalia.b_firebase.FileRepository
@@ -25,7 +24,8 @@ import org.koin.android.ext.android.inject
 
 class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.BookClickListener {
 
-    interface PresenterActivity {
+    interface MyBooksPresenterInterface {
+        fun initializeFragmentData(book: Book)
         fun refreshFragmentData(book: Book)
     }
 
@@ -39,32 +39,35 @@ class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.BookCl
 
         setContentView(R.layout.f_activity_my_books)
 
-        val fileRepository : FileRepository by inject()
-        val dataRepository : DataRepository by inject()
+        val fileRepository: FileRepository by inject()
+        val dataRepository: DataRepository by inject()
         mModel = MyBooksModel(fileRepository, dataRepository)
 
-        if(savedInstanceState == null) {
-            if (getSmallestScreenWidth() < 600) {
-                val myCreationsViewFragment = MyBooksViewFragment.newInstance()
-                addFragment(R.id.fragment_container, myCreationsViewFragment)
-            } else {
+        if (savedInstanceState == null) {
 
-                val bundle = Bundle()
-                bundle.putParcelable(PARCELABLE_BOOK, mUser.books.values.first { book -> book.bookPosition == 0 })
-                val editCreationFragment = MyBookEditViewFragment.newInstance(bundle)
+            val myCreationsViewFragment = MyBooksViewFragment.newInstance()
+            addFragment(R.id.fragment_container, myCreationsViewFragment)
+
+            if (getSmallestScreenWidth() >= 600) {
+
+                val editCreationFragment = MyBookEditViewFragment.newInstance()
+                editCreationFragment.initializeFragmentData(mUser.books.values.first { book -> book.bookPosition == 0 })
                 addFragment(R.id.edit_creation_fragment_container, editCreationFragment)
             }
         }
 
         navigation_bottom_view.setOnNavigationItemSelectedListener { menuItem ->
 
-            when(menuItem.itemId){
+            when (menuItem.itemId) {
                 R.id.action_featured -> {
                     startNewActivity(FeaturedBooksPresenterActivity::class.java, listOf(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
                 }
-                R.id.action_search -> {}
-                R.id.action_reading_collection -> {}
-                R.id.action_my_books -> {}
+                R.id.action_search -> {
+                }
+                R.id.action_reading_collection -> {
+                }
+                R.id.action_my_books -> {
+                }
                 R.id.action_account -> {
                     startNewActivity(ManageAccountPresenterActivity::class.java, listOf(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
                 }
@@ -123,7 +126,12 @@ class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.BookCl
         }*/
     }
 
-    fun notifySimpleBookEdition(newTitle: String, collectionLocation: String, bookKey: String, variableToUpdate: MyBooksModel.SimpleUpdateVariable){
+    fun notifySimpleBookEdition(
+        newTitle: String,
+        collectionLocation: String,
+        bookKey: String,
+        variableToUpdate: MyBooksModel.SimpleUpdateVariable
+    ) {
         mModel.simpleUpdateBook(newTitle, collectionLocation, bookKey, variableToUpdate)
     }
 
@@ -131,26 +139,27 @@ class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.BookCl
         return mModel.updateBookPoster(book)
     }
 
-    suspend fun updateBookCover(book: Book): Int{
+    suspend fun updateBookCover(book: Book): Int {
         return mModel.updateBookCover(book)
     }
 
-    suspend fun updateBookPdfs(book: Book, filesToBeDeleted: ArraySet<String>): SubscriptionReceiveChannel<Int>{
+    suspend fun updateBookPdfs(book: Book, filesToBeDeleted: ArraySet<String>): SubscriptionReceiveChannel<Int> {
         return mModel.updateBookPdfs(book, filesToBeDeleted)
     }
 
-    suspend fun updateBookPdfsReferences(book: Book): Int{
+    suspend fun updateBookPdfsReferences(book: Book): Int {
         return mModel.updateBookPdfsReferences(book)
     }
 
-    fun deleteBook(book: Book){
+    fun deleteBook(book: Book) {
         mModel.deleteBook(book)
     }
 
     override fun onBookClick(bookKey: String) {
 
-        if(getSmallestScreenWidth() >= 600){
-            val editCreationFragment = (supportFragmentManager.findFragmentById(R.id.edit_creation_fragment_container) as? MyBookEditViewFragment)
+        if (getSmallestScreenWidth() >= 600) {
+            val editCreationFragment =
+                (supportFragmentManager.findFragmentById(R.id.edit_creation_fragment_container) as? MyBookEditViewFragment)
 
             editCreationFragment?.let {
                 if (editCreationFragment.isVisible)
@@ -162,14 +171,15 @@ class MyBooksPresenterActivity : AppCompatActivity(), MyBooksViewFragment.BookCl
             var editCreationFragment = (supportFragmentManager.findFragmentByTag(FRAGMENT_EDIT_CREATION_TAG) as? MyBookEditViewFragment)
 
             if (editCreationFragment == null) {
-                val bundle = Bundle()
-                bundle.putParcelable(PARCELABLE_BOOK, mUser.books[bookKey]!!)
-                editCreationFragment = MyBookEditViewFragment.newInstance(bundle)
+                editCreationFragment = MyBookEditViewFragment.newInstance()
+                editCreationFragment.initializeFragmentData(mUser.books[bookKey]!!)
+
                 replaceFragment(
                     containerId = R.id.fragment_container,
                     fragment = editCreationFragment,
                     fragmentTag = FRAGMENT_EDIT_CREATION_TAG,
-                    stackTag = BACK_STACK_CREATIONS_TO_EDIT_TAG)
+                    stackTag = BACK_STACK_CREATIONS_TO_EDIT_TAG
+                )
 
             } else {
                 if (editCreationFragment.isVisible)

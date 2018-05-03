@@ -22,7 +22,6 @@ class FeaturedBooksFragment : Fragment(), BookAdapter.BookClickListener {
             bundle?.let {
                 fragment.arguments = bundle
             }
-
             return fragment
         }
     }

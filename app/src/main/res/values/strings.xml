@@ -108,6 +108,7 @@
     <string name="my_books">My Books</string>
     <string name="collection">Collection</string>
     <string name="account">Account</string>
+    <string name="publication_date">Publication - %1$s</string>
 
     <!--g_manage_account strings-->
     <string name="background_image">Background Image</string>

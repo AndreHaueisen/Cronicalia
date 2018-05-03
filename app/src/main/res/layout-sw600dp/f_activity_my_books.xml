@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
-        android:id="@+id/creations_fragment"
-        android:name="com.andrehaueisen.cronicalia.f_my_books.mvp.MyBooksViewFragment"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHorizontal_weight="2"
@@ -25,7 +24,7 @@
         app:layout_constraintBottom_toTopOf="@+id/navigation_bottom_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.30"
-        app:layout_constraintStart_toEndOf="@+id/creations_fragment"
+        app:layout_constraintStart_toEndOf="@+id/fragment_container"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <android.support.design.widget.BottomNavigationView

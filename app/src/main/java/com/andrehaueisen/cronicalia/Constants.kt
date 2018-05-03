@@ -44,6 +44,7 @@ const val UPLOAD_STATUS_FAIL = -1
 
 const val PARCELABLE_USER = "parcelable_user"
 const val PARCELABLE_BOOK = "parcelable_book"
+const val PARCELABLE_SELECTED_BOOK = "parcelable_selected_book"
 const val PARCELABLE_BOOK_OPINIONS = "parcelable_book_opinions"
 const val PARCELABLE_IS_SAVE_BUTTON_SHOWING = "parcelable_is_save_button_showing"
 const val PARCELABLE_FILES_TO_BE_DELETED = "parcelable_files_to_be_deleted"
@@ -62,6 +63,9 @@ const val PARCELABLE_HORROR_BOOK_LIST = "parcelable_horror_book_list"
 const val PARCELABLE_MYTHOLOGY_BOOK_LIST = "parcelable_mythology_book_list"
 const val PARCELABLE_ROMANCE_BOOK_LIST = "parcelable_romance_book_list"
 const val PARCELABLE_SATIRE_BOOK_LIST = "parcelable_satire_book_list"
+const val PARCELABLE_LAYOUT_POSITION = "parcelable_layout_position"
+const val PARCELABLE_SELECTED_BOOK_GENRE = "parcelable_selected_book_genre"
+const val PARCELABLE_SELECTED_BOOK_KEY = "parcelable_selected_book_key"
 
 const val SHARED_PREFERENCES = "com_andre_haueisen_shared_pref"
 const val SHARED_MESSAGE_TOKEN = "message_token"

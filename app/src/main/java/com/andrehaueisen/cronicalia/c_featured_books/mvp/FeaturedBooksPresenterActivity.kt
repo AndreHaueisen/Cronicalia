@@ -8,6 +8,7 @@ import com.andrehaueisen.cronicalia.b_firebase.DataRepository
 import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBooksPresenterActivity
 import com.andrehaueisen.cronicalia.g_manage_account.mvp.ManageAccountPresenterActivity
 import com.andrehaueisen.cronicalia.models.Book
+import com.andrehaueisen.cronicalia.models.BookOpinion
 import com.andrehaueisen.cronicalia.utils.extensions.addFragment
 import com.andrehaueisen.cronicalia.utils.extensions.getSmallestScreenWidth
 import com.andrehaueisen.cronicalia.utils.extensions.replaceFragment
@@ -16,8 +17,16 @@ import kotlinx.android.synthetic.main.c_activity_featured_books.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import org.koin.android.ext.android.inject
+import kotlin.coroutines.experimental.CoroutineContext
 
 class FeaturedBooksPresenterActivity : AppCompatActivity(), FeaturedBooksFragment.BookClickListener {
+
+    interface FeaturedBooksPresenterInterface {
+        fun setInitialData(selectedBook: Book, newBookOpinions: ArrayList<BookOpinion>)
+        fun refreshFragmentData(selectedBook: Book, newBookOpinions: ArrayList<BookOpinion>)
+    }
+
+    private val uiThread: CoroutineContext = UI
 
     private var mActionBooks = ArrayList<Book>()
     private var mAdventureBooks = ArrayList<Book>()
@@ -30,7 +39,10 @@ class FeaturedBooksPresenterActivity : AppCompatActivity(), FeaturedBooksFragmen
     private var mRomanceBooks = ArrayList<Book>()
     private var mSatireBooks = ArrayList<Book>()
     private lateinit var mModel: FeaturedBooksModel
-    private var mPreviousBookKey = ""
+    private var mLayoutPosition = 0
+
+    //Use these two only on tablets
+    private var mSelectedBookKey: String? = null
 
     override fun onSaveInstanceState(outState: Bundle) {
 
@@ -44,6 +56,8 @@ class FeaturedBooksPresenterActivity : AppCompatActivity(), FeaturedBooksFragmen
         outState.putParcelableArrayList(PARCELABLE_MYTHOLOGY_BOOK_LIST, mMythologyBooks)
         outState.putParcelableArrayList(PARCELABLE_ROMANCE_BOOK_LIST, mRomanceBooks)
         outState.putParcelableArrayList(PARCELABLE_SATIRE_BOOK_LIST, mSatireBooks)
+        outState.putInt(PARCELABLE_LAYOUT_POSITION, mLayoutPosition)
+        outState.putString(PARCELABLE_SELECTED_BOOK_KEY, mSelectedBookKey)
 
         super.onSaveInstanceState(outState)
     }
@@ -56,12 +70,6 @@ class FeaturedBooksPresenterActivity : AppCompatActivity(), FeaturedBooksFragmen
         val dataRepository: DataRepository by inject()
         mModel = FeaturedBooksModel(dataRepository)
 
-        if (savedInstanceState == null && getSmallestScreenWidth() < 600) {
-
-            val myCreationsViewFragment = FeaturedBooksFragment.newInstance()
-            addFragment(R.id.fragment_container, myCreationsViewFragment, tag = FRAGMENT_FEATURED_BOOKS_TAG)
-        }
-
         if (savedInstanceState != null) {
             mActionBooks = savedInstanceState.getParcelableArrayList(PARCELABLE_ACTION_BOOK_LIST)
             mAdventureBooks = savedInstanceState.getParcelableArrayList(PARCELABLE_ADVENTURE_BOOK_LIST)
@@ -73,8 +81,20 @@ class FeaturedBooksPresenterActivity : AppCompatActivity(), FeaturedBooksFragmen
             mMythologyBooks = savedInstanceState.getParcelableArrayList(PARCELABLE_MYTHOLOGY_BOOK_LIST)
             mRomanceBooks = savedInstanceState.getParcelableArrayList(PARCELABLE_ROMANCE_BOOK_LIST)
             mSatireBooks = savedInstanceState.getParcelableArrayList(PARCELABLE_SATIRE_BOOK_LIST)
+            mLayoutPosition = savedInstanceState.getInt(PARCELABLE_LAYOUT_POSITION)
+
+            if (getSmallestScreenWidth() >= 600) {
+                mSelectedBookKey = savedInstanceState.getString(PARCELABLE_SELECTED_BOOK_KEY)
+            }
+
         } else {
-            launch { getFeaturedBooksCollection() }
+            launch(uiThread) { getFeaturedBooksCollection() }
+        }
+
+        if (savedInstanceState == null) {
+
+            val myCreationsViewFragment = FeaturedBooksFragment.newInstance()
+            addFragment(R.id.fragment_container, myCreationsViewFragment, tag = FRAGMENT_FEATURED_BOOKS_TAG)
         }
 
         navigation_bottom_view.setOnNavigationItemSelectedListener { menuItem ->
@@ -101,58 +121,69 @@ class FeaturedBooksPresenterActivity : AppCompatActivity(), FeaturedBooksFragmen
 
     }
 
-    private suspend fun getFeaturedBooksCollection() {
+    private fun loadBookWithoutClick(isFirstLoad: Boolean = false) {
 
-        var layoutPosition = 0
-        launch(UI) {
+        if (getSmallestScreenWidth() >= 600) {
+            launch(uiThread) {
+                if (isFirstLoad) {
+
+                    val firstBook = mActionBooks[0]
+                    val firstBookOpinions = mModel.fetchOpinions(firstBook.generateBookKey()).await()
+
+                    val bundle = Bundle()
+                    bundle.putParcelable(PARCELABLE_BOOK, firstBook)
+                    bundle.putParcelableArrayList(PARCELABLE_BOOK_OPINIONS, firstBookOpinions)
+                    val selectedBookFragment = SelectedBookFragment.newInstance()
+                    addFragment(R.id.selected_book_fragment_container, selectedBookFragment)
+                    selectedBookFragment.setInitialData(firstBook, firstBookOpinions)
+
+                    mSelectedBookKey = firstBook.generateBookKey()
+
+                }
+            }
+        }
+    }
+
+    private suspend fun getFeaturedBooksCollection() {
+        mLayoutPosition = 0
+        launch(uiThread) {
 
             Book.BookGenre.values().forEach { bookGenre ->
                 when (bookGenre) {
 
                     Book.BookGenre.ACTION -> {
-                        if(getBooksAndNotifyWhenReady(mActionBooks, bookGenre, layoutPosition)) layoutPosition++
+                        if (getBooksAndNotifyWhenReady(mActionBooks, bookGenre, mLayoutPosition)) mLayoutPosition++
 
                         //shows the first book without click
-                        if (getSmallestScreenWidth() >= 600) {
-
-                            val firstBook = mActionBooks[0]
-                            val firstBookOpinions = mModel.fetchOpinions(firstBook.generateBookKey()).await()
-
-                            val bundle = Bundle()
-                            bundle.putParcelable(PARCELABLE_BOOK, firstBook)
-                            bundle.putParcelableArrayList(PARCELABLE_BOOK_OPINIONS, firstBookOpinions)
-                            val selectedBookFragment = SelectedBookFragment.newInstance(bundle)
-                            addFragment(R.id.selected_book_fragment_container, selectedBookFragment)
-
-                        }
+                        loadBookWithoutClick(isFirstLoad = true)
                     }
 
                     Book.BookGenre.ADVENTURE -> {
-                        if(getBooksAndNotifyWhenReady(mAdventureBooks, bookGenre, layoutPosition)) layoutPosition++
+                        if (getBooksAndNotifyWhenReady(mAdventureBooks, bookGenre, mLayoutPosition)) mLayoutPosition++
                     }
                     Book.BookGenre.COMEDY -> {
-                        if(getBooksAndNotifyWhenReady(mComedyBooks, bookGenre, layoutPosition)) layoutPosition++
+                        if (getBooksAndNotifyWhenReady(mComedyBooks, bookGenre, mLayoutPosition)) mLayoutPosition++
                     }
                     Book.BookGenre.DRAMA -> {
-                        if(getBooksAndNotifyWhenReady(mDramaBooks, bookGenre, layoutPosition)) layoutPosition++
+                        if (getBooksAndNotifyWhenReady(mDramaBooks, bookGenre, mLayoutPosition)) mLayoutPosition++
                     }
                     Book.BookGenre.FANTASY -> {
-                        if(getBooksAndNotifyWhenReady(mFantasyBooks, bookGenre, layoutPosition)) layoutPosition++
+                        if (getBooksAndNotifyWhenReady(mFantasyBooks, bookGenre, mLayoutPosition)) mLayoutPosition++
                     }
                     Book.BookGenre.FICTION -> {
-                        if(getBooksAndNotifyWhenReady(mFictionBooks, bookGenre, layoutPosition)) layoutPosition++
+                        if (getBooksAndNotifyWhenReady(mFictionBooks, bookGenre, mLayoutPosition)) mLayoutPosition++
                     }
                     Book.BookGenre.HORROR -> {
-                        if(getBooksAndNotifyWhenReady(mHorrorBooks, bookGenre, layoutPosition)) layoutPosition++
+                        if (getBooksAndNotifyWhenReady(mHorrorBooks, bookGenre, mLayoutPosition)) mLayoutPosition++
                     }
                     Book.BookGenre.MYTHOLOGY -> {
-                        if(getBooksAndNotifyWhenReady(mMythologyBooks, bookGenre, layoutPosition)) layoutPosition++
+                        if (getBooksAndNotifyWhenReady(mMythologyBooks, bookGenre, mLayoutPosition)) mLayoutPosition++
                     }
                     Book.BookGenre.ROMANCE -> {
-                        if(getBooksAndNotifyWhenReady(mRomanceBooks, bookGenre, layoutPosition)) layoutPosition++
+                        if (getBooksAndNotifyWhenReady(mRomanceBooks, bookGenre, mLayoutPosition)) mLayoutPosition++
                     }
                     Book.BookGenre.SATIRE -> {
-                        if(getBooksAndNotifyWhenReady(mSatireBooks, bookGenre, layoutPosition)) layoutPosition++
+                        if (getBooksAndNotifyWhenReady(mSatireBooks, bookGenre, mLayoutPosition)) mLayoutPosition++
                     }
                     Book.BookGenre.UNDEFINED -> {
                         return@forEach
@@ -169,10 +200,11 @@ class FeaturedBooksPresenterActivity : AppCompatActivity(), FeaturedBooksFragmen
      * Returns true if the list is not empty to signal layout position increment
      **/
 
-    private suspend fun getBooksAndNotifyWhenReady(booksList: ArrayList<Book>, bookGenre: Book.BookGenre, layoutPosition: Int): Boolean{
+    private suspend fun getBooksAndNotifyWhenReady(booksList: ArrayList<Book>, bookGenre: Book.BookGenre, layoutPosition: Int): Boolean {
         booksList.addAll(mModel.getFeaturedBooks(bookGenre).await())
         val featuredBooksFragment = (supportFragmentManager.findFragmentById(R.id.fragment_container) as? FeaturedBooksFragment)
-        if(booksList.isNotEmpty()){
+
+        if (booksList.isNotEmpty()) {
             featuredBooksFragment?.notifyBooksListReady(layoutPosition)
         }
 
@@ -181,23 +213,11 @@ class FeaturedBooksPresenterActivity : AppCompatActivity(), FeaturedBooksFragmen
 
     override fun onBookClick(bookGenre: Book.BookGenre, bookKey: String) {
 
-        val selectedBook = when(bookGenre){
-            Book.BookGenre.ACTION -> mActionBooks.find { book -> book.generateBookKey() == bookKey }
-            Book.BookGenre.ADVENTURE -> mAdventureBooks.find { book -> book.generateBookKey() == bookKey }
-            Book.BookGenre.COMEDY -> mComedyBooks.find { book -> book.generateBookKey() == bookKey }
-            Book.BookGenre.DRAMA -> mDramaBooks.find { book -> book.generateBookKey() == bookKey }
-            Book.BookGenre.FANTASY -> mFantasyBooks.find { book -> book.generateBookKey() == bookKey }
-            Book.BookGenre.FICTION -> mFictionBooks.find { book -> book.generateBookKey() == bookKey }
-            Book.BookGenre.HORROR -> mHorrorBooks.find { book -> book.generateBookKey() == bookKey }
-            Book.BookGenre.MYTHOLOGY -> mMythologyBooks.find { book -> book.generateBookKey() == bookKey }
-            Book.BookGenre.ROMANCE -> mRomanceBooks.find { book -> book.generateBookKey() == bookKey }
-            Book.BookGenre.SATIRE -> mSatireBooks.find { book -> book.generateBookKey() == bookKey }
-            Book.BookGenre.UNDEFINED -> mActionBooks.find { book -> book.generateBookKey() == bookKey }
-        }
+        val selectedBook = getSelectedBook(bookGenre, bookKey)
 
-        launch(UI) {
+        launch(uiThread) {
 
-            if (getSmallestScreenWidth() >= 600 && bookKey != mPreviousBookKey) {
+            if (getSmallestScreenWidth() >= 600 && bookKey != mSelectedBookKey) {
 
                 val bookOpinions = mModel.fetchOpinions(bookKey).await()
 
@@ -208,7 +228,8 @@ class FeaturedBooksPresenterActivity : AppCompatActivity(), FeaturedBooksFragmen
                     if (selectedBookFragment.isVisible)
                         selectedBookFragment.refreshFragmentData(selectedBook!!, bookOpinions)
                 }
-                mPreviousBookKey = bookKey
+
+                mSelectedBookKey = bookKey
 
             } else if (getSmallestScreenWidth() < 600) {
 
@@ -218,10 +239,9 @@ class FeaturedBooksPresenterActivity : AppCompatActivity(), FeaturedBooksFragmen
                     (supportFragmentManager.findFragmentByTag(FRAGMENT_BOOK_SELECTED_TAG) as? SelectedBookFragment)
 
                 if (selectedBookFragment == null) {
-                    val bundle = Bundle()
-                    bundle.putParcelable(PARCELABLE_BOOK, selectedBook!!)
-                    bundle.putParcelableArrayList(PARCELABLE_BOOK_OPINIONS, bookOpinions)
-                    selectedBookFragment = SelectedBookFragment.newInstance(bundle)
+
+                    selectedBookFragment = SelectedBookFragment.newInstance()
+                    selectedBookFragment.setInitialData(selectedBook!!, bookOpinions)
                     replaceFragment(
                         containerId = R.id.fragment_container,
                         fragment = selectedBookFragment,
@@ -239,6 +259,22 @@ class FeaturedBooksPresenterActivity : AppCompatActivity(), FeaturedBooksFragmen
                     selectedBookFragment.refreshFragmentData(selectedBook!!, bookOpinions)
                 }
             }
+        }
+    }
+
+    private fun getSelectedBook(bookGenre: Book.BookGenre, bookKey: String): Book? {
+        return when (bookGenre) {
+            Book.BookGenre.ACTION -> mActionBooks.find { book -> book.generateBookKey() == bookKey }
+            Book.BookGenre.ADVENTURE -> mAdventureBooks.find { book -> book.generateBookKey() == bookKey }
+            Book.BookGenre.COMEDY -> mComedyBooks.find { book -> book.generateBookKey() == bookKey }
+            Book.BookGenre.DRAMA -> mDramaBooks.find { book -> book.generateBookKey() == bookKey }
+            Book.BookGenre.FANTASY -> mFantasyBooks.find { book -> book.generateBookKey() == bookKey }
+            Book.BookGenre.FICTION -> mFictionBooks.find { book -> book.generateBookKey() == bookKey }
+            Book.BookGenre.HORROR -> mHorrorBooks.find { book -> book.generateBookKey() == bookKey }
+            Book.BookGenre.MYTHOLOGY -> mMythologyBooks.find { book -> book.generateBookKey() == bookKey }
+            Book.BookGenre.ROMANCE -> mRomanceBooks.find { book -> book.generateBookKey() == bookKey }
+            Book.BookGenre.SATIRE -> mSatireBooks.find { book -> book.generateBookKey() == bookKey }
+            Book.BookGenre.UNDEFINED -> mActionBooks.find { book -> book.generateBookKey() == bookKey }
         }
     }
 

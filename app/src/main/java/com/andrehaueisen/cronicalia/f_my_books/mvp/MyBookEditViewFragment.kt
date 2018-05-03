@@ -39,7 +39,7 @@ import java.io.File
 /**
  * Created by andre on 3/19/2018.
  */
-class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterActivity, EditTextDialog.BookChangesListener,
+class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.MyBooksPresenterInterface, EditTextDialog.BookChangesListener,
     DeleteBookAlertDialog.DeleteBookListener {
 
     private lateinit var mBookIsolated: Book
@@ -84,6 +84,7 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(PARCELABLE_BOOK, mBookIsolated)
         outState.putBoolean(PARCELABLE_IS_SAVE_BUTTON_SHOWING, mSaveFileChangesButton.visibility == View.VISIBLE)
         outState.putStringArray(PARCELABLE_FILES_TO_BE_DELETED, mFileUrisToBeDeleted.toTypedArray())
         super.onSaveInstanceState(outState)
@@ -92,8 +93,6 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.f_fragment_my_book_edit, container, false)
-
-        mBookIsolated = arguments?.getParcelable(PARCELABLE_BOOK)!!
 
         mPosterImageView = view.findViewById(R.id.poster_image_view)
         mCoverImageView = view.findViewById(R.id.cover_image_view)
@@ -112,6 +111,7 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
         mDeleteBookFab = view.findViewById(R.id.delete_book_fab)
 
         savedInstanceState?.let {
+            mBookIsolated = savedInstanceState.getParcelable(PARCELABLE_BOOK)
             mFileUrisToBeDeleted.addAll(savedInstanceState.getStringArray(PARCELABLE_FILES_TO_BE_DELETED))
 
             if (savedInstanceState.getBoolean(PARCELABLE_IS_SAVE_BUTTON_SHOWING))
@@ -479,6 +479,10 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.PresenterAct
         val bookKey = mBookIsolated.generateBookKey()
 
         (activity as? MyBooksPresenterActivity)?.notifySimpleBookEdition(newValue, collectionLocation, bookKey, variableToUpdate)
+    }
+
+    override fun initializeFragmentData(book: Book) {
+        mBookIsolated = book
     }
 
     override fun refreshFragmentData(book: Book) {

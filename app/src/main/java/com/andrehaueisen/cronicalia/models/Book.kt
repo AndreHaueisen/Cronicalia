@@ -1,11 +1,14 @@
 package com.andrehaueisen.cronicalia.models
 
 import android.content.Context
+import android.content.res.Resources
 import android.os.Parcel
 import android.os.Parcelable
+import android.support.v4.os.ConfigurationCompat
 import com.andrehaueisen.cronicalia.*
 import com.google.firebase.firestore.Exclude
 import java.io.Serializable
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -17,6 +20,7 @@ data class Book(
     var authorName: String? = null,
     var authorEmailId: String? = null,
     var authorTwitterAccount: String? = null,
+    var publicationDate: Long = 0,
     var genre: BookGenre = BookGenre.UNDEFINED,
     var bookPosition: Int = 0,
     var rating: Float = 0F,
@@ -28,6 +32,7 @@ data class Book(
     var remoteFullBookUri: String? = null,
     val remoteChapterTitles: ArrayList<String> = arrayListOf(),
     val remoteChapterUris: ArrayList<String> = arrayListOf(),
+    val lastChapterLaunchDate: Long = 0,
     var localCoverUri: String? = null,
     var localPosterUri: String? = null,
     var remoteCoverUri: String? = null,
@@ -35,8 +40,9 @@ data class Book(
     var isLaunchedComplete: Boolean = true,
     var isCurrentlyComplete: Boolean = true,
     var periodicity: ChapterPeriodicity = ChapterPeriodicity.NONE,
-    var synopsis: String? = null) : Serializable, Parcelable {
+    var synopsis: String? = null
 
+) : Serializable, Parcelable {
     enum class BookGenre {
         UNDEFINED,
         ACTION,
@@ -118,6 +124,15 @@ data class Book(
         }
     }
 
+    fun convertRawDateToString(resources: Resources): String{
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = publicationDate
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", ConfigurationCompat.getLocales(resources.configuration).get(0))
+
+        return dateFormat.format(calendar.time)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
@@ -127,6 +142,7 @@ data class Book(
                 authorName == that.authorName &&
                 authorEmailId == that.authorEmailId &&
                 authorTwitterAccount == that.authorTwitterAccount &&
+                publicationDate == that.publicationDate &&
                 genre == that.genre &&
                 bookPosition == that.bookPosition &&
                 rating == that.rating &&
@@ -138,6 +154,7 @@ data class Book(
                 remoteFullBookUri == that.remoteFullBookUri &&
                 remoteChapterTitles == that.remoteChapterTitles &&
                 remoteChapterUris == that.remoteChapterUris &&
+                lastChapterLaunchDate == that.lastChapterLaunchDate &&
                 localCoverUri == that.localCoverUri &&
                 localPosterUri == that.localPosterUri &&
                 remoteCoverUri == that.remoteCoverUri &&
@@ -154,6 +171,7 @@ data class Book(
             authorName,
             authorEmailId,
             authorTwitterAccount,
+            publicationDate,
             genre,
             bookPosition,
             rating,
@@ -165,6 +183,7 @@ data class Book(
             remoteFullBookUri,
             remoteChapterTitles,
             remoteChapterUris,
+            lastChapterLaunchDate,
             localCoverUri,
             localPosterUri,
             remoteCoverUri,
@@ -178,12 +197,27 @@ data class Book(
 
     @Exclude
     fun isBookTitleValid(context: Context): Boolean {
-        return !this.title.isNullOrBlank() && this.title!!.replace(" ", "").length <= context.resources.getInteger(R.integer.title_text_box_max_length)
+        return !this.title.isNullOrBlank() && this.title!!.replace(
+            " ",
+            ""
+        ).length <= context.resources.getInteger(R.integer.title_text_box_max_length)
     }
 
     @Exclude
     fun isSynopsisValid(context: Context): Boolean {
-        return !this.synopsis.isNullOrBlank() && this.synopsis!!.replace(" ", "").length <= context.resources.getInteger(R.integer.synopsis_text_box_max_length)
+        return !this.synopsis.isNullOrBlank() && this.synopsis!!.replace(
+            " ",
+            ""
+        ).length <= context.resources.getInteger(R.integer.synopsis_text_box_max_length)
+    }
+
+    override fun toString(): String {
+        var result = "\n"
+        remoteChapterUris.forEachIndexed { index, key ->
+            result += "${remoteChapterTitles[index]} : $key\n"
+        }
+
+        return result
     }
 
     constructor(source: Parcel) : this(
@@ -192,6 +226,7 @@ data class Book(
         source.readString(),
         source.readString(),
         source.readString(),
+        source.readLong(),
         BookGenre.values()[source.readInt()],
         source.readInt(),
         source.readFloat(),
@@ -203,6 +238,7 @@ data class Book(
         source.readString(),
         source.createStringArrayList(),
         source.createStringArrayList(),
+        source.readLong(),
         source.readString(),
         source.readString(),
         source.readString(),
@@ -213,15 +249,6 @@ data class Book(
         source.readString()
     )
 
-    override fun toString(): String {
-        var result = "\n"
-        remoteChapterUris.forEachIndexed{index, key ->
-            result += "${remoteChapterTitles[index]} : $key\n"
-        }
-
-        return result
-    }
-
     override fun describeContents() = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
@@ -230,6 +257,7 @@ data class Book(
         writeString(authorName)
         writeString(authorEmailId)
         writeString(authorTwitterAccount)
+        writeLong(publicationDate)
         writeInt(genre.ordinal)
         writeInt(bookPosition)
         writeFloat(rating)
@@ -241,12 +269,13 @@ data class Book(
         writeString(remoteFullBookUri)
         writeStringList(remoteChapterTitles)
         writeStringList(remoteChapterUris)
+        writeLong(lastChapterLaunchDate)
         writeString(localCoverUri)
         writeString(localPosterUri)
         writeString(remoteCoverUri)
         writeString(remotePosterUri)
         writeInt((if (isLaunchedComplete) 1 else 0))
-        writeInt((if(isCurrentlyComplete) 1 else 0))
+        writeInt((if (isCurrentlyComplete) 1 else 0))
         writeInt(periodicity.ordinal)
         writeString(synopsis)
     }

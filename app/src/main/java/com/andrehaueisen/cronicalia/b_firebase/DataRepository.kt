@@ -7,6 +7,7 @@ import com.andrehaueisen.cronicalia.i_login.LoginActivity
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.BookOpinion
 import com.andrehaueisen.cronicalia.models.User
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -37,9 +38,15 @@ class DataRepository(
     fun setBookDocuments(
         book: Book,
         continuation: Continuation<Int>? = null,
-        progressBroadcastChannel: ArrayBroadcastChannel<Int>? = null
+        progressBroadcastChannel: ArrayBroadcastChannel<Int>? = null,
+        updatePublicationDate: Boolean
     ) {
         val batch = mDatabaseInstance.batch()
+
+        if(updatePublicationDate){
+            book.publicationDate = Timestamp.now().approximateDate.time
+        }
+
         mUser.books[book.generateBookKey()] = book
 
         val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
