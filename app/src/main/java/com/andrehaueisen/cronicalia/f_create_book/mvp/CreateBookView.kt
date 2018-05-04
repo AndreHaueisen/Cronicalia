@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.Timestamp
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import es.dmoral.toasty.Toasty
@@ -149,6 +150,7 @@ class CreateBookView(
                 if (launch_full_book_radio_button.isChecked) {
                     if (!mBookIsolated.isLaunchedComplete) {
                         mBookIsolated.isLaunchedComplete = true
+                        mBookIsolated.isCurrentlyComplete = true
                         mBookIsolated.periodicity = Book.ChapterPeriodicity.NONE
                         periodicity_spinner.visibility = View.GONE
                         select_files_and_upload_button.text =
@@ -164,6 +166,7 @@ class CreateBookView(
 
                     if (mBookIsolated.isLaunchedComplete) {
                         mBookIsolated.isLaunchedComplete = false
+                        mBookIsolated.isCurrentlyComplete = false
                         mBookIsolated.localFullBookUri = null
                         mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_DAY
                         periodicity_spinner.setSelection(0)
@@ -473,16 +476,18 @@ class CreateBookView(
         initiateAdapter()
     }
 
-    override fun onSeriesChaptersPDFsFilesReady(filesUris: ArrayList<Uri>) {
+    override fun onPartialBookChaptersPDFsFilesReady(filesUris: ArrayList<Uri>) {
 
         filesUris.forEach { fileUri ->
             val initialTitle = mActivity.getFileTitle(fileUri)
             if (initialTitle != null) {
                 mBookIsolated.remoteChapterUris.add(fileUri.toString())
                 mBookIsolated.remoteChapterTitles.add(initialTitle.substringBefore('.'))
+                mBookIsolated.chaptersLaunchDates.add(Timestamp.now().toDate().time)
             } else {
                 mBookIsolated.remoteChapterUris.add(fileUri.toString())
                 mBookIsolated.remoteChapterTitles.add("")
+                mBookIsolated.chaptersLaunchDates.add(0L)
             }
         }
         initiateAdapter()

@@ -10,6 +10,7 @@ import com.google.firebase.firestore.Exclude
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by andre on 2/18/2018.
@@ -32,7 +33,7 @@ data class Book(
     var remoteFullBookUri: String? = null,
     val remoteChapterTitles: ArrayList<String> = arrayListOf(),
     val remoteChapterUris: ArrayList<String> = arrayListOf(),
-    val lastChapterLaunchDate: Long = 0,
+    val chaptersLaunchDates: ArrayList<Long> = arrayListOf(),
     var localCoverUri: String? = null,
     var localPosterUri: String? = null,
     var remoteCoverUri: String? = null,
@@ -124,13 +125,36 @@ data class Book(
         }
     }
 
-    fun convertRawDateToString(resources: Resources): String{
+    fun convertRawDateToString(resources: Resources): String {
 
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = publicationDate
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", ConfigurationCompat.getLocales(resources.configuration).get(0))
 
         return dateFormat.format(calendar.time)
+    }
+    
+    /**
+     * Returns the time remaining until next chapter launch.
+     * Returns negative if author is late.
+     * Returns null if isCurrentlyComplete == true
+     * **/
+    fun getTimeRemainingOnChapterScheduleInDays(): Int? {
+
+        return if(!isCurrentlyComplete) {
+            val calendar = Calendar.getInstance()
+            val today = calendar.timeInMillis
+            calendar.timeInMillis = chaptersLaunchDates.last()
+            val lastChapterPublication = calendar.timeInMillis
+
+            val timeElapsedSinceLastChapterInDays = ((today - lastChapterPublication) / (1000 * 60 * 60 * 24)).toInt()
+            val periodicitySchedule = periodicity.getPeriodicity()
+            (periodicitySchedule - timeElapsedSinceLastChapterInDays)
+
+        } else {
+            null
+        }
+
     }
 
     override fun equals(other: Any?): Boolean {
@@ -154,7 +178,7 @@ data class Book(
                 remoteFullBookUri == that.remoteFullBookUri &&
                 remoteChapterTitles == that.remoteChapterTitles &&
                 remoteChapterUris == that.remoteChapterUris &&
-                lastChapterLaunchDate == that.lastChapterLaunchDate &&
+                chaptersLaunchDates == that.chaptersLaunchDates &&
                 localCoverUri == that.localCoverUri &&
                 localPosterUri == that.localPosterUri &&
                 remoteCoverUri == that.remoteCoverUri &&
@@ -183,7 +207,7 @@ data class Book(
             remoteFullBookUri,
             remoteChapterTitles,
             remoteChapterUris,
-            lastChapterLaunchDate,
+            chaptersLaunchDates,
             localCoverUri,
             localPosterUri,
             remoteCoverUri,
@@ -238,7 +262,7 @@ data class Book(
         source.readString(),
         source.createStringArrayList(),
         source.createStringArrayList(),
-        source.readLong(),
+        ArrayList<Long>().apply { source.readList(this, Long::class.java.classLoader) },
         source.readString(),
         source.readString(),
         source.readString(),
@@ -269,7 +293,7 @@ data class Book(
         writeString(remoteFullBookUri)
         writeStringList(remoteChapterTitles)
         writeStringList(remoteChapterUris)
-        writeLong(lastChapterLaunchDate)
+        writeList(chaptersLaunchDates)
         writeString(localCoverUri)
         writeString(localPosterUri)
         writeString(remoteCoverUri)

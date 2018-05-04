@@ -61,7 +61,7 @@ class FileRepository(
 
                 }.addOnSuccessListener { taskSnapshot ->
                     book.remoteFullBookUri = taskSnapshot.downloadUrl?.toString()
-                    saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel, updatePublicationDate = true)
+                    createBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel)
 
                 }.addOnFailureListener { exception ->
                     launch {
@@ -99,7 +99,7 @@ class FileRepository(
                             book.remoteChapterTitles.set(index, chapterTitle)
                             book.remoteChapterUris.set(index, it.toString())
                         }
-                        saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel, updatePublicationDate = true)
+                        createBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel)
                     }.addOnFailureListener { exception ->
                         launch {
                             val errorCode = (exception as StorageException).errorCode
@@ -140,7 +140,7 @@ class FileRepository(
                     }
                 }.addOnSuccessListener { taskSnapshot ->
                     book.remoteCoverUri = taskSnapshot.downloadUrl?.toString()
-                    saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel, updatePublicationDate = true)
+                    createBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel)
                 }.addOnFailureListener { exception ->
                     launch {
                         val errorCode = (exception as StorageException).errorCode
@@ -173,7 +173,7 @@ class FileRepository(
                     }
                 }.addOnSuccessListener { taskSnapshot ->
                     book.remotePosterUri = taskSnapshot.downloadUrl?.toString()
-                    saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel, updatePublicationDate = true)
+                    createBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel)
                 }.addOnFailureListener { exception ->
                     launch {
                         val errorCode = (exception as StorageException).errorCode
@@ -220,7 +220,7 @@ class FileRepository(
 
                     uploadTask.addOnSuccessListener { taskSnapshot ->
                         book.remoteCoverUri = taskSnapshot.downloadUrl?.toString()
-                        dataRepository.setBookDocuments(book, continuation, updatePublicationDate = false)
+                        dataRepository.updateBook(book, continuation)
 
                     }.addOnFailureListener { exception ->
 
@@ -263,7 +263,7 @@ class FileRepository(
 
                     uploadTask.addOnSuccessListener { taskSnapshot ->
                         book.remotePosterUri = taskSnapshot.downloadUrl?.toString()
-                        dataRepository.setBookDocuments(book, continuation = continuation, updatePublicationDate = false)
+                        dataRepository.updateBook(book, continuation = continuation)
 
                     }.addOnFailureListener { exception ->
                         val errorCode = (exception as StorageException).errorCode
@@ -394,7 +394,7 @@ class FileRepository(
 
             }.addOnSuccessListener { taskSnapshot ->
                 book.remoteFullBookUri = taskSnapshot.downloadUrl?.toString()
-                saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel, updatePublicationDate = false)
+                updateBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel)
             }.addOnFailureListener { exception ->
                 launch {
                     val errorCode = (exception as StorageException).errorCode
@@ -437,7 +437,7 @@ class FileRepository(
                             book.remoteChapterTitles.set(index, chapterTitle)
                             book.remoteChapterUris.set(index, it.toString())
                         }
-                        saveBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel, updatePublicationDate = false)
+                        updateBookOnDatabaseIfAllFilesUploaded(maxTaskCount, book, dataRepository, progressBroadcastChannel)
                     }.addOnFailureListener { exception ->
                         launch {
                             val errorCode = (exception as StorageException).errorCode
@@ -454,7 +454,7 @@ class FileRepository(
             }
 
             if (!editionFound) {
-                saveBookOnDatabaseIfAllFilesUploaded(1, book, dataRepository, progressBroadcastChannel, updatePublicationDate = false)
+                updateBookOnDatabaseIfAllFilesUploaded(1, book, dataRepository, progressBroadcastChannel)
             }
         }
 
@@ -518,19 +518,33 @@ class FileRepository(
         return progressCap
     }
 
-    private fun saveBookOnDatabaseIfAllFilesUploaded(
+    private fun createBookOnDatabaseIfAllFilesUploaded(
         maxTasksNumber: Int,
         book: Book,
         dataRepository: DataRepository,
-        progressBroadcastChannel: ArrayBroadcastChannel<Int>?,
-        updatePublicationDate: Boolean = false
-    ) {
+        progressBroadcastChannel: ArrayBroadcastChannel<Int>?) {
 
         mTasksReadyCounter++
 
         Log.i("FileRepository", "Tasks counter: $mTasksReadyCounter Max Tasks: $maxTasksNumber")
         if (mTasksReadyCounter == maxTasksNumber) {
-            dataRepository.setBookDocuments(book, progressBroadcastChannel = progressBroadcastChannel, updatePublicationDate = updatePublicationDate)
+            dataRepository.createBook(book, progressBroadcastChannel = progressBroadcastChannel)
+            mTasksReadyCounter = 0
+        }
+
+    }
+
+    private fun updateBookOnDatabaseIfAllFilesUploaded(
+        maxTasksNumber: Int,
+        book: Book,
+        dataRepository: DataRepository,
+        progressBroadcastChannel: ArrayBroadcastChannel<Int>?) {
+
+        mTasksReadyCounter++
+
+        Log.i("FileRepository", "Tasks counter: $mTasksReadyCounter Max Tasks: $maxTasksNumber")
+        if (mTasksReadyCounter == maxTasksNumber) {
+            dataRepository.updateBook(book, progressBroadcastChannel = progressBroadcastChannel)
             mTasksReadyCounter = 0
         }
 

@@ -18,6 +18,7 @@ import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBookEditViewFragment
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.getFileTitle
+import com.google.firebase.Timestamp
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.item_chapter_file_edition.view.*
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
@@ -73,6 +74,7 @@ class EditionFilesAdapter(
             previousUri = mBookIsolated.remoteChapterUris[mLastClickedLayoutPosition]
             mBookIsolated.remoteChapterUris[mLastClickedLayoutPosition] = uri.toString()
             mBookIsolated.remoteChapterTitles[mLastClickedLayoutPosition] = newFileTitle!!
+            mBookIsolated.chaptersLaunchDates[mLastClickedLayoutPosition] = Timestamp.now().toDate().time
 
             notifyItemChanged(mLastClickedLayoutPosition)
             mLastClickedViewHolder!!.mTitleTextInput!!.extended_edition_edit_text.setText(newFileTitle)
@@ -90,16 +92,11 @@ class EditionFilesAdapter(
 
         mBookIsolated.remoteChapterUris.add(uri.toString())
         mBookIsolated.remoteChapterTitles.add(newFileTitle!!)
+        mBookIsolated.chaptersLaunchDates.add(Timestamp.now().toDate().time)
 
         notifyItemInserted(mBookIsolated.remoteChapterTitles.size)
         mFragment.notifyChangeOnFileDetected()
         Log.d(LOG_TAG, mBookIsolated.toString())
-    }
-
-    fun clearData() {
-        mBookIsolated.remoteChapterUris.clear()
-        mBookIsolated.remoteChapterTitles.clear()
-        notifyDataSetChanged()
     }
 
     fun areChapterTitlesValid(): Boolean {
@@ -210,6 +207,7 @@ class EditionFilesAdapter(
 
             mBookIsolated.remoteChapterUris.removeAt(layoutPosition)
             mBookIsolated.remoteChapterTitles.removeAt(layoutPosition)
+            mBookIsolated.chaptersLaunchDates.removeAt(layoutPosition)
 
             if(layoutPosition + 1 < itemCount) {
                 val bellowClickedViewHolder = mRecyclerView.findViewHolderForLayoutPosition(layoutPosition + 1) as SelectedFileHolder
@@ -245,12 +243,16 @@ class EditionFilesAdapter(
 
             val ascendingUri = mBookIsolated.remoteChapterUris[layoutPosition]
             val ascendingTitle =  mBookIsolated.remoteChapterTitles[layoutPosition]
+            val ascendingDate = mBookIsolated.chaptersLaunchDates[layoutPosition]
 
             mBookIsolated.remoteChapterUris[layoutPosition] = mBookIsolated.remoteChapterUris[layoutPosition - 1]
             mBookIsolated.remoteChapterUris[layoutPosition - 1] = ascendingUri
 
-            mBookIsolated.remoteChapterTitles[layoutPosition] =  mBookIsolated.remoteChapterTitles[layoutPosition - 1]
+            mBookIsolated.remoteChapterTitles[layoutPosition] = mBookIsolated.remoteChapterTitles[layoutPosition - 1]
             mBookIsolated.remoteChapterTitles[layoutPosition - 1] = ascendingTitle
+
+            mBookIsolated.chaptersLaunchDates[layoutPosition] = mBookIsolated.chaptersLaunchDates[layoutPosition - 1]
+            mBookIsolated.chaptersLaunchDates[layoutPosition - 1] = ascendingDate
 
             mFragment.notifyChangeOnFileDetected()
 

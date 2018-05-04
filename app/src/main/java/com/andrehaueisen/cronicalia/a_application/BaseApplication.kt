@@ -10,7 +10,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.experimental.channels.ArrayBroadcastChannel
 import org.koin.android.ext.android.startKoin
 import org.koin.dsl.module.Module
 
@@ -33,13 +32,6 @@ class BaseApplication : Application() {
         databaseInstance.firestoreSettings = settings
         val globalUser = User()
 
-        val globalProgressBroadcastChannel = ArrayBroadcastChannel<Int?>(4)
-        val globalProgressReceiver = globalProgressBroadcastChannel.openSubscription()
-
-       /* val contextModule: Module = org.koin.dsl.module.applicationContext{
-            bean { this@BaseApplication.applicationContext }
-        }*/
-
         val applicationModule: Module = org.koin.dsl.module.applicationContext {
 
             bean { FileRepository(storageInstance, globalUser) }
@@ -49,8 +41,7 @@ class BaseApplication : Application() {
 
         }
 
-        startKoin(this, listOf(/*contextModule,*/ applicationModule))
-
+        startKoin(this, listOf(applicationModule) )
     }
 
 }

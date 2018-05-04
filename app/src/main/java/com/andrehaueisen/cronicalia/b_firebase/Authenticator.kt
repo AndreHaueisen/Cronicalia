@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.util.Log
 import com.andrehaueisen.cronicalia.*
+import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.encodeEmail
 import com.andrehaueisen.cronicalia.utils.extensions.pullStringFromSharedPreferences

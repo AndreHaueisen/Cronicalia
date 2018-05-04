@@ -54,7 +54,7 @@
         android:layout_marginStart="16dp"
         android:src="@drawable/ic_eye_24dp"
         android:tint="@color/text_tertiary"
-        app:layout_constraintBottom_toBottomOf="@+id/view2"
+        app:layout_constraintBottom_toTopOf="@+id/publication_date_text_view"
         app:layout_constraintStart_toStartOf="@+id/view2"/>
 
     <TextView
@@ -141,7 +141,7 @@
         android:ellipsize="end"
         android:maxLines="3"
         android:textColor="@color/text_secondary"
-        app:layout_constraintBottom_toTopOf="@+id/publication_date_text_view"
+        app:layout_constraintBottom_toTopOf="@+id/readings_image_view"
         app:layout_constraintEnd_toEndOf="@+id/title_text_view"
         app:layout_constraintStart_toStartOf="@+id/title_text_view"
         app:layout_constraintTop_toBottomOf="@+id/title_text_view"/>
@@ -151,12 +151,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/text_tertiary"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/rating_image_view"
-        app:layout_constraintEnd_toEndOf="@+id/publication_date_text_view"
-        app:layout_constraintStart_toStartOf="@+id/publication_date_text_view"
+        app:layout_constraintBottom_toBottomOf="@+id/view2"
+        app:layout_constraintEnd_toEndOf="@+id/view2"
         app:layout_goneMarginTop="16dp"
         tools:text="Book is complete"/>
 
@@ -165,10 +164,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
+        android:layout_marginEnd="16dp"
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/book_status_text_view"
-        app:layout_constraintEnd_toEndOf="@+id/synopsis_text_view"
-        app:layout_constraintStart_toStartOf="@+id/synopsis_text_view"
+        app:layout_constraintEnd_toEndOf="@+id/view2"
         tools:text="@string/publication_date"/>
 
     <Button

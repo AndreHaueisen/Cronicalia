@@ -62,6 +62,13 @@
     <string name="opinions">Opinions</string>
     <string name="edit">Edit</string>
 
+    <plurals name="on_schedule_notice">
+        <item quantity="zero">According to your plans, you should upload a new chapter in less than a day</item>
+        <item quantity="one">According to your plans, you should upload a new chapter tomorrow</item>
+        <item quantity="other">According to your plans, you should upload a new chapter in %1$d days</item>
+    </plurals>
+    <string name="behind_on_schedule_notice">You are behind on schedule. Add a new chapter and make your fans happy</string>
+
     <plurals name="chapter_number">
         <item quantity="zero">0 chapters</item>
         <item quantity="one">%1$d chapter</item>
@@ -108,7 +115,7 @@
     <string name="my_books">My Books</string>
     <string name="collection">Collection</string>
     <string name="account">Account</string>
-    <string name="publication_date">Publication - %1$s</string>
+    <string name="publication_date">Publication \u0020 %1$s</string>
 
     <!--g_manage_account strings-->
     <string name="background_image">Background Image</string>

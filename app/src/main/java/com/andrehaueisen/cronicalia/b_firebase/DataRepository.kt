@@ -35,17 +35,38 @@ class DataRepository(
     /**
      * Updates full book on user collection and on book collection. Creates if book does not exists
      */
-    fun setBookDocuments(
+    fun createBook(
         book: Book,
-        continuation: Continuation<Int>? = null,
-        progressBroadcastChannel: ArrayBroadcastChannel<Int>? = null,
-        updatePublicationDate: Boolean
-    ) {
+        progressBroadcastChannel: ArrayBroadcastChannel<Int>? = null) {
         val batch = mDatabaseInstance.batch()
 
-        if(updatePublicationDate){
-            book.publicationDate = Timestamp.now().approximateDate.time
-        }
+        book.publicationDate = Timestamp.now().toDate().time
+
+        mUser.books[book.generateBookKey()] = book
+
+        val userDataLocationReference = mDatabaseInstance.collection(COLLECTION_USERS).document(mUser.encodedEmail!!)
+        val booksLocationReference = mDatabaseInstance.collection(book.getDatabaseCollectionLocation()).document(book.generateBookKey())
+
+        batch.set(userDataLocationReference, mUser, SetOptions.merge())
+        batch.set(booksLocationReference, book, SetOptions.merge())
+
+        batch
+            .commit()
+            .addOnSuccessListener { _ ->
+                progressBroadcastChannel?.let { launch(UI) { it.send(UPLOAD_STATUS_OK) } }
+            }
+            .addOnFailureListener({ _ ->
+                progressBroadcastChannel?.let { launch(UI) { it.send(UPLOAD_STATUS_FAIL) } }
+            })
+
+    }
+
+    fun updateBook(
+        book: Book,
+        continuation: Continuation<Int>? = null,
+        progressBroadcastChannel: ArrayBroadcastChannel<Int>? = null) {
+
+        val batch = mDatabaseInstance.batch()
 
         mUser.books[book.generateBookKey()] = book
 

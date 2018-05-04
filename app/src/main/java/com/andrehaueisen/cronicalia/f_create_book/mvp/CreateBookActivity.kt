@@ -27,7 +27,7 @@ class CreateBookActivity : AppCompatActivity() {
     interface BookResources {
         fun onImageReady(pictureUri: Uri)
         fun onFullBookPDFFileReady(fileUri: Uri)
-        fun onSeriesChaptersPDFsFilesReady(filesUris: ArrayList<Uri>)
+        fun onPartialBookChaptersPDFsFilesReady(filesUris: ArrayList<Uri>)
         fun onError(exception: Exception)
     }
 
@@ -76,10 +76,10 @@ class CreateBookActivity : AppCompatActivity() {
                             (0 until (data.clipData.itemCount)).mapTo(filesUris) { index ->
                                 data.clipData.getItemAt(index).uri
                             }
-                            mBookView.onSeriesChaptersPDFsFilesReady(filesUris)
+                            mBookView.onPartialBookChaptersPDFsFilesReady(filesUris)
                         //Has selected one chapter
                         } else {
-                            mBookView.onSeriesChaptersPDFsFilesReady(arrayListOf(data.data))
+                            mBookView.onPartialBookChaptersPDFsFilesReady(arrayListOf(data.data))
                         }
                     }
 

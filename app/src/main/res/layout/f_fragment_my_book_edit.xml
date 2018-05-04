@@ -117,60 +117,55 @@
                         android:id="@+id/readings_image_view"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_marginBottom="4dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
                         android:src="@drawable/ic_eye_24dp"
-                        app:layout_constraintBottom_toTopOf="@+id/readings_text_view"
-                        app:layout_constraintEnd_toEndOf="@+id/readings_text_view"
-                        app:layout_constraintStart_toStartOf="@+id/readings_text_view"/>
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/synopsis_text_view"
+                        app:layout_constraintVertical_bias="1.0"/>
 
                     <TextView
                         android:id="@+id/readings_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="8dp"
                         android:textColor="@color/colorAccent"
                         android:textSize="18sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@+id/readings_image_view"
+                        app:layout_constraintStart_toEndOf="@+id/readings_image_view"
+                        app:layout_constraintTop_toTopOf="@+id/readings_image_view"
                         tools:text="10k"/>
 
                     <ImageView
                         android:id="@+id/rating_image_view"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_marginBottom="4dp"
-                        android:layout_marginTop="16dp"
                         android:src="@drawable/ic_star_24dp"
-                        app:layout_constraintBottom_toTopOf="@+id/rating_text_view"
-                        app:layout_constraintEnd_toEndOf="@+id/rating_text_view"
-                        app:layout_constraintStart_toStartOf="@+id/rating_text_view"
-                        app:layout_constraintTop_toBottomOf="@+id/synopsis_text_view"/>
+                        app:layout_constraintEnd_toStartOf="@+id/income_image_view"
+                        app:layout_constraintHorizontal_bias="0.47"
+                        app:layout_constraintStart_toEndOf="@+id/readings_text_view"
+                        app:layout_constraintTop_toTopOf="@+id/readings_image_view"/>
 
                     <TextView
                         android:id="@+id/rating_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="4dp"
                         android:textColor="@color/colorAccent"
                         android:textSize="18sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/income_text_view"
-                        app:layout_constraintStart_toEndOf="@+id/readings_text_view"
+                        app:layout_constraintStart_toEndOf="@+id/rating_image_view"
+                        app:layout_constraintTop_toTopOf="@+id/readings_image_view"
                         tools:text="9.5"/>
 
                     <ImageView
                         android:id="@+id/income_image_view"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_marginBottom="4dp"
                         android:src="@drawable/ic_money_24dp"
-                        app:layout_constraintBottom_toTopOf="@+id/income_text_view"
-                        app:layout_constraintEnd_toEndOf="@+id/income_text_view"
-                        app:layout_constraintStart_toStartOf="@+id/income_text_view"
-                        />
+                        app:layout_constraintEnd_toStartOf="@+id/income_text_view"
+                        app:layout_constraintTop_toTopOf="@+id/readings_image_view"/>
 
                     <TextView
                         android:id="@+id/income_text_view"
@@ -182,7 +177,7 @@
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        tools:text="$500"/>
+                        tools:text="500"/>
 
                     <android.support.constraint.Guideline
                         android:id="@+id/guideline4"
@@ -286,13 +281,27 @@
                 android:id="@+id/add_chapter_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
+                app:layout_goneMarginBottom="8dp"
                 android:src="@drawable/ic_add_24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/schedule_status_text_view"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/schedule_status_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="You are behind on schedule. Add a new chapter and make your fans happy"/>
 
             <android.support.constraint.Guideline
                 android:id="@+id/guideline3"

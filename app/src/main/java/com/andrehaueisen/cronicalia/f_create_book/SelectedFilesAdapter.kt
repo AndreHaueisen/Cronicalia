@@ -5,7 +5,6 @@ import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,6 +54,7 @@ class SelectedFilesAdapter(
     fun clearData() {
         mBookIsolated.remoteChapterTitles.clear()
         mBookIsolated.remoteChapterUris.clear()
+        mBookIsolated.chaptersLaunchDates.clear()
 
         notifyDataSetChanged()
     }
@@ -145,6 +145,7 @@ class SelectedFilesAdapter(
 
             val ascendingUri = mBookIsolated.remoteChapterUris[layoutPosition]
             val ascendingTitle = mBookIsolated.remoteChapterTitles[layoutPosition]
+            val ascendingDate = mBookIsolated.chaptersLaunchDates[layoutPosition]
 
             mBookIsolated.remoteChapterUris[layoutPosition] = mBookIsolated.remoteChapterUris[layoutPosition - 1]
             mBookIsolated.remoteChapterUris[layoutPosition - 1] = ascendingUri
@@ -152,8 +153,9 @@ class SelectedFilesAdapter(
             mBookIsolated.remoteChapterTitles[layoutPosition] = mBookIsolated.remoteChapterTitles[layoutPosition - 1]
             mBookIsolated.remoteChapterTitles[layoutPosition - 1] = ascendingTitle
 
-            Log.d("SelectedFilesAdapter", mBookIsolated.remoteChapterUris.toArray().contentToString())
-            Log.d("SelectedFilesAdapter", mBookIsolated.remoteChapterTitles.toArray().contentToString())
+            mBookIsolated.chaptersLaunchDates[layoutPosition] = mBookIsolated.chaptersLaunchDates[layoutPosition - 1]
+            mBookIsolated.chaptersLaunchDates[layoutPosition - 1] = ascendingDate
+
         }
 
     }

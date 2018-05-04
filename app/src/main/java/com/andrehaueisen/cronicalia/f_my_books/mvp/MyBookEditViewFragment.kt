@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.util.ArraySet
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -57,6 +58,7 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.MyBooksPrese
     private lateinit var mPeriodicitySpinner: Spinner
     private lateinit var mChaptersRecyclerView: RecyclerView
     private lateinit var mAddChapterFab: FloatingActionButton
+    private lateinit var mScheduleNotice: TextView
     private lateinit var mSaveFileChangesButton: Button
     private lateinit var mDeleteBookFab: Button
 
@@ -107,6 +109,7 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.MyBooksPrese
         mPeriodicitySpinner = view.findViewById(R.id.periodicity_spinner)
         mChaptersRecyclerView = view.findViewById(R.id.chapters_recycler_view)
         mAddChapterFab = view.findViewById(R.id.add_chapter_fab)
+        mScheduleNotice = view.findViewById(R.id.schedule_status_text_view)
         mSaveFileChangesButton = view.findViewById(R.id.save_file_changes_button)
         mDeleteBookFab = view.findViewById(R.id.delete_book_fab)
 
@@ -131,6 +134,7 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.MyBooksPrese
         initiateSpinners()
         initiateRecyclerView()
         initiateButtons()
+        initiateScheduleTextView()
         bindDataToViews()
         setSpinnersListener()
 
@@ -259,15 +263,15 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.MyBooksPrese
 
                 launch(UI) {
                     val receiveChannel = (requireActivity() as MyBooksPresenterActivity).updateBookPdfs(mBookIsolated, mFileUrisToBeDeleted)
-                        receiveChannel.consumeEach { progress ->
-                            progress.let {
-                                launch(UI) {
-                                    uploadDialog.onUploadStateChanged(it, receiveChannel)
-                                    if (it == UPLOAD_STATUS_OK)
-                                        mSaveFileChangesButton.visibility = View.INVISIBLE
-                                }
+                    receiveChannel.consumeEach { progress ->
+                        progress.let {
+                            launch(UI) {
+                                uploadDialog.onUploadStateChanged(it, receiveChannel)
+                                if (it == UPLOAD_STATUS_OK)
+                                    mSaveFileChangesButton.visibility = View.INVISIBLE
                             }
                         }
+                    }
                 }
             }
         }
@@ -276,6 +280,40 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.MyBooksPrese
             val deleteBookDialog = DeleteBookAlertDialog()
             deleteBookDialog.setTargetFragment(this, 0)
             deleteBookDialog.show(fragmentManager, DIALOG_DELETE_BOOK_TAG)
+        }
+    }
+
+    private fun initiateScheduleTextView() {
+
+        fun setTextViewDrawable(textView: TextView, color: Int) {
+
+            val textDrawable = resources.getDrawable(R.drawable.ic_arrow_upward_24dp, null)
+            textDrawable.setTint(color)
+            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, textDrawable, null, null)
+        }
+
+        if (!mBookIsolated.isCurrentlyComplete) {
+
+            mScheduleNotice.visibility = View.VISIBLE
+
+            val timeRemainingOnSchedule = mBookIsolated.getTimeRemainingOnChapterScheduleInDays()!!
+
+            if (timeRemainingOnSchedule > 0) {
+                val discreteColor = ResourcesCompat.getColor(resources, R.color.text_tertiary, null)
+                mScheduleNotice.text =
+                        resources.getQuantityString(R.plurals.on_schedule_notice, timeRemainingOnSchedule, timeRemainingOnSchedule)
+                mScheduleNotice.setTextColor(discreteColor)
+
+            } else {
+                val accentColor = ResourcesCompat.getColor(resources, R.color.colorAccent, null)
+                mScheduleNotice.text = getString(R.string.behind_on_schedule_notice)
+                mScheduleNotice.setTextColor(accentColor)
+                setTextViewDrawable(mScheduleNotice, accentColor)
+
+            }
+
+        } else {
+            mScheduleNotice.visibility = View.GONE
         }
     }
 
@@ -348,7 +386,6 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.MyBooksPrese
                     }
                 }
 
-
         mPeriodicitySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(adapter: AdapterView<*>?) {
                 mBookIsolated.periodicity = Book.ChapterPeriodicity.NONE
@@ -364,6 +401,7 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.MyBooksPrese
                     5 -> mBookIsolated.periodicity = Book.ChapterPeriodicity.EVERY_42_DAYS
                 }
 
+                initiateScheduleTextView()
                 notifySimpleChange(mBookIsolated.periodicity.toString(), MyBooksModel.SimpleUpdateVariable.PERIODICITY)
             }
         }
