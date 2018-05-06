@@ -5,16 +5,13 @@ import android.os.Bundle
 import com.andrehaueisen.cronicalia.*
 import com.andrehaueisen.cronicalia.g_manage_account.EditTextDialog
 import com.andrehaueisen.cronicalia.models.User
-import com.andrehaueisen.cronicalia.utils.extensions.createUserDirectory
-import com.andrehaueisen.cronicalia.utils.extensions.isOnline
-import com.andrehaueisen.cronicalia.utils.extensions.showRequestFeedback
+import com.andrehaueisen.cronicalia.utils.extensions.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.g_activity_manage_account.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -107,7 +104,7 @@ class ManageAccountView(private val mActivity: ManageAccountPresenterActivity, u
     private fun initiateTwitterProfileView() {
         mActivity.twitter_locator_text_view.text =
                 if(mUserIsolated.twitterProfile != null)
-                    "@${mUserIsolated.twitterProfile}"
+                    mUserIsolated.twitterProfile
                 else
                     mActivity.getString(R.string.twitter_profile_instructions)
 
@@ -150,9 +147,9 @@ class ManageAccountView(private val mActivity: ManageAccountPresenterActivity, u
             }
 
             if (isOnline()) {
-                Toasty.info(this, mActivity.getString(R.string.updating_image)).show()
+                mActivity.showInfoMessage(R.string.updating_image)
             } else {
-                Toasty.info(this, getString(R.string.update_begin_once_internet_available)).show()
+                mActivity.showInfoMessage(R.string.update_begin_once_internet_available)
             }
         }
 
@@ -230,6 +227,6 @@ class ManageAccountView(private val mActivity: ManageAccountPresenterActivity, u
     }
 
     fun onError(errorDescription: String) {
-        Toasty.error(mActivity, errorDescription).show()
+        mActivity.showErrorMessage(R.string.unknown_error)
     }
 }

@@ -15,7 +15,10 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
+import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.SHARED_PREFERENCES
+import com.andrognito.flashbar.Flashbar
+import com.andrognito.flashbar.anim.FlashAnim
 import java.io.File
 
 
@@ -53,6 +56,232 @@ fun Activity.getSmallestScreenWidth(): Float{
     val heightDp = metrics.heightPixels / scaleFactor
 
     return Math.min(widthDp, heightDp)
+}
+
+fun Activity.showErrorMessage(
+    negativeMessageId: Int,
+    shouldFinishActivity: Boolean = false,
+    barDuration: Long = Flashbar.DURATION_LONG
+) {
+
+    Flashbar.Builder(this)
+        .gravity(Flashbar.Gravity.BOTTOM)
+        .backgroundColorRes(R.color.colorPrimary)
+        .enableSwipeToDismiss()
+        .duration(barDuration)
+        .title(R.string.fail)
+        .message(negativeMessageId)
+        .showIcon()
+        .icon(R.drawable.ic_error_24dp)
+        .iconColorFilterRes(android.R.color.holo_red_light)
+        .iconAnimation(
+            FlashAnim.with(this)
+                .animateIcon()
+                .alpha()
+                .duration(500)
+                .accelerate()
+        )
+        .enterAnimation(
+            FlashAnim.with(this)
+                .animateBar()
+                .duration(750)
+                .alpha()
+                .overshoot()
+        )
+        .exitAnimation(
+            FlashAnim.with(this)
+                .animateBar()
+                .duration(400)
+                .accelerateDecelerate()
+        )
+        .barDismissListener(object : Flashbar.OnBarDismissListener {
+            override fun onDismissing(bar: Flashbar, isSwiped: Boolean) {}
+
+            override fun onDismissProgress(bar: Flashbar, progress: Float) {}
+
+            override fun onDismissed(bar: Flashbar, event: Flashbar.DismissEvent) {
+                if (shouldFinishActivity) this@showErrorMessage.finish()
+            }
+        })
+        .build()
+        .show()
+}
+
+fun <T : Activity> Activity.showErrorMessageAndStartActivity(
+    negativeMessageId: Int,
+    shouldFinishActivity: Boolean = false,
+    barDuration: Long = Flashbar.DURATION_LONG,
+    classToInit: Class<T>? = null
+) {
+
+    Flashbar.Builder(this)
+        .gravity(Flashbar.Gravity.BOTTOM)
+        .backgroundColorRes(R.color.colorPrimary)
+        .enableSwipeToDismiss()
+        .duration(barDuration)
+        .title(R.string.fail)
+        .message(negativeMessageId)
+        .showIcon()
+        .icon(R.drawable.ic_error_24dp)
+        .iconColorFilterRes(android.R.color.holo_red_light)
+        .iconAnimation(
+            FlashAnim.with(this)
+                .animateIcon()
+                .alpha()
+                .duration(500)
+                .accelerate()
+        )
+        .enterAnimation(
+            FlashAnim.with(this)
+                .animateBar()
+                .duration(750)
+                .alpha()
+                .overshoot()
+        )
+        .exitAnimation(
+            FlashAnim.with(this)
+                .animateBar()
+                .duration(400)
+                .accelerateDecelerate()
+        )
+        .barDismissListener(object : Flashbar.OnBarDismissListener {
+            override fun onDismissing(bar: Flashbar, isSwiped: Boolean) {}
+
+            override fun onDismissProgress(bar: Flashbar, progress: Float) {}
+
+            override fun onDismissed(bar: Flashbar, event: Flashbar.DismissEvent) {
+                classToInit?.let { this@showErrorMessageAndStartActivity.startNewActivity(classToInit) }
+
+                if (shouldFinishActivity) this@showErrorMessageAndStartActivity.finish()
+            }
+        })
+        .build()
+        .show()
+}
+
+fun Activity.showSuccessMessage(
+    positiveMessageId: Int,
+    shouldFinishActivity: Boolean = false,
+    barDuration: Long = Flashbar.DURATION_LONG
+) {
+
+    Flashbar.Builder(this)
+        .gravity(Flashbar.Gravity.BOTTOM)
+        .backgroundColorRes(R.color.colorPrimary)
+        .enableSwipeToDismiss()
+        .duration(barDuration)
+        .title(R.string.success)
+        .message(positiveMessageId)
+        .showIcon()
+        .icon(R.drawable.ic_done_24dp)
+        .iconColorFilterRes(android.R.color.holo_green_dark)
+        .iconAnimation(
+            FlashAnim.with(this)
+                .animateIcon()
+                .alpha()
+                .duration(500)
+                .accelerate()
+        )
+        .enterAnimation(
+            FlashAnim.with(this)
+                .animateBar()
+                .duration(750)
+                .alpha()
+                .overshoot()
+        )
+        .exitAnimation(
+            FlashAnim.with(this)
+                .animateBar()
+                .duration(400)
+                .accelerateDecelerate()
+        )
+        .barDismissListener(object : Flashbar.OnBarDismissListener {
+            override fun onDismissing(bar: Flashbar, isSwiped: Boolean) {}
+
+            override fun onDismissProgress(bar: Flashbar, progress: Float) {}
+
+            override fun onDismissed(bar: Flashbar, event: Flashbar.DismissEvent) {
+                if (shouldFinishActivity)
+                    this@showSuccessMessage.finish()
+            }
+        })
+        .build()
+        .show()
+}
+
+fun Activity.showInfoMessage(
+    messageId: Int,
+    barDuration: Long = Flashbar.DURATION_LONG
+) {
+
+    Flashbar.Builder(this)
+        .gravity(Flashbar.Gravity.BOTTOM)
+        .backgroundColorRes(R.color.colorPrimary)
+        .enableSwipeToDismiss()
+        .duration(barDuration)
+        .title(R.string.info)
+        .message(messageId)
+        .showIcon()
+        .icon(R.drawable.ic_notice_24dp)
+        .iconColorFilterRes(android.R.color.holo_blue_dark)
+        .iconAnimation(
+            FlashAnim.with(this)
+                .animateIcon()
+                .alpha()
+                .duration(500)
+                .accelerate()
+        )
+        .enterAnimation(
+            FlashAnim.with(this)
+                .animateBar()
+                .duration(750)
+                .alpha()
+                .overshoot()
+        )
+        .exitAnimation(
+            FlashAnim.with(this)
+                .animateBar()
+                .duration(400)
+                .accelerateDecelerate()
+        )
+        .build()
+        .show()
+}
+
+fun Activity.showProgressInfo(
+    messageId: Int): Flashbar.Builder{
+
+    return Flashbar.Builder(this)
+        .gravity(Flashbar.Gravity.BOTTOM)
+        .backgroundColorRes(R.color.colorPrimary)
+        .enableSwipeToDismiss()
+        .title(R.string.info)
+        .message(messageId)
+        .showIcon()
+        .showProgress(Flashbar.ProgressPosition.RIGHT)
+        .icon(R.drawable.ic_notice_24dp)
+        .iconColorFilterRes(android.R.color.holo_blue_dark)
+        .iconAnimation(
+            FlashAnim.with(this)
+                .animateIcon()
+                .alpha()
+                .duration(500)
+                .accelerate()
+        )
+        .enterAnimation(
+            FlashAnim.with(this)
+                .animateBar()
+                .duration(750)
+                .alpha()
+                .overshoot()
+        )
+        .exitAnimation(
+            FlashAnim.with(this)
+                .animateBar()
+                .duration(400)
+                .accelerateDecelerate()
+        )
+
 }
 
 fun Context.isOnline(): Boolean {

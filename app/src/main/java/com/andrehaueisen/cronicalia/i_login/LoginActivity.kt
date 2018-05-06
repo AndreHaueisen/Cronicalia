@@ -10,10 +10,11 @@ import com.andrehaueisen.cronicalia.b_firebase.Authenticator
 import com.andrehaueisen.cronicalia.b_firebase.DataRepository
 import com.andrehaueisen.cronicalia.c_featured_books.mvp.FeaturedBooksPresenterActivity
 import com.andrehaueisen.cronicalia.models.User
+import com.andrehaueisen.cronicalia.utils.extensions.showErrorMessageAndStartActivity
+import com.andrehaueisen.cronicalia.utils.extensions.showInfoMessage
 import com.andrehaueisen.cronicalia.utils.extensions.startNewActivity
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
-import es.dmoral.toasty.Toasty
 import org.koin.android.ext.android.inject
 
 class LoginActivity : AppCompatActivity() {
@@ -50,20 +51,24 @@ class LoginActivity : AppCompatActivity() {
                     when (idpResponse.error?.errorCode) {
 
                         ErrorCodes.NO_NETWORK -> {
-                            Toasty.error(this, getString(R.string.no_network)).show()
-                            startNewActivity(FeaturedBooksPresenterActivity::class.java)
-                            finish()
+                            this.showErrorMessageAndStartActivity(
+                                R.string.no_network,
+                                shouldFinishActivity = true,
+                                classToInit = FeaturedBooksPresenterActivity::class.java)
+
                         }
 
                         ErrorCodes.UNKNOWN_ERROR -> {
-                            Toasty.error(this, getString(R.string.unknown_error)).show()
-                            startNewActivity(FeaturedBooksPresenterActivity::class.java)
-                            finish()
+                            this.showErrorMessageAndStartActivity(
+                                    R.string.unknown_error,
+                                    shouldFinishActivity = true,
+                                    classToInit = FeaturedBooksPresenterActivity::class.java)
+
                         }
                     }
                 }
             } else {
-                Toasty.info(this, getString(R.string.sign_in_cancelled)).show()
+                this.showInfoMessage(R.string.sign_in_cancelled)
             }
         }
 

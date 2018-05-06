@@ -7,11 +7,11 @@ import com.andrehaueisen.cronicalia.i_login.LoginActivity
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.models.BookOpinion
 import com.andrehaueisen.cronicalia.models.User
+import com.andrehaueisen.cronicalia.utils.extensions.showErrorMessage
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.android.UI
@@ -631,7 +631,7 @@ class DataRepository(
                     activity.startCallingActivity()
                 }
             }.addOnFailureListener { _ ->
-                Toasty.error(activity, activity.getString(R.string.check_internet_connection)).show()
+                activity.showErrorMessage(R.string.check_internet_connection)
             }
     }
 

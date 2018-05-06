@@ -5,7 +5,6 @@
     <string name="simple_number_integer">%1$d</string>
     <string name="simple_number_float">%1$.1f</string>
     <string name="income_amount">%1$.2f</string>
-    <string name="twitter_account">\@%1$s</string>
     <string name="mark_book_as_completed">Book is finished</string>
     <string name="mark_book_as_incomplete">Still have chapter to launch</string>
     <string name="cover_updated">Cover updated</string>
@@ -26,8 +25,14 @@
     <string name="book_deleted">Book Deleted</string>
     <string name="change_cover">Change Cover</string>
     <string name="change_poster">Change Poster</string>
+    <string name="success">Success!</string>
+    <string name="fail">Oh no!</string>
+    <string name="info">Hey, ninja!</string>
 
     <!--f_create_book strings -->
+    <string name="edition_successful">Files saved</string>
+    <string name="editing_book">Saving file modifications. Hold up</string>
+    <string name="creating_book">Creating you masterpiece. Hold up</string>
     <string name="create_new_book">Create new book</string>
     <string name="book_is_complete">Book is complete</string>
     <string name="book_title">Book Title</string>

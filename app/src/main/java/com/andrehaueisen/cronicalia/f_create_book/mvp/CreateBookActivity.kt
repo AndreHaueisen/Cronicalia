@@ -45,7 +45,7 @@ class CreateBookActivity : AppCompatActivity() {
 
         setContentView(R.layout.f_activity_create_book)
 
-        mBookView = CreateBookView(this, mUser.getUserBookCount(),  mUser.name!!,  mUser.encodedEmail!!, savedInstanceState)
+        mBookView = CreateBookView(this, mUser.getUserBookCount(),  mUser.name!!,  mUser.encodedEmail!!, mUser.twitterProfile, savedInstanceState)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

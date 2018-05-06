@@ -108,8 +108,8 @@ class SelectedBookFragment : Fragment(), FeaturedBooksPresenterActivity.Featured
         mBookTitleTextView.text = mSelectedBook.title
         mBookGenreTextView.text = mSelectedBook.genre.name
         mAuthorNameTextView.text = mSelectedBook.authorName
-        if (mSelectedBook.authorTwitterAccount != null)
-            mTwitterAccountTextView.text = getString(R.string.twitter_account, mSelectedBook.authorTwitterAccount)
+        if (mSelectedBook.authorTwitterProfile != null)
+            mTwitterAccountTextView.text = mSelectedBook.authorTwitterProfile
         else {
             mTwitterAccountTextView.visibility = View.GONE
         }

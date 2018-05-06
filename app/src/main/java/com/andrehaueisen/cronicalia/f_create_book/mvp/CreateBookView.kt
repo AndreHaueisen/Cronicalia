@@ -16,18 +16,17 @@ import android.widget.Button
 import android.widget.TextView
 import com.andrehaueisen.cronicalia.*
 import com.andrehaueisen.cronicalia.f_create_book.SelectedFilesAdapter
-import com.andrehaueisen.cronicalia.f_create_book.UploadProgressDialog
 import com.andrehaueisen.cronicalia.models.Book
-import com.andrehaueisen.cronicalia.utils.extensions.createUserDirectory
-import com.andrehaueisen.cronicalia.utils.extensions.getFileTitle
+import com.andrehaueisen.cronicalia.utils.extensions.*
+import com.andrognito.flashbar.Flashbar
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.Timestamp
+import com.google.firebase.storage.StorageException
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.f_activity_create_book.*
 import kotlinx.android.synthetic.main.f_activity_create_book.view.*
 import kotlinx.coroutines.experimental.CommonPool
@@ -45,6 +44,7 @@ class CreateBookView(
     private val mUserBookCount: Int,
     authorName: String,
     emailId: String,
+    authorTwitterProfile: String?,
     savedState: Bundle?
 ) : CreateBookActivity.BookResources {
 
@@ -70,7 +70,12 @@ class CreateBookView(
             placePosterImage()
 
         } else {
-            mBookIsolated = Book(authorName = authorName, authorEmailId = emailId, bookPosition = mUserBookCount)
+            mBookIsolated = Book(
+                authorName = authorName,
+                authorEmailId = emailId,
+                authorTwitterProfile = authorTwitterProfile,
+                bookPosition = mUserBookCount
+            )
             initiateChapterRecyclerView()
         }
 
@@ -349,14 +354,45 @@ class CreateBookView(
     private fun initiateFileSelectorAndUploadButton() {
 
         fun uploadBookData() {
-            val uploadDialog = UploadProgressDialog(mActivity)
-            uploadDialog.show()
 
-            launch(CommonPool) {
+            launch(UI) {
+                var progressUpdate = 0
                 val subscriptionChannel = (mActivity as CreateBookActivity).uploadBookFiles(mBookIsolated)
+                val infoBar = mActivity.showProgressInfo(R.string.creating_book)
+                    .barDismissListener(object : Flashbar.OnBarDismissListener {
+
+                        override fun onDismissProgress(bar: Flashbar, progress: Float) {}
+                        override fun onDismissing(bar: Flashbar, isSwiped: Boolean) {}
+                        override fun onDismissed(bar: Flashbar, event: Flashbar.DismissEvent) {
+
+                            progressUpdate.showRequestFeedback(
+                                mActivity,
+                                R.string.book_created,
+                                R.string.progress_dialog_fail,
+                                shouldFinishActivity = true
+                            )
+                        }
+                    }).build()
+
+                infoBar.show()
+
+                launch(CommonPool) {
+
                     subscriptionChannel.consumeEach { progress ->
-                    if (uploadDialog.isShowing) {
-                        progress.let { launch(UI) { uploadDialog.onUploadStateChanged(it, subscriptionChannel) } }
+                        
+                        when(progress){
+                            UPLOAD_STATUS_OK -> {
+                                progressUpdate = progress
+                                launch(UI) { infoBar.dismiss() }
+                                subscriptionChannel.close()
+
+                            }
+                            UPLOAD_STATUS_FAIL or StorageException.ERROR_UNKNOWN ->{
+                                progressUpdate = progress
+                                launch(UI) { infoBar.dismiss() }
+                                subscriptionChannel.close()
+                            }
+                        }
                     }
                 }
             }
@@ -372,7 +408,7 @@ class CreateBookView(
                     if (adapter.areChapterTitlesValid() && mBookIsolated.isBookTitleValid(this) && mBookIsolated.isSynopsisValid(this)) {
                         uploadBookData()
                     } else
-                        Toasty.error(this, getString(R.string.invalid_text_detected)).show()
+                        mActivity.showErrorMessage(R.string.invalid_text_detected)
 
                 } else {
 
@@ -505,6 +541,6 @@ class CreateBookView(
     }
 
     override fun onError(exception: Exception) {
-        Toasty.error(mActivity, mActivity.getString(R.string.resource_error)).show()
+        mActivity.showErrorMessage(R.string.resource_error)
     }
 }

@@ -1,12 +1,13 @@
 package com.andrehaueisen.cronicalia.g_manage_account
 
-import android.content.Context
+import android.app.Activity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.InputType
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
+import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -17,7 +18,7 @@ import com.andrehaueisen.cronicalia.models.User
 import com.andrehaueisen.cronicalia.utils.extensions.isAboutMeTextValid
 import com.andrehaueisen.cronicalia.utils.extensions.isTwitterProfileValid
 import com.andrehaueisen.cronicalia.utils.extensions.isUserNameValid
-import es.dmoral.toasty.Toasty
+import com.andrehaueisen.cronicalia.utils.extensions.showErrorMessage
 import kotlinx.android.synthetic.main.dialog_edit_text.view.*
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
 
@@ -25,11 +26,11 @@ import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
  * Created by andre on 3/21/2018.
  */
 class EditTextDialog(
-    context: Context,
+    private val activity: Activity,
     private val view: ManageAccountView,
     private val viewBeingEdited: ViewBeingEdited,
     private val mUserIsolated: User
-) : AlertDialog(context) {
+) : AlertDialog(activity) {
 
     private lateinit var mFullTextView: TextView
     private lateinit var mGeneralTextBox: TextFieldBoxes
@@ -53,6 +54,7 @@ class EditTextDialog(
         setCancelable(true)
 
         mFullTextView = findViewById(R.id.full_text_view)!!
+        mFullTextView.movementMethod = ScrollingMovementMethod.getInstance()
         mGeneralTextBox = findViewById(R.id.general_text_box)!!
         mOkButton = findViewById(R.id.ok_button)!!
         mCancelButton = findViewById(R.id.cancel_button)!!
@@ -71,7 +73,7 @@ class EditTextDialog(
             }
 
             ViewBeingEdited.TWITTER_LOCATOR -> {
-                val twitterProfile = SpannableStringBuilder("@${mUserIsolated.twitterProfile}" ?: "")
+                val twitterProfile = SpannableStringBuilder(if(mUserIsolated.twitterProfile != null) mUserIsolated.twitterProfile else "")
                 mFullTextView.text = twitterProfile
                 mGeneralTextBox.labelText = context.getString(R.string.twitter_profile)
                 mGeneralTextBox.maxCharacters = context.resources.getInteger(R.integer.title_text_box_max_length)
@@ -108,10 +110,10 @@ class EditTextDialog(
                     val newName = mGeneralTextBox.general_extended_edit_text.text.toString()
                     if (newName.isUserNameValid(context)) {
                         mUserIsolated.name = newName
-                        view.notifyNameChange(newName)
+                        view.notifyNameChange(mUserIsolated.name!!)
                         dismiss()
                     } else {
-                        Toasty.error(context, context.getString(R.string.invalid_text_detected)).show()
+                        activity.showErrorMessage(R.string.invalid_text_detected)
                     }
 
                 }
@@ -119,11 +121,11 @@ class EditTextDialog(
                 ViewBeingEdited.TWITTER_LOCATOR -> {
                     val twitterLocator = mGeneralTextBox.general_extended_edit_text.text.toString()
                     if(twitterLocator.isTwitterProfileValid(context)){
-                        mUserIsolated.twitterProfile = twitterLocator
-                        view.notifyTwitterProfileChange(twitterLocator)
+                        mUserIsolated.twitterProfile = if(twitterLocator.first() != '@') "@$twitterLocator" else twitterLocator
+                        view.notifyTwitterProfileChange(mUserIsolated.twitterProfile!!)
                         dismiss()
                     } else {
-                        Toasty.error(context, context.getString(R.string.invalid_text_detected)).show()
+                        activity.showErrorMessage(R.string.invalid_text_detected)
                     }
                 }
 
@@ -131,10 +133,10 @@ class EditTextDialog(
                     val newAboutMe = mGeneralTextBox.general_extended_edit_text.text.toString()
                     if (newAboutMe.isAboutMeTextValid(context)) {
                         mUserIsolated.aboutMe = newAboutMe
-                        view.notifyAboutMeChange(newAboutMe)
+                        view.notifyAboutMeChange(mUserIsolated.aboutMe!!)
                         dismiss()
                     } else {
-                        Toasty.error(context, context.getString(R.string.invalid_text_detected)).show()
+                        activity.showErrorMessage(R.string.invalid_text_detected)
                     }
                 }
             }

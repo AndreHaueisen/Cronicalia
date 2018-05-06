@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.InputType
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
+import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -15,7 +16,8 @@ import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBookEditViewFragment
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.isBookTitleValid
 import com.andrehaueisen.cronicalia.utils.extensions.isSynopsisValid
-import es.dmoral.toasty.Toasty
+import com.andrehaueisen.cronicalia.utils.extensions.showErrorMessage
+import com.andrognito.flashbar.Flashbar
 import kotlinx.android.synthetic.main.dialog_edit_text.view.*
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
 
@@ -49,6 +51,7 @@ class EditTextDialog(
         setCancelable(true)
 
         mFullTextView = findViewById(R.id.full_text_view)!!
+        mFullTextView.movementMethod = ScrollingMovementMethod.getInstance()
         mGeneralTextBox = findViewById(R.id.general_text_box)!!
         mOkButton = findViewById(R.id.ok_button)!!
         mCancelButton = findViewById(R.id.cancel_button)!!
@@ -97,7 +100,7 @@ class EditTextDialog(
                         fragment.notifyTitleChange(newTitle)
                         dismiss()
                     } else {
-                        Toasty.error(context, context.getString(R.string.invalid_text_detected)).show()
+                        fragment.requireActivity().showErrorMessage(R.string.invalid_text_detected, barDuration = Flashbar.DURATION_SHORT)
                     }
 
                 }
@@ -108,7 +111,7 @@ class EditTextDialog(
                         fragment.notifySynopsisChange(newSynopsis)
                         dismiss()
                     } else {
-                        Toasty.error(context, context.getString(R.string.invalid_text_detected)).show()
+                        fragment.requireActivity().showErrorMessage(R.string.invalid_text_detected, barDuration = Flashbar.DURATION_SHORT)
                     }
                 }
             }

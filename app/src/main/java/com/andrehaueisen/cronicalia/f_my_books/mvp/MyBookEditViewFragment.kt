@@ -18,18 +18,17 @@ import com.andrehaueisen.cronicalia.*
 import com.andrehaueisen.cronicalia.f_my_books.DeleteBookAlertDialog
 import com.andrehaueisen.cronicalia.f_my_books.EditTextDialog
 import com.andrehaueisen.cronicalia.f_my_books.EditionFilesAdapter
-import com.andrehaueisen.cronicalia.f_my_books.UploadProgressDialog
 import com.andrehaueisen.cronicalia.models.Book
-import com.andrehaueisen.cronicalia.utils.extensions.createUserDirectory
-import com.andrehaueisen.cronicalia.utils.extensions.getSmallestScreenWidth
-import com.andrehaueisen.cronicalia.utils.extensions.showRequestFeedback
+import com.andrehaueisen.cronicalia.utils.extensions.*
+import com.andrognito.flashbar.Flashbar
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.storage.StorageException
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
-import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.channels.SubscriptionReceiveChannel
@@ -251,28 +250,57 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.MyBooksPrese
             if (isChangeOnlyInFileOrder()) {
                 async(UI) {
                     val result = (requireActivity() as MyBooksPresenterActivity).updateBookPdfsReferences(mBookIsolated)
-                    result.showRequestFeedback(requireContext(), R.string.book_updated, R.string.update_fail)
+                    result.showRequestFeedback(requireActivity(), R.string.book_updated, R.string.update_fail)
                 }
 
             } else {
-                val uploadDialog = UploadProgressDialog(
-                    requireActivity(),
-                    requireActivity().getSmallestScreenWidth() < 600
-                )
-                uploadDialog.show()
 
                 launch(UI) {
-                    val receiveChannel = (requireActivity() as MyBooksPresenterActivity).updateBookPdfs(mBookIsolated, mFileUrisToBeDeleted)
-                    receiveChannel.consumeEach { progress ->
-                        progress.let {
-                            launch(UI) {
-                                uploadDialog.onUploadStateChanged(it, receiveChannel)
-                                if (it == UPLOAD_STATUS_OK)
-                                    mSaveFileChangesButton.visibility = View.INVISIBLE
+                    val activity = (requireActivity() as MyBooksPresenterActivity)
+                    var progressUpdate = 0
+                    val subscriptionChannel = activity.updateBookPdfs(mBookIsolated, mFileUrisToBeDeleted)
+                    val infoBar = activity.showProgressInfo(R.string.editing_book)
+                        .barDismissListener(object : Flashbar.OnBarDismissListener {
+
+                            override fun onDismissProgress(bar: Flashbar, progress: Float) {}
+                            override fun onDismissing(bar: Flashbar, isSwiped: Boolean) {}
+                            override fun onDismissed(bar: Flashbar, event: Flashbar.DismissEvent) {
+
+                                progressUpdate.showRequestFeedback(
+                                    activity,
+                                    R.string.edition_successful,
+                                    R.string.progress_dialog_fail,
+                                    shouldFinishActivity = false
+                                )
+                            }
+                        }).build()
+
+                    infoBar.show()
+
+                    launch(CommonPool) {
+
+                        subscriptionChannel.consumeEach { progress ->
+
+                            when (progress) {
+                                UPLOAD_STATUS_OK -> {
+                                    progressUpdate = progress
+                                    launch(UI) {
+                                        mSaveFileChangesButton.visibility = View.INVISIBLE
+                                        infoBar.dismiss()
+                                    }
+                                    subscriptionChannel.close()
+
+                                }
+                                UPLOAD_STATUS_FAIL or StorageException.ERROR_UNKNOWN -> {
+                                    progressUpdate = progress
+                                    launch(UI) { infoBar.dismiss() }
+                                    subscriptionChannel.close()
+                                }
                             }
                         }
                     }
                 }
+
             }
         }
 
@@ -320,7 +348,7 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.MyBooksPrese
     override fun onDeletionConfirmed() {
         if (activity != null && isAdded) {
             (requireActivity() as MyBooksPresenterActivity).deleteBook(mBookIsolated)
-            Toasty.success(requireContext(), getString(R.string.book_deleted)).show()
+            requireActivity().showSuccessMessage(R.string.book_deleted)
             fragmentManager?.popBackStackImmediate()
         }
     }
@@ -494,7 +522,7 @@ class MyBookEditViewFragment : Fragment(), MyBooksPresenterActivity.MyBooksPrese
 
     private fun onError() {
         if (activity != null && isAdded)
-            Toasty.error(requireContext(), getString(R.string.resource_error)).show()
+            activity!!.showErrorMessage(R.string.resource_error)
     }
 
     fun notifyChangeOnFileDetected() {

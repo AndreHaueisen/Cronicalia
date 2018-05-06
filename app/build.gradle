@@ -92,7 +92,8 @@ dependencies {
     implementation 'com.github.barteksc:android-pdf-viewer:3.0.0-beta.5'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.6.0'
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.2'
-    implementation 'com.github.GrenderG:Toasty:1.2.8'
+    //implementation 'com.github.GrenderG:Toasty:1.2.8'
+    implementation 'com.andrognito.flashbar:flashbar:1.0.1'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
 

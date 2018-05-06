@@ -14,12 +14,16 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:maxLines="9"
+        android:gravity="bottom"
+        android:scrollbars="vertical"
         android:textColor="@color/text_primary"
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
 
     <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
         android:id="@+id/general_text_box"
@@ -30,7 +34,6 @@
         android:layout_marginTop="16dp"
         app:enabled="true"
         app:hasClearButton="true"
-        app:layout_goneMarginStart="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"

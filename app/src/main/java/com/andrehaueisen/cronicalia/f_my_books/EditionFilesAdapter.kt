@@ -18,8 +18,8 @@ import com.andrehaueisen.cronicalia.R
 import com.andrehaueisen.cronicalia.f_my_books.mvp.MyBookEditViewFragment
 import com.andrehaueisen.cronicalia.models.Book
 import com.andrehaueisen.cronicalia.utils.extensions.getFileTitle
+import com.andrehaueisen.cronicalia.utils.extensions.showInfoMessage
 import com.google.firebase.Timestamp
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.item_chapter_file_edition.view.*
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
 
@@ -152,7 +152,7 @@ class EditionFilesAdapter(
                 if( mBookIsolated.remoteChapterTitles.size > 1)
                     removeItem()
                 else
-                    Toasty.info(mFragment.requireContext(), mFragment.context!!.getString(R.string.one_file_selected_warning)).show()
+                    mFragment.requireActivity().showInfoMessage(R.string.one_file_selected_warning)
             }
 
             mPushFileUpButton.setOnClickListener { swapItems() }

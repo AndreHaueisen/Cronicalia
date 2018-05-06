@@ -20,7 +20,7 @@ data class Book(
     var originalImmutableTitle: String? = null,
     var authorName: String? = null,
     var authorEmailId: String? = null,
-    var authorTwitterAccount: String? = null,
+    var authorTwitterProfile: String? = null,
     var publicationDate: Long = 0,
     var genre: BookGenre = BookGenre.UNDEFINED,
     var bookPosition: Int = 0,
@@ -133,7 +133,7 @@ data class Book(
 
         return dateFormat.format(calendar.time)
     }
-    
+
     /**
      * Returns the time remaining until next chapter launch.
      * Returns negative if author is late.
@@ -165,7 +165,7 @@ data class Book(
                 originalImmutableTitle == that.originalImmutableTitle &&
                 authorName == that.authorName &&
                 authorEmailId == that.authorEmailId &&
-                authorTwitterAccount == that.authorTwitterAccount &&
+                authorTwitterProfile == that.authorTwitterProfile &&
                 publicationDate == that.publicationDate &&
                 genre == that.genre &&
                 bookPosition == that.bookPosition &&
@@ -194,7 +194,7 @@ data class Book(
             originalImmutableTitle,
             authorName,
             authorEmailId,
-            authorTwitterAccount,
+            authorTwitterProfile,
             publicationDate,
             genre,
             bookPosition,
@@ -280,7 +280,7 @@ data class Book(
         writeString(originalImmutableTitle)
         writeString(authorName)
         writeString(authorEmailId)
-        writeString(authorTwitterAccount)
+        writeString(authorTwitterProfile)
         writeLong(publicationDate)
         writeInt(genre.ordinal)
         writeInt(bookPosition)
